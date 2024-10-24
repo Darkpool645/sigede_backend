@@ -33,8 +33,8 @@ public class CapturistProfileField {
     @Column(name = "capturist_profile_field_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID capturistProfileFieldId;
 
-    @Column(name = "value", columnDefinition = "VARBINARY(255)", nullable = false)
-    private byte[] value;
+    @Column(name = "value", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String value;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_profile", referencedColumnName = "capturist_profile_id", nullable = false)

@@ -31,14 +31,14 @@ public class UserAccount {
     @Column(name = "user_account_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID userAccountId;
 
-    @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARBINARY(272)")
-    private byte[] email;
+    @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
+    private String email;
 
-    @Column(name = "password", nullable = false, columnDefinition = "VARBINARY(60)")
-    private byte[] password;
+    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
+    private String password;
 
-    @Column(name = "name", nullable = false, columnDefinition = "VARBINARY(272)")
-    private byte[] name;
+    @Column(name = "name", nullable = false, columnDefinition = "VARCHAR(255)")
+    private String name;
 
     @ManyToOne
     @JoinColumn(name = "fk_rol", referencedColumnName = "rol_id", nullable = false, columnDefinition = "BINARY(16)")

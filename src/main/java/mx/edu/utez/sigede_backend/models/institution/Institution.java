@@ -31,14 +31,14 @@ public class Institution {
     @Column(name = "institution_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID institutionId;
 
-    @Column(name = "name", columnDefinition = "VARBINARY(272)", nullable = false)
-    private byte[] name;
+    @Column(name = "name", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String name;
 
-    @Column(name = "address", columnDefinition = "VARBINARY(272)", nullable = false)
-    private byte[] address;
+    @Column(name = "address", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String address;
 
-    @Column(name = "phone_contact", columnDefinition = "VARBINARY(30)", nullable = false)
-    private byte[] phoneContact;
+    @Column(name = "phone_contact", columnDefinition = "VARCHAR(30)", nullable = false)
+    private String phoneContact;
 
     @Column(name = "email_contact", columnDefinition = "VARBINARY(272)", nullable = false)
     private byte[] emailContact;
