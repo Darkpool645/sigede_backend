@@ -31,11 +31,14 @@ public class VerificationCode {
     @Column(name = "verification_code_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID verificationCodeId;
 
+    @Column(name = "verification_code")
+    private String verificationCode;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Column(name = "expiration", nullable = false)
-    private  LocalDateTime expiration;
+    private LocalDateTime expiration;
 
     @ManyToOne
     @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false)
@@ -43,7 +46,7 @@ public class VerificationCode {
 
     @PrePersist
     private void ggnerateUUID() {
-        if (this.verificationCodeId == null) { 
+        if (this.verificationCodeId == null) {
             this.verificationCodeId = UUID.randomUUID();
         }
     }
