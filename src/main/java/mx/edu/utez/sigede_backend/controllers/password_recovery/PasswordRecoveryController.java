@@ -24,61 +24,72 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/send-verification-code")
-    ResponseEntity<Object> sendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public ResponseEntity<CustomResponse<UUID>> sendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
         try {
             UUID userId = passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
-            return new ResponseEntity<>(new CustomResponse<>(
-                    200, "Código de verificación enviado correctamente.", false, userId), HttpStatus.OK);
+            CustomResponse<UUID> response = new CustomResponse<>(
+                    200, "Código de verificación enviado correctamente.", false, userId
+            );
+            return ResponseEntity.ok(response);
         } catch (CustomException e) {
-            return new ResponseEntity<>(new CustomResponse<>(
-                    400, "El usuario que ha ingresado no existe.", true, null), HttpStatus.NOT_FOUND);
+            CustomResponse<UUID> errorResponse = new CustomResponse<>(
+                    404, "El usuario que ha ingresado no existe.", true, null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
-
     }
 
     @PostMapping("/resend-verification-code")
-    ResponseEntity<Object> resendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public ResponseEntity<CustomResponse<UUID>> resendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
         try {
             UUID userId = passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
-            return new ResponseEntity<>(new CustomResponse<>(
-                    200, "Código de verificación enviado correctamente.", false, userId), HttpStatus.OK);
+            CustomResponse<UUID> response = new CustomResponse<>(
+                    200, "Código de verificación enviado correctamente.", false, userId);
+            return ResponseEntity.ok(response);
         } catch (CustomException e) {
-            return new ResponseEntity<>(new CustomResponse<>(
-               400, "Ocurrio un error al enviar el código de verificación.", true, null
-            ), HttpStatus.BAD_REQUEST);
+            CustomResponse<UUID> errorResponse = new CustomResponse<>(
+                    400, "Ocurrio un error al enviar el código de verificación.", true, null
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @PostMapping("/validate-verification-code")
-    ResponseEntity<Object> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
+    public ResponseEntity<CustomResponse<UUID>> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
             boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserId());
             if (result) {
                 passwordRecoveryService.deleteVerificationCode(validateCodeDTO.getUserId());
-                return new ResponseEntity<>(new CustomResponse<>(
-                        200, "El código es valido.", false, null), HttpStatus.OK);
+                CustomResponse<UUID> response = new CustomResponse<>(
+                        200, "El código es valido.", false, validateCodeDTO.getUserId()
+                );
+                return ResponseEntity.ok(response);
             } else {
-                return new ResponseEntity<>(new CustomResponse<>(
-                        400, "El código ingresado no es valido.", true, null
-                ), HttpStatus.BAD_REQUEST);
+                CustomResponse<UUID> response = new CustomResponse<>(400, "El código ingresado no es valido.", true, null);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         } catch (CustomException e) {
-            return  new ResponseEntity<>(new CustomResponse<>(
-                    400, e.getMessage(), true, null), HttpStatus.BAD_REQUEST);
+            CustomResponse<UUID> errorResponse = new CustomResponse<>(
+                    400, e.getMessage(), true, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
     @PutMapping("/change-password")
-    ResponseEntity<Object> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+    public ResponseEntity<CustomResponse<PasswordChangeResponseDTO>> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
         try {
             PasswordChangeResponseDTO responseDTO = passwordRecoveryService.changePassword(
                     passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserId());
-            return new ResponseEntity<>(new CustomResponse<>(
+            CustomResponse<PasswordChangeResponseDTO> response = new CustomResponse<>(
                     200, "La contraseña ha sido cambiada correctamente", false,
-                    responseDTO), HttpStatus.OK);
+                    responseDTO
+            );
+            return ResponseEntity.ok(response);
             //servicio para enviar email
         } catch (CustomException e) {
-            return new ResponseEntity<>(new CustomResponse<>(400, e.getMessage(), true, null), HttpStatus.BAD_REQUEST);
+            CustomResponse<PasswordChangeResponseDTO> errorResponse = new CustomResponse<>(
+                    400, e.getMessage(), true, null
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 }
