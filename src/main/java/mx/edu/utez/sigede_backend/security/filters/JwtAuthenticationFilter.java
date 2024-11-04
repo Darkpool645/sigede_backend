@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.security.AuthenticationProcessingException;
-import mx.edu.utez.sigede_backend.utils.EncryptionUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,8 +24,6 @@ import static mx.edu.utez.sigede_backend.security.TokenJwtConfig.*;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
-    EncryptionUtil encryptionUtil;
-
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
         setFilterProcessesUrl("/api/auth/login");
@@ -34,23 +31,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public org.springframework.security.core.Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         UserAccount user = null;
-        String decryptedEmail = null;
+        String username = null;
         String password = null;
         try {
-            // Obtener el objeto UserAccount desde la solicitud
             user = new ObjectMapper().readValue(request.getInputStream(), UserAccount.class);
-
-            // Convertir el byte[] del email en una cadena Base64
-            String encodedEmail = Base64.getEncoder().encodeToString(user.getEmail());
-
-            // Desencriptar el correo utilizando EncryptionUtil
-            decryptedEmail = EncryptionUtil.decrypt(encodedEmail);
-            password = new String(user.getPassword(), StandardCharsets.UTF_8);
+            username= user.getEmail();
+            password = user.getPassword();
 
         } catch (IOException e) {
             throw new AuthenticationProcessingException("Error al procesar la autenticación", e);
         }
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(decryptedEmail, password);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
 
         return authenticationManager.authenticate(authToken);
     }
@@ -77,8 +68,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         Map<String,Object> body = new HashMap<>();
         body.put("token",token);
-        body.put("message",String.format("Hola %s, has inciado sesion con exito",username));
-        body.put("username",username);
+        body.put("email",username);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType("application/json");
