@@ -16,6 +16,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.status.Status;
 
@@ -47,6 +48,10 @@ public class UserAccount {
     @ManyToOne
     @JoinColumn(name = "fk_status", referencedColumnName = "status_id", nullable = false, columnDefinition = "BINARY(16)")
     private Status fkStatus;
+
+    @ManyToOne
+    @JoinColumn(name ="fk_institution", referencedColumnName = "institution_id", nullable = true, columnDefinition = "BINARY(16)")
+    private Institution fkInstitution;
 
     @PrePersist
     private void generateUUID() {

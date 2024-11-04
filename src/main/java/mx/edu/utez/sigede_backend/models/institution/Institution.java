@@ -17,7 +17,6 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 
 @Data
 @NoArgsConstructor
@@ -40,16 +39,12 @@ public class Institution {
     @Column(name = "phone_contact", columnDefinition = "VARCHAR(30)", nullable = false)
     private String phoneContact;
 
-    @Column(name = "email_contact", columnDefinition = "VARBINARY(272)", nullable = false)
-    private byte[] emailContact;
+    @Column(name = "email_contact", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String emailContact;
 
     @Lob
     @Column(name = "logo", nullable = false, columnDefinition = "LONGBLOB")
     private byte[] logo;
-
-    @ManyToOne
-    @JoinColumn(name = "fk_admin", referencedColumnName = "user_account_id", nullable = false)
-    private UserAccount fkAdmin;
 
     @PrePersist
     private void generateUUID() {

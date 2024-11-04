@@ -31,8 +31,8 @@ public class CredentialField {
     @Column(name = "credential_field_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID credentialFieldId;
 
-    @Column(name = "value", columnDefinition = "VARBINARY(255)", nullable = false)
-    private byte[] value;
+    @Column(name = "value", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String value;
 
     @ManyToOne
     @JoinColumn(name = "fk_credential", referencedColumnName = "credential_id", nullable = false)
