@@ -31,6 +31,9 @@ public class VerificationCode {
     @Column(name = "verification_code_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID verificationCodeId;
 
+    @Column(name = "verification_code")
+    private String verificationCode;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

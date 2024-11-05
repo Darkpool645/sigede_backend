@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,9 +43,10 @@ public class Institution {
     @Column(name = "email_contact", columnDefinition = "VARCHAR(255)", nullable = false)
     private String emailContact;
 
-    @Lob
-    @Column(name = "logo", nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] logo;
+
+    @Column(name = "logo", nullable = false, columnDefinition = "TEXT")
+    @Size(max = 500, message = "El logo no puede tener más de 500 caracteres")
+    private String logo;
 
     @PrePersist
     private void generateUUID() {
