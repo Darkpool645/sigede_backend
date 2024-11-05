@@ -59,4 +59,7 @@ public class UserAccount {
             this.userAccountId = UUID.randomUUID();
         }
     }
+    public UserAccount(UUID userAccountId) {
+        this.userAccountId = userAccountId;
+    }
 }
