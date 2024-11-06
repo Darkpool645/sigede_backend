@@ -1,15 +1,12 @@
 package mx.edu.utez.sigede_backend.models.user_account;
 
-import org.apache.el.stream.Optional;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import mx.edu.utez.sigede_backend.controllers.mailcontroller.DTO.UserIdAndLogoDTO;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>{
 
@@ -32,6 +29,4 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>{
     UserAccount findByUserAccountId(UUID userAccountId);
     boolean existsByEmail(String email);
     UserAccount findByEmail(String email);
-    @Query("select new mx.edu.utez.sigede_backend.controllers.mailcontroller.DTO.UserIdAndLogoDTO(usac.userAccountId, usac.fkInstitution.logo) from UserAccount as usac where usac.email=:email")
-    UserIdAndLogoDTO findIdAndLogoByEmail(@Param("email") String email);
 }
