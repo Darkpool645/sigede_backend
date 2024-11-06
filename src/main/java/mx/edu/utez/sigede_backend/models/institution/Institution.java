@@ -14,10 +14,10 @@ import jakarta.persistence.Table;
 
 import java.util.UUID;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 
 @Data
 @NoArgsConstructor
@@ -40,16 +40,13 @@ public class Institution {
     @Column(name = "phone_contact", columnDefinition = "VARCHAR(30)", nullable = false)
     private String phoneContact;
 
-    @Column(name = "email_contact", columnDefinition = "VARBINARY(272)", nullable = false)
-    private byte[] emailContact;
+    @Column(name = "email_contact", columnDefinition = "VARCHAR(255)", nullable = false)
+    private String emailContact;
 
-    @Lob
-    @Column(name = "logo", nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] logo;
 
-    @ManyToOne
-    @JoinColumn(name = "fk_admin", referencedColumnName = "user_account_id", nullable = false)
-    private UserAccount fkAdmin;
+    @Column(name = "logo", nullable = false, columnDefinition = "TEXT")
+    @Size(max = 500, message = "El logo no puede tener más de 500 caracteres")
+    private String logo;
 
     @PrePersist
     private void generateUUID() {

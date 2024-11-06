@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.security;
 
 import mx.edu.utez.sigede_backend.security.filters.JwtAuthenticationFilter;
+import mx.edu.utez.sigede_backend.security.filters.JwtValidationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,14 +43,15 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests()
-                .requestMatchers(HttpMethod.GET,"/api/*").permitAll()
-                .requestMatchers(HttpMethod.POST,"/api/*").hasAnyRole("SUPERADMIN","ADMIN","CAPTURIST")
+                .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/api/**").permitAll()
+                //.requestMatchers(HttpMethod.POST,"/api/*").hasAnyRole("SUPERADMIN","ADMIN","CAPTURIST")
                 .requestMatchers(HttpMethod.PUT,"/api/*").hasAnyRole("SUPERADMIN","ADMIN","CAPTURIST")
 
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager()))
-                .addFilter(new JwtAuthenticationFilter(authenticationConfiguration.getAuthenticationManager()))
+                .addFilter(new JwtValidationFilter(authenticationConfiguration.getAuthenticationManager()))
                 .csrf(config -> config.disable())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors->cors.configurationSource(corsConfigurationSource()))
