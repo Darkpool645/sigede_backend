@@ -46,3 +46,59 @@ VALUES (true, false, '{"canEdit": true}', 'address', 'String'),
        (false,true, '{"canEdit": true}', 'rfc', 'String'),
        (false,false, '{"canEdit": true}', 'birthdate', 'Date'),
        (true, true, '{"canEdit": true}','role','String');
+
+-- Inserta un perfil de capturista en capturist_profiles
+INSERT INTO capturist_profiles (fk_profile)
+VALUES (1),
+       (2),
+       (3),
+       (4),
+       (5),
+       (6),
+       (7),
+       (8),
+       (9),
+       (10);
+
+
+-- Inserta una credencial en credentials
+INSERT INTO credentials (expiration_date, issue_date, user_photo, fullname, fk_institution, fk_user_account)
+VALUES ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'John Doe', 1, 1),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Smith', 2, 2),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Jhonson', 3, 3),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Some Guy', 4, 4),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Alice', 5, 5),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Bob', 6, 6),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Charlie', 7, 7),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'David', 8, 8),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Eve', 9, 9),
+       ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Frank', 10, 10);
+
+-- Inserta un campo de credencial en credential_fields
+INSERT INTO credential_fields (value, fk_credential, fk_user_info)
+VALUES ('1234 Elm St', 1, 1);
+
+-- Inserta un campo de capturista en institution_capturist_fields
+INSERT INTO institution_capturist_fields (is_required, fk_institution, fk_user_info)
+VALUES (true, 1, 1),
+       (true, 2, 2),
+       (true, 3, 3),
+       (true, 4, 4),
+       (true, 5, 5),
+       (true, 6, 6),
+       (true, 7, 7),
+       (true, 8, 8),
+       (true, 9, 9),
+       (true, 10, 10);
+-- Inserta un código de verificación en verification_codes
+INSERT INTO verification_codes (created_at, expiration, verification_code, fk_user_account)
+VALUES (NOW(), '2024-12-31 23:59:59', 'ABC123XYZ', 1),
+       (NOW(),'2024-12-31 23:59:59','ABC133XYZ',2),
+       (NOW(),'2024-12-31 23:59:59','ABC143XYZ',3),
+       (NOW(),'2024-12-31 23:59:59','ABC153XYZ',4),
+       (NOW(),'2024-12-31 23:59:59','ABC163XYZ',5),
+       (NOW(),'2024-12-31 23:59:59','ABC173XYZ',6),
+       (NOW(),'2024-12-31 23:59:59','ABC183XYZ',7),
+       (NOW(),'2024-12-31 23:59:59','ABC193XYZ',8),
+       (NOW(),'2024-12-31 23:59:59','ABC103XYZ',9),
+       (NOW(),'2024-12-31 23:59:59','ABC113XYZ',10);
