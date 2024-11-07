@@ -1,5 +1,6 @@
 package mx.edu.utez.sigede_backend.security;
 
+import mx.edu.utez.sigede_backend.security.config.TokenJwtConfig;
 import mx.edu.utez.sigede_backend.security.filters.JwtAuthenticationFilter;
 import mx.edu.utez.sigede_backend.security.filters.JwtValidationFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -27,9 +28,11 @@ import java.util.List;
 public class SpringSecurityConfig {
 
     private final  AuthenticationConfiguration authenticationConfiguration;
+    private final TokenJwtConfig tokenJwtConfig;
 
-    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration){
+    public SpringSecurityConfig(AuthenticationConfiguration authenticationConfiguration, TokenJwtConfig tokenJwtConfig) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.tokenJwtConfig = tokenJwtConfig;
     }
 
     @Bean
@@ -53,8 +56,8 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/api/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/*").hasAnyRole("SUPERADMIN","ADMIN","CAPTURIST")
                         .anyRequest().authenticated())
-                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-                .addFilter(new JwtValidationFilter(authenticationManager()))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenJwtConfig))
+                .addFilter(new JwtValidationFilter(authenticationManager(), tokenJwtConfig))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -64,7 +67,7 @@ public class SpringSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of("*"));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setAllowCredentials(true);

@@ -54,6 +54,6 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return status.equals("Activo");
+        return true;
     }
 }
