@@ -84,7 +84,6 @@ public class PasswordRecoveryController {
                     responseDTO
             );
             return ResponseEntity.ok(response);
-            //servicio para enviar email
         } catch (CustomException e) {
             CustomResponse<PasswordChangeResponseDTO> errorResponse = new CustomResponse<>(
                     400, e.getMessage(), true, null
