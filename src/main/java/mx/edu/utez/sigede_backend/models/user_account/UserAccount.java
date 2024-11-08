@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.status.Status;
+
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -21,9 +21,9 @@ import mx.edu.utez.sigede_backend.models.status.Status;
 public class UserAccount {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_account_id", nullable = false)
-    private Long userAccountId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "user_account_id",columnDefinition = "BINARY(16)", nullable = false)
+    private UUID userAccountId;
 
     @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String email;
@@ -45,5 +45,6 @@ public class UserAccount {
     @ManyToOne
     @JoinColumn(name ="fk_institution", referencedColumnName = "institution_id", nullable = true, columnDefinition = "BINARY(16)")
     private Institution fkInstitution;
+
 
 }

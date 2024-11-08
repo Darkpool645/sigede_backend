@@ -20,13 +20,14 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 public class CapturistProfile {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "capturist_profile_id", nullable = false)
-    private Long capturistProfileId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "capturist_profile_id", columnDefinition = "BINARY(16)", nullable = false)
+    private UUID capturistProfileId;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_profile",  referencedColumnName = "user_account_id")
     private UserAccount fkProfile;
+
 
 
 }
