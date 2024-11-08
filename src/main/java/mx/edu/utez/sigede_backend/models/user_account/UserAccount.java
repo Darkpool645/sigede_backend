@@ -2,14 +2,7 @@ package mx.edu.utez.sigede_backend.models.user_account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -24,13 +17,13 @@ import mx.edu.utez.sigede_backend.models.status.Status;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user_accocunts")
+@Table(name = "user_accounts")
 public class UserAccount {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "user_account_id", columnDefinition = "BINARY(16)", nullable = false)
-    private UUID userAccountId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_account_id", nullable = false)
+    private Long userAccountId;
 
     @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String email;
@@ -53,13 +46,4 @@ public class UserAccount {
     @JoinColumn(name ="fk_institution", referencedColumnName = "institution_id", nullable = true, columnDefinition = "BINARY(16)")
     private Institution fkInstitution;
 
-    @PrePersist
-    private void generateUUID() {
-        if (this.userAccountId == null) {
-            this.userAccountId = UUID.randomUUID();
-        }
-    }
-    public UserAccount(UUID userAccountId) {
-        this.userAccountId = userAccountId;
-    }
 }
