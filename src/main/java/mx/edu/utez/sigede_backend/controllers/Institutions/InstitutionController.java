@@ -2,7 +2,6 @@ package mx.edu.utez.sigede_backend.controllers.Institutions;
 
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
