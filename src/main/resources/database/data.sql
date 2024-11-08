@@ -76,7 +76,15 @@ VALUES ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x
 
 -- Inserta un campo de credencial en credential_fields
 INSERT INTO credential_fields (value, fk_credential, fk_user_info)
-VALUES ('1234 Elm St', 1, 1);
+VALUES ('1234 Elm St', 1, 1),
+       ('example@example.com',1,1),
+       ('John Doe',1,1),
+       ('555-1234',1,1),
+       ('GAAJ920708HDFRRR07',1,1),
+       ('GAAJ920708F54',1,1),
+       ('1990-01-01',1,1),
+       ('capturista',1,1);
+
 
 -- Inserta un campo de capturista en institution_capturist_fields
 INSERT INTO institution_capturist_fields (is_required, fk_institution, fk_user_info)
@@ -90,6 +98,7 @@ VALUES (true, 1, 1),
        (true, 8, 8),
        (true, 9, 9),
        (true, 10, 10);
+
 -- Inserta un código de verificación en verification_codes
 INSERT INTO verification_codes (created_at, expiration, verification_code, fk_user_account)
 VALUES (NOW(), '2024-12-31 23:59:59', 'ABC123XYZ', 1),
