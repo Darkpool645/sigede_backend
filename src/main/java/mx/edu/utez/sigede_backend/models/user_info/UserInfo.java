@@ -4,13 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Map;
 import java.util.UUID;
@@ -27,7 +21,7 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_info_id", columnDefinition = "BINARY(16)", nullable = false)
     private UUID userInfoId;
 
@@ -64,13 +58,6 @@ public class UserInfo {
             this.options = mapper.writeValueAsString(optionsMap);
         } catch (Exception e) {
             throw new RuntimeException("Error al converitr Map a JSON", e);
-        }
-    }
-
-    @PrePersist
-    private void generateUUID() {
-        if (this.userInfoId == null) {
-            this.userInfoId = UUID.randomUUID();
         }
     }
 }
