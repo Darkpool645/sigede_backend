@@ -41,6 +41,9 @@ public class Credential {
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
+    @Column(name = "fullname",nullable = false,length = 255)
+    private String fullname;
+
     @Lob
     @Column(name = "user_photo", nullable = false, columnDefinition = "LONGBLOB")
     private byte[] userPhoto;
