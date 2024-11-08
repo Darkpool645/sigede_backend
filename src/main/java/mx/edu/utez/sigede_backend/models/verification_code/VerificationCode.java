@@ -38,7 +38,7 @@ public class VerificationCode {
     private LocalDateTime createdAt;
 
     @Column(name = "expiration", nullable = false)
-    private  LocalDateTime expiration;
+    private LocalDateTime expiration;
 
     @ManyToOne
     @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false)
@@ -46,7 +46,7 @@ public class VerificationCode {
 
     @PrePersist
     private void ggnerateUUID() {
-        if (this.verificationCodeId == null) { 
+        if (this.verificationCodeId == null) {
             this.verificationCodeId = UUID.randomUUID();
         }
     }

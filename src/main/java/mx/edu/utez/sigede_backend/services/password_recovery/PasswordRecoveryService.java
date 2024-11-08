@@ -1,33 +1,38 @@
 package mx.edu.utez.sigede_backend.services.password_recovery;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
+import mx.edu.utez.sigede_backend.services.mailservice.MailService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.models.verification_code.VerificationCode;
 import mx.edu.utez.sigede_backend.models.verification_code.VerificationCodeRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class PasswordRecoveryService {
     private final UserAccountRepository userAccountRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
+    private static final String VERIFICATION_CODE = "Código de verificación";
     private static final SecureRandom random = new SecureRandom();
     private static final int CODE_LENGTH = 6;
     private static final String USER_NOT_FOUND = "user.not.found";
 
     public PasswordRecoveryService(UserAccountRepository userAccountRepository,
-            VerificationCodeRepository verificationCodeRepository, PasswordEncoder passwordEncoder) {
+            VerificationCodeRepository verificationCodeRepository, PasswordEncoder passwordEncoder, MailService mailService) {
         this.userAccountRepository = userAccountRepository;
         this.verificationCodeRepository = verificationCodeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -36,19 +41,14 @@ public class PasswordRecoveryService {
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
-        return saveVerificationCode(user, verificationCodeRepository);
-    }
-
-    private static UUID saveVerificationCode(UserAccount user, VerificationCodeRepository verificationCodeRepository) {
-        String code = generateVerificationCode();
-        LocalDateTime createdAt = LocalDateTime.now();
-        LocalDateTime expiration = createdAt.plusHours(1);
         VerificationCode verificationCode = new VerificationCode();
+        String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
-        verificationCode.setCreatedAt(createdAt);
-        verificationCode.setExpiration(expiration);
+        verificationCode.setCreatedAt(LocalDateTime.now());
+        verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCode.setFkUserAccount(user);
         verificationCodeRepository.saveAndFlush(verificationCode);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
     }
 
@@ -77,14 +77,21 @@ public class PasswordRecoveryService {
         }
         user.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(user);
-        // servicio para enviar email
+        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");
         return new PasswordChangeResponseDTO(user.getPassword(), user.getUserAccountId());
     }
 
     @Transactional
     public UUID resendVerificationCode(String email) {
         UserAccount user = userAccountRepository.findByEmail(email);
-        return saveVerificationCode(user, verificationCodeRepository);
+        VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
+        String code = generateVerificationCode();
+        verificationCode.setVerificationCode(code);
+        verificationCode.setCreatedAt(LocalDateTime.now());
+        verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
+        verificationCodeRepository.saveAndFlush(verificationCode);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
+        return user.getUserAccountId();
     }
 
     @Transactional

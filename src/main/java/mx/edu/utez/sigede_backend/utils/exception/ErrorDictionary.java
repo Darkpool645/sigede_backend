@@ -1,9 +1,9 @@
 package mx.edu.utez.sigede_backend.utils.exception;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class ErrorDictionary {
@@ -19,6 +19,8 @@ public class ErrorDictionary {
         errorMessages.put("verification.code.expired", "El código de verificación ha expirado.");
         errorMessages.put("user.password.same_as_old", "La nueva contraseña no debe ser silimar a las anterior.");
         errorMessages.put("email.send.error", "Error al enviar correo. Revisa tu conexión o si la dirección de correo es correcta.");
+        errorMessages.put("field.not.null", "El campo es obligatorio.");
+        errorMessages.put("institution.name.error", "Ya existe una institucion registrada con ese nombre.");
     }
 
     public String getErrorMessage(String errorCode) {

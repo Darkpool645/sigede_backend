@@ -13,4 +13,6 @@ public interface InstitutionRepository extends JpaRepository<Institution, UUID>{
 
     @Query("SELECT i FROM Institution i WHERE i.institutionId = :id")
     Institution getById(@Param("id") UUID id);
+
+    boolean existsByName(String name);
 }
