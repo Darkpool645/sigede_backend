@@ -30,7 +30,7 @@ public class InstitutionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Institution> getInstitutionById(@PathVariable("id") UUID id) {
+    public ResponseEntity<Institution> getInstitutionById(@PathVariable("id") Long id) {
         Optional<Institution> institution = institutionService.getById(id);
         return institution.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());

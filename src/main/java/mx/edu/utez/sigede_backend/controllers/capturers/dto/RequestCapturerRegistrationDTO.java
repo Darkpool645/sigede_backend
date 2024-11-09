@@ -2,6 +2,7 @@ package mx.edu.utez.sigede_backend.controllers.capturers.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
@@ -17,6 +18,6 @@ public class RequestCapturerRegistrationDTO {
     private String email;
     @NotBlank(message = "capturer.password.notnull")
     private String password;
-    @NotBlank(message = "institution.id.notnull")
-    private Institution fkInstitution;
+    @NotNull(message = "institution.id.notnull")
+    private Long fkInstitution;
 }

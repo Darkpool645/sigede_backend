@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfileRepository;
+import mx.edu.utez.sigede_backend.models.institution.Institution;
+import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.rol.RolRepository;
 import mx.edu.utez.sigede_backend.models.status.Status;
@@ -22,19 +24,21 @@ public class CapturerService {
     private final PasswordEncoder passwordEncoder;
     private final RolRepository rolRepository;
     private final StatusRepository statusRepository;
+    private final InstitutionRepository institutionRepository;
     private final MailService mailService;
     private static final String USER_FOUND = "capturer.email.error";
-    public CapturerService(UserAccountRepository userAccountRepository, CapturistProfileRepository capturistProfileRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, StatusRepository statusRepository, MailService mailService) {
+    public CapturerService(UserAccountRepository userAccountRepository, CapturistProfileRepository capturistProfileRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, StatusRepository statusRepository, InstitutionRepository institutionRepository, MailService mailService) {
         this.userAccountRepository = userAccountRepository;
         this.capturistProfileRepository = capturistProfileRepository;
         this.passwordEncoder = passwordEncoder;
         this.rolRepository = rolRepository;
         this.statusRepository = statusRepository;
+        this.institutionRepository = institutionRepository;
         this.mailService = mailService;
     }
     @Transactional
     public void registerCapturer(RequestCapturerRegistrationDTO payload) {
-        if(userAccountRepository.existsByEmail(payload.getEmail())){
+        if(userAccountRepository.findByEmail(payload.getEmail())!=null){
             throw new CustomException(USER_FOUND);
         }
         Rol rol = rolRepository.findByName("capturista");
@@ -46,18 +50,23 @@ public class CapturerService {
         if (status == null) {
             throw new CustomException("Status 'activo' no encontrado");
         }
-
+        Institution institution = institutionRepository.findByInstitutionId(payload.getFkInstitution());
+        if (institution == null) {
+            throw new CustomException("No se encontro la institución");
+        }
         // Crear una nueva cuenta de usuario
         UserAccount userAccount = new UserAccount();
         userAccount.setEmail(payload.getEmail());
+
         userAccount.setName(payload.getName());
         userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
         userAccount.setFkRol(rol);
         userAccount.setFkStatus(status);
+        userAccount.setFkInstitution(institution);
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "", userAccount.getPassword());
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "", payload.getPassword());
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();
         capturistProfile.setFkProfile(userAccount);

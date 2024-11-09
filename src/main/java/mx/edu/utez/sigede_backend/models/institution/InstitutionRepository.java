@@ -14,5 +14,7 @@ public interface InstitutionRepository extends JpaRepository<Institution, Long>{
     @Query("SELECT i FROM Institution i WHERE i.institutionId = :id")
     Institution getById(@Param("id") Long id);
 
+    Institution findByInstitutionId(Long id);
+
     boolean existsByName(String name);
 }

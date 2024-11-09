@@ -1,7 +1,7 @@
 USE sigede;
 
 -- 1. Inserta una institución en 'institutions'
-INSERT IGNORE INTO institutions (address, email_contact, logo, name, phone_contact)
+INSERT INTO institutions (address, email_contact, logo, name, phone_contact)
 VALUES
     ('1234 Elm St', 'contact@institution1.com', 'https://placehold.co/200x200', 'University of Code', '555-1234'),
     ('5678 Oak St', 'info@institution2.org', 'https://placehold.co/200x200', 'University of Pemo', '555-5678'),
@@ -13,21 +13,21 @@ VALUES
     ('9201 Elm St', 'admin@institution8.org', 'https://placehold.co/200x200', 'Institution 6', '555-9201');
 
 -- 2. Inserta roles en 'roles'
-INSERT IGNORE INTO roles (name)
+INSERT INTO roles (name)
 VALUES
     ('capturista'),
     ('admin'),
     ('superadmin');
 
 -- 3. Inserta estados en 'statuses'
-INSERT IGNORE INTO statuses (name)
+INSERT INTO statuses (name)
 VALUES
     ('activo'),
     ('inactivo'),
     ('suspendido');
 
 -- 4. Inserta usuarios en 'user_accounts' (después de 'institutions', 'roles', y 'statuses')
-INSERT IGNORE INTO user_accounts (email, name, password, fk_institution, fk_rol, fk_status)
+INSERT INTO user_accounts (email, name, password, fk_institution, fk_rol, fk_status)
 VALUES
     ('johndoe@example.com', 'John Doe', 'securepassword123', 1, 1, 1),
     ('smith@example.com', 'Smith', 'password123', 2, 1, 1),
@@ -39,7 +39,7 @@ VALUES
     ('david@example', 'David', 'password123', 8, 1, 1);
 
 -- 5. Inserta información en 'users_info'
-INSERT IGNORE INTO users_info (is_in_card, is_in_qr, options, tag, type)
+INSERT INTO users_info (is_in_card, is_in_qr, options, tag, type)
 VALUES
     (true, false, '{"canEdit": true}', 'address', 'String'),
     (true, true, '{"canEdit": true}', 'email', 'String'),
@@ -51,12 +51,12 @@ VALUES
     (true, true, '{"canEdit": true}','role','String');
 
 -- 6. Inserta perfiles en 'capturist_profiles'
-INSERT IGNORE INTO capturist_profiles (fk_profile)
+INSERT INTO capturist_profiles (fk_profile)
 VALUES
     (1), (2), (3), (4), (5), (6), (7), (8);
 
 -- 7. Inserta credenciales en 'credentials'
-INSERT IGNORE INTO credentials (expiration_date, issue_date, user_photo, fullname, fk_institution, fk_user_account)
+INSERT INTO credentials (expiration_date, issue_date, user_photo, fullname, fk_institution, fk_user_account)
 VALUES
     ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'John Doe', 1, 1),
     ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'Smith', 2, 2),
@@ -68,7 +68,7 @@ VALUES
     ('2025-12-31 23:59:59', '2021-01-01 00:00:00', 'https://placehold.co/200x200', 'David', 8, 8);
 
 -- 8. Inserta campos de credencial en 'credential_fields'
-INSERT IGNORE INTO credential_fields (value, fk_credential, fk_user_info)
+INSERT INTO credential_fields (value, fk_credential, fk_user_info)
 VALUES
     ('1234 Elm St', 1, 1),
     ('example@example.com', 1, 2),
@@ -80,7 +80,7 @@ VALUES
     ('capturista', 1, 8);
 
 -- 9. Inserta campos de capturista en 'institution_capturist_fields'
-INSERT IGNORE INTO institution_capturist_fields (is_required, fk_institution, fk_user_info)
+INSERT INTO institution_capturist_fields (is_required, fk_institution, fk_user_info)
 VALUES
     (true, 1, 1),
     (true, 2, 2),
@@ -92,7 +92,7 @@ VALUES
     (true, 8, 8);
 
 -- 10. Inserta códigos de verificación en 'verification_codes'
-INSERT IGNORE INTO verification_codes (created_at, expiration, verification_code, fk_user_account)
+INSERT INTO verification_codes (created_at, expiration, verification_code, fk_user_account)
 VALUES
     (NOW(), '2024-12-31 23:59:59', 'ABC123XYZ', 1),
     (NOW(), '2024-12-31 23:59:59', 'ABC133XYZ', 2),
