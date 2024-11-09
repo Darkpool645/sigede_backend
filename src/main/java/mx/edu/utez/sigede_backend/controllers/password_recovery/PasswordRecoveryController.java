@@ -9,6 +9,7 @@ import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -22,9 +23,9 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/send-verification-code")
-    public CustomResponse<UUID> sendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Long> sendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
         try {
-            UUID userId = passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
+            Long userId = passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
                     200, "Código de verificación enviado correctamente.", false, userId
             );
@@ -35,9 +36,9 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/resend-verification-code")
-    public CustomResponse<UUID> resendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Long> resendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
         try {
-            UUID userId = passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
+            Long userId = passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
                     200, "Código de verificación enviado correctamente.", false, userId);
         } catch (CustomException e) {
@@ -48,7 +49,7 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/validate-verification-code")
-    public CustomResponse<UUID> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
+    public CustomResponse<Long> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
             boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserId());
             if (result) {

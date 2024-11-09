@@ -7,5 +7,5 @@ import java.util.UUID;
 @Data
 public class ValidateCodeDTO {
     private String code;
-    private UUID userId;
+    private Long userId;
 }

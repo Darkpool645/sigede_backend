@@ -22,7 +22,7 @@ public class UserAccountService {
         return userAccountRepository.getAllAdmins("Admin");
     }
     
-    public Optional<UserAccount> getUserAccountById(UUID id) {
+    public Optional<UserAccount> getUserAccountById(Long id) {
         return userAccountRepository.findById(id);
     }
 

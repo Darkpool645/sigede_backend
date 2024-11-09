@@ -7,5 +7,5 @@ import java.util.UUID;
 @Data
 public class PasswordChangeRequestDTO {
     private String newPassword;
-    private UUID userId;
+    private Long userId;
 }

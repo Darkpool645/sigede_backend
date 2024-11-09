@@ -68,4 +68,26 @@ public class MailService {
             throw new CustomException("email.send.error");
         }
     }
+
+    @Async
+    public void sendTemporaryPassword(String to,String subject , String password){
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+
+        try {
+            if (to == null || to.isEmpty()) {
+                throw new CustomException("user.email.notnull");
+            } else if (!Pattern.matches(EMAIL_REGEX, to)) {
+                throw new CustomException("user.email.invalid");
+            } else {
+                helper.setTo(to);
+                helper.setSubject(subject);
+                String html = mailDesigns.sendTemporaryPasswordDesign(password,null);
+                helper.setText(html, true);
+                mailSender.send(mimeMessage);
+            }
+        } catch (MessagingException e) {
+            throw new CustomException("email.send.error");
+        }
+    }
 }

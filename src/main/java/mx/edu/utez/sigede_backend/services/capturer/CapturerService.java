@@ -4,17 +4,13 @@ import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfileRepository;
-import mx.edu.utez.sigede_backend.models.capturist_profile_field.CapturistProfileField;
-import mx.edu.utez.sigede_backend.models.capturist_profile_field.CapturistProfileFieldRepository;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.rol.RolRepository;
 import mx.edu.utez.sigede_backend.models.status.Status;
 import mx.edu.utez.sigede_backend.models.status.StatusRepository;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
-import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
-import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
-import mx.edu.utez.sigede_backend.services.password_recovery.PasswordRecoveryService;
+import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,15 +22,15 @@ public class CapturerService {
     private final PasswordEncoder passwordEncoder;
     private final RolRepository rolRepository;
     private final StatusRepository statusRepository;
-    private final PasswordRecoveryService emailService;
+    private final MailService mailService;
     private static final String USER_FOUND = "capturer.email.error";
-    public CapturerService(UserAccountRepository userAccountRepository, CapturistProfileRepository capturistProfileRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, StatusRepository statusRepository, PasswordRecoveryService emailService) {
+    public CapturerService(UserAccountRepository userAccountRepository, CapturistProfileRepository capturistProfileRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, StatusRepository statusRepository, MailService mailService) {
         this.userAccountRepository = userAccountRepository;
         this.capturistProfileRepository = capturistProfileRepository;
         this.passwordEncoder = passwordEncoder;
         this.rolRepository = rolRepository;
         this.statusRepository = statusRepository;
-        this.emailService = emailService;
+        this.mailService = mailService;
     }
     @Transactional
     public void registerCapturer(RequestCapturerRegistrationDTO payload) {
@@ -60,11 +56,11 @@ public class CapturerService {
         userAccount.setFkStatus(status);
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
-        emailService.sendVerificationCode(userAccount.getEmail());
+
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "", userAccount.getPassword());
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();
         capturistProfile.setFkProfile(userAccount);
         capturistProfileRepository.save(capturistProfile);
-
     }
 }
