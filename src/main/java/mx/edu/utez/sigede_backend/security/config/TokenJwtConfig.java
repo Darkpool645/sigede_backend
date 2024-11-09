@@ -16,7 +16,7 @@ public class TokenJwtConfig {
     public static final String CONTENT_TYPE = "application/json";
 
     public TokenJwtConfig(@Value("${jwt.secret}") String secret) {
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        this.secretKey = Keys.  hmacShaKeyFor(secret.getBytes());
     }
 
 }

@@ -21,9 +21,9 @@ import java.util.UUID;
 public class UserAccount {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_account_id",columnDefinition = "BINARY(16)", nullable = false)
-    private UUID userAccountId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_account_id", nullable = false)
+    private Long userAccountId;
 
     @Column(name = "email", nullable = false, unique = true, columnDefinition = "VARCHAR(255)")
     private String email;
@@ -35,15 +35,15 @@ public class UserAccount {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "fk_rol", referencedColumnName = "rol_id", nullable = false, columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "fk_rol", referencedColumnName = "rol_id", nullable = false)
     private Rol fkRol;
 
     @ManyToOne
-    @JoinColumn(name = "fk_status", referencedColumnName = "status_id", nullable = false, columnDefinition = "BINARY(16)")
+    @JoinColumn(name = "fk_status", referencedColumnName = "status_id", nullable = false)
     private Status fkStatus;
 
     @ManyToOne
-    @JoinColumn(name ="fk_institution", referencedColumnName = "institution_id", nullable = true, columnDefinition = "BINARY(16)")
+    @JoinColumn(name ="fk_institution", referencedColumnName = "institution_id", nullable = true)
     private Institution fkInstitution;
 
 

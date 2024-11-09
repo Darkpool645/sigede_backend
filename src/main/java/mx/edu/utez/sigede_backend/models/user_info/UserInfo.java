@@ -21,9 +21,9 @@ import lombok.NoArgsConstructor;
 public class UserInfo {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "user_info_id", columnDefinition = "BINARY(16)", nullable = false)
-    private UUID userInfoId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_info_id", nullable = false)
+    private Long userInfoId;
 
     @Column(name = "tag", columnDefinition = "VARCHAR(255)", nullable = false)
     private String tag;

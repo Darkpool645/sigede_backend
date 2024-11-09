@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VerificationCodeRepository extends JpaRepository<VerificationCode, UUID> {
+public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Long> {
     VerificationCode findByFkUserAccount(UserAccount fkUserAccount);
     void deleteByFkUserAccount(UserAccount fkUserAccount);
 }

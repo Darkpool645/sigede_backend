@@ -25,7 +25,7 @@ public class InstitutionService {
         return institutionRepository.getAllInstitutions();
     }
 
-    public Optional<Institution> getById(UUID id) {
+    public Optional<Institution> getById(Long id) {
         return institutionRepository.findById(id);
     }
 

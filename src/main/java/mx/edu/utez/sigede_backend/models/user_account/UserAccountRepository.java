@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>{
+public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
     //@Query("select usac from UserAccount as usac where usac.email = :email")
     //Optional<UserAccount> getOneByEmail(@Param("email") String encryptedEmail);
@@ -23,10 +23,10 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID>{
     UserAccount getById(@Param("id") UUID id);
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
-    List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") UUID institutionId);
+    List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
 
-    boolean existsByUserAccountId(UUID userAccountId);
-    UserAccount findByUserAccountId(UUID userAccountId);
+    boolean existsByUserAccountId(Long userAccountId);
+    UserAccount findByUserAccountId(Long userAccountId);
     boolean existsByEmail(String email);
     UserAccount findByEmail(String email);
 }

@@ -2,12 +2,7 @@ package mx.edu.utez.sigede_backend.models.rol;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -23,17 +18,11 @@ import lombok.NoArgsConstructor;
 public class Rol {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "rol_id", columnDefinition = "BINARY(16)", nullable = false)
-    private UUID rolId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "rol_id", nullable = false)
+    private Long rolId;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(30)", nullable = false)
+    @Column(name = "name", columnDefinition = "VARCHAR(30)", nullable = false,unique = true)
     private String name;
 
-    @PrePersist
-    private void generateUUID() {
-        if (this.rolId == null) {
-            this.rolId = UUID.randomUUID();
-        }
-    }
 }

@@ -36,7 +36,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public UUID sendVerificationCode(String email) {
+    public Long sendVerificationCode(String email) {
         if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
@@ -53,7 +53,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public boolean validateVerificationCode(String code, UUID userId) {
+    public boolean validateVerificationCode(String code, Long userId) {
         if (!userAccountRepository.existsByUserAccountId(userId)) {
             throw new CustomException(USER_NOT_FOUND);
         }
@@ -66,7 +66,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public PasswordChangeResponseDTO changePassword(String newPassword, UUID userId) {
+    public PasswordChangeResponseDTO changePassword(String newPassword, Long userId) {
 
         if (!userAccountRepository.existsByUserAccountId(userId)) {
             throw new CustomException(USER_NOT_FOUND);
@@ -82,7 +82,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public UUID resendVerificationCode(String email) {
+    public Long resendVerificationCode(String email) {
         UserAccount user = userAccountRepository.findByEmail(email);
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
@@ -95,7 +95,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public void deleteVerificationCode(UUID userId) {
+    public void deleteVerificationCode(Long userId) {
         UserAccount user = userAccountRepository.findByUserAccountId(userId);
         verificationCodeRepository.deleteByFkUserAccount(user);
     }

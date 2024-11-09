@@ -22,11 +22,11 @@ public class UserAccountService {
         return userAccountRepository.getAllAdmins("Admin");
     }
     
-    public Optional<UserAccount> getUserAccountById(UUID id) {
+    public Optional<UserAccount> getUserAccountById(Long id) {
         return userAccountRepository.findById(id);
     }
 
-    public List<UserAccount> getAdministratorsByInstitution(UUID institutionId) {
+    public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
         return userAccountRepository.findAdministratorsByInstitution(institutionId);
     }
 

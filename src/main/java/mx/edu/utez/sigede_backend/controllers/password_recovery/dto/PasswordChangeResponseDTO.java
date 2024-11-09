@@ -9,8 +9,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PasswordChangeResponseDTO {
     private String newPassword;
-    private UUID userId;
+    private Long userId;
 
-    public PasswordChangeResponseDTO(String password, UUID userAccountId) {
+    public PasswordChangeResponseDTO(String password, Long userAccountId) {
     }
 }

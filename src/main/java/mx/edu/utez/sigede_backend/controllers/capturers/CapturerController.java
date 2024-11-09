@@ -22,9 +22,8 @@ public class CapturerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> registerCapturer(@Validated @RequestBody RequestCapturerRegistrationDTO payload) {
+    public CustomResponse<Object> registerCapturer(@Validated @RequestBody RequestCapturerRegistrationDTO payload) {
         service.registerCapturer(payload);
-        CustomResponse<String> response = new CustomResponse<>(201,"Cuenta registrada correctamente", false,null);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return new CustomResponse<>(201,"Cuenta registrada correctamente", false,null);
     }
 }
