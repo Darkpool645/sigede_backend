@@ -26,7 +26,7 @@ public class UserAccountService {
         return userAccountRepository.findById(id);
     }
 
-    public List<UserAccount> getAdministratorsByInstitution(UUID institutionId) {
+    public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
         return userAccountRepository.findAdministratorsByInstitution(institutionId);
     }
 

@@ -34,7 +34,7 @@ public class UserAccountsController {
     }
 
     @GetMapping("/administrators/{institutionId}")
-    public List<UserAccount> getAdministratorsByInstitution(@PathVariable UUID institutionId) {
+    public List<UserAccount> getAdministratorsByInstitution(@PathVariable Long institutionId) {
         return userAccountService.getAdministratorsByInstitution(institutionId);
     }
 

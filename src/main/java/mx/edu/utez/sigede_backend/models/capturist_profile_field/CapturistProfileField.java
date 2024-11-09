@@ -20,9 +20,9 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 public class CapturistProfileField {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "capturist_profile_field_id", columnDefinition = "BINARY(16)", nullable = false)
-    private UUID capturistProfileFieldId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "capturist_profile_field_id", nullable = false)
+    private Long capturistProfileFieldId;
 
     @Column(name = "value", columnDefinition = "VARCHAR(255)", nullable = false)
     private String value;

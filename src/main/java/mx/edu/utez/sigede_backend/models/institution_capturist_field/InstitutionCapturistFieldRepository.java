@@ -4,6 +4,6 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface InstitutionCapturistFieldRepository extends JpaRepository<InstitutionCapturistField, UUID> {
+public interface InstitutionCapturistFieldRepository extends JpaRepository<InstitutionCapturistField, Long> {
     
 }

@@ -2,14 +2,7 @@ package mx.edu.utez.sigede_backend.models.credential_field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -27,9 +20,9 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 public class CredentialField {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Id
-    @GeneratedValue(generator = "UUID")
-    @Column(name = "credential_field_id", columnDefinition = "BINARY(16)", nullable = false)
-    private UUID credentialFieldId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "credential_field_id", nullable = false)
+    private Long credentialFieldId;
 
     @Column(name = "value", columnDefinition = "VARCHAR(255)", nullable = false)
     private String value;
@@ -42,10 +35,4 @@ public class CredentialField {
     @JoinColumn(name = "fk_user_info", referencedColumnName = "user_info_id", nullable = false)
     private UserInfo fkUserInfo;
 
-    @PrePersist
-    private void generateUUID() {
-        if (this.credentialFieldId == null) {
-            this.credentialFieldId = UUID.randomUUID();
-        }
-    }
 }

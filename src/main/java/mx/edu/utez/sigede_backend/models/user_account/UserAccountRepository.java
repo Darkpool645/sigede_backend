@@ -23,7 +23,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     UserAccount getById(@Param("id") UUID id);
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
-    List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") UUID institutionId);
+    List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
 
     boolean existsByUserAccountId(Long userAccountId);
     UserAccount findByUserAccountId(Long userAccountId);
