@@ -16,8 +16,6 @@ public class RequestCapturerRegistrationDTO {
     @NotBlank(message = "user.email.notnull")
     @Email(message = "user.email.invalid")
     private String email;
-    @NotBlank(message = "capturer.password.notnull")
-    private String password;
     @NotNull(message = "institution.id.notnull")
     private Long fkInstitution;
 }

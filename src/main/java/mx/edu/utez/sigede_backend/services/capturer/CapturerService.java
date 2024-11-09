@@ -17,6 +17,8 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+
 @Service
 public class CapturerService {
     private final UserAccountRepository userAccountRepository;
@@ -57,19 +59,33 @@ public class CapturerService {
         // Crear una nueva cuenta de usuario
         UserAccount userAccount = new UserAccount();
         userAccount.setEmail(payload.getEmail());
-
+        String temporaryPassword = generatedRandomPassword();
         userAccount.setName(payload.getName());
-        userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
+        userAccount.setPassword(passwordEncoder.encode(temporaryPassword));
         userAccount.setFkRol(rol);
         userAccount.setFkStatus(status);
         userAccount.setFkInstitution(institution);
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "", payload.getPassword());
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "", temporaryPassword);
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();
         capturistProfile.setFkProfile(userAccount);
         capturistProfileRepository.save(capturistProfile);
+    }
+
+    public String generatedRandomPassword(){
+        final String ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        final int PASSWORD_LENGTH = 12;
+
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
+
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int randomIndex = random.nextInt(ABC.length());
+            password.append(ABC.charAt(randomIndex));
+        }
+        return password.toString();
     }
 }
