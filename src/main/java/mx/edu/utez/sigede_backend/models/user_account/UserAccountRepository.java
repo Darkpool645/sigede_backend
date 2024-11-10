@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +26,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
-
+    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId, Pageable pageable);
     boolean existsByUserAccountId(Long userAccountId);
     UserAccount findByUserAccountId(Long userAccountId);
     boolean existsByEmail(String email);

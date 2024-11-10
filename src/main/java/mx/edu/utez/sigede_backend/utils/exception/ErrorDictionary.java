@@ -28,6 +28,7 @@ public class ErrorDictionary {
         errorMessages.put("capturer.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("admin.email.error", "Ya existe una cuenta registrada con ese correo.");
         errorMessages.put("rol.notfound", "Rol no encontrado.");
+        errorMessages.put("rol.required", "Rol requerido.");
         errorMessages.put("status.notfound", "Estado no encontrado.");
         errorMessages.put("institution.notfound", "Institución no encontrada.");
         errorMessages.put("status.required", "Estado requerido.");
