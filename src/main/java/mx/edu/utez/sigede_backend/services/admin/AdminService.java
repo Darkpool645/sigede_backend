@@ -1,9 +1,7 @@
-package mx.edu.utez.sigede_backend.services.capturer;
+package mx.edu.utez.sigede_backend.services.admin;
 
 import jakarta.transaction.Transactional;
-import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
-import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
-import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfileRepository;
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
@@ -18,46 +16,46 @@ import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-
 @Service
-public class CapturerService {
+public class AdminService {
     private final UserAccountRepository userAccountRepository;
-    private final CapturistProfileRepository capturistProfileRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RolRepository rolRepository;
     private final StatusRepository statusRepository;
     private final InstitutionRepository institutionRepository;
     private final MailService mailService;
-    private static final String USER_FOUND = "capturer.email.error";
-    public CapturerService(UserAccountRepository userAccountRepository, CapturistProfileRepository capturistProfileRepository, PasswordEncoder passwordEncoder, RolRepository rolRepository, StatusRepository statusRepository, InstitutionRepository institutionRepository, MailService mailService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public AdminService(UserAccountRepository userAccountRepository, RolRepository rolRepository, StatusRepository statusRepository, InstitutionRepository institutionRepository, MailService mailService, PasswordEncoder passwordEncoder) {
         this.userAccountRepository = userAccountRepository;
-        this.capturistProfileRepository = capturistProfileRepository;
-        this.passwordEncoder = passwordEncoder;
         this.rolRepository = rolRepository;
         this.statusRepository = statusRepository;
         this.institutionRepository = institutionRepository;
         this.mailService = mailService;
+        this.passwordEncoder = passwordEncoder;
     }
+
     @Transactional
-    public void registerCapturer(RequestCapturerRegistrationDTO payload) {
-        if(userAccountRepository.findByEmail(payload.getEmail())!=null){
-            throw new CustomException(USER_FOUND);
+
+    public void registerAdmin(RequestNewAdminDTO payload){
+        if(userAccountRepository.existsByEmail(payload.getEmail())){
+            throw new CustomException("admin.email.error");
         }
-        Rol rol = rolRepository.findByName("capturista");
-        if (rol == null) {
+
+        Rol rol = rolRepository.findByName("admin");
+        if(rol == null){
             throw new CustomException("rol.notfound");
         }
 
         Status status = statusRepository.findByName("activo");
-        if (status == null) {
+        if(status == null){
             throw new CustomException("status.notfound");
         }
+
         Institution institution = institutionRepository.findByInstitutionId(payload.getFkInstitution());
-        if (institution == null) {
+        if(institution == null){
             throw new CustomException("institution.notfound");
         }
-        // Crear una nueva cuenta de usuario
+
         UserAccount userAccount = new UserAccount();
         userAccount.setEmail(payload.getEmail());
         RandomPasswordGenerate randomPasswordGenerate = new RandomPasswordGenerate();
@@ -68,14 +66,8 @@ public class CapturerService {
         userAccount.setFkStatus(status);
         userAccount.setFkInstitution(institution);
         userAccountRepository.save(userAccount);
-        //Mandar codigo al correo
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "", temporaryPassword);
-        // Crear un perfil de capturista
-        CapturistProfile capturistProfile = new CapturistProfile();
-        capturistProfile.setFkProfile(userAccount);
-        capturistProfileRepository.save(capturistProfile);
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "",temporaryPassword);
     }
-
 
 }

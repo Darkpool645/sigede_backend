@@ -22,9 +22,13 @@ public class ErrorDictionary {
         errorMessages.put("field.not.null", "El campo es obligatorio.");
         errorMessages.put("institution.name.error", "Ya existe una institucion registrada con ese nombre.");
         errorMessages.put("institution.id.notnull", "El Id de la institución es obligatorio.");
-        errorMessages.put("capturer.email.error", "Ya existe un capturista registrado con ese correo.");
+        errorMessages.put("capturer.email.error", "Ya existe una cuenta registrada con ese correo..");
         errorMessages.put("capturer.name.notnull", "El nombre no puede estar vacío.");
         errorMessages.put("capturer.password.notnull", "La contraseña es obligatoria.");
+        errorMessages.put("admin.email.error", "Ya existe una cuenta registrada con ese correo.");
+        errorMessages.put("rol.notfound", "Rol no encontrado.");
+        errorMessages.put("status.notfound", "Estado no encontrado.");
+        errorMessages.put("institution.notfound", "Institución no encontrada.");
     }
 
     public String getErrorMessage(String errorCode) {
