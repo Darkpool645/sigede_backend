@@ -2,8 +2,10 @@ package mx.edu.utez.sigede_backend.controllers.user_accounts;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import mx.edu.utez.sigede_backend.services.user_accounts.UserAccountService;
 public class UserAccountsController {
     @Autowired
     private UserAccountService userAccountService;
+    @Autowired
+    private ErrorDictionary errorDictionary;
 
     @GetMapping("/")
     public ResponseEntity<List<UserAccount>> getAllUserAccounts() {
@@ -43,5 +47,16 @@ public class UserAccountsController {
         Optional<UserAccount> userAccount = userAccountService.getUserAccountById(id);
         return userAccount.map(ResponseEntity::ok)
                           .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/capturists/{institutionId}")
+    public ResponseEntity<?> getCapturistasByInstitution(@PathVariable Long institutionId) {
+        try {
+            List<GetCapturistsDTO> capturistas = userAccountService.getCapturistasByInstitution(institutionId);
+            return new ResponseEntity<>(capturistas, HttpStatus.OK);
+        } catch (CustomException e) {
+            String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
+            return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+        }
     }
 }
