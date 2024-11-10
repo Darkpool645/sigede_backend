@@ -31,6 +31,8 @@ public class ErrorDictionary {
         errorMessages.put("status.notfound", "Estado no encontrado.");
         errorMessages.put("institution.notfound", "Institución no encontrada.");
         errorMessages.put("status.required", "Estado requerido.");
+        errorMessages.put("status.same", "Estado sin cambios.");
+
     }
 
     public String getErrorMessage(String errorCode) {

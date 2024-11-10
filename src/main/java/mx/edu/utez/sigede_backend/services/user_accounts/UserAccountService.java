@@ -9,6 +9,7 @@ import mx.edu.utez.sigede_backend.models.rol.RolRepository;
 import mx.edu.utez.sigede_backend.models.status.Status;
 import mx.edu.utez.sigede_backend.models.status.StatusRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,9 +32,14 @@ public class UserAccountService {
     public List<UserAccount> getAllAdmins() {
         return userAccountRepository.getAllAdmins("admin");
     }
-    
-    public Optional<UserAccount> getUserAccountById(Long id) {
-        return userAccountRepository.findById(id);
+
+    @Transactional
+    public UserAccount getUserAccountById (Long id){
+        UserAccount user = userAccountRepository.findByUserAccountId(id);
+        if(user == null){
+            throw new CustomException("user.not.found");
+        }
+        return user;
     }
 
     public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
@@ -42,15 +48,18 @@ public class UserAccountService {
 
     @Transactional
     public void updateStatus(RequestEditStatusDTO payload){
-        UserAccount userId = userAccountRepository.findByUserAccountId(payload.getUserId());
+        UserAccount userId = userAccountRepository.findByEmail(payload.getEmail());
         if(userId == null){
             throw new CustomException("user.not.found");
         }
-
-        Status status = statusRepository.findByStatusId(payload.getStatus());
+        if(!userId.getFkStatus().getName().equals(payload.getStatus())){
+            throw new CustomException("status.same");
+        }
+        Status status = statusRepository.findByName(payload.getStatus());
         if(status == null){
             throw new CustomException("status.notfound");
         }
+
 
         Status activo = statusRepository.findByName("activo");
         if(activo == null){
@@ -69,6 +78,7 @@ public class UserAccountService {
             case "inactivo":
                 userId.setFkStatus(activo);
                 userAccountRepository.saveAndFlush(userId);
+                break;
             default:
                 throw new CustomException("opcion invalida");
         }
