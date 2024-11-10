@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestEditStatusDTO;
+import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.services.user_accounts.UserAccountService;
@@ -43,5 +43,11 @@ public class UserAccountsController {
         Optional<UserAccount> userAccount = userAccountService.getUserAccountById(id);
         return userAccount.map(ResponseEntity::ok)
                           .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/update-status")
+    public CustomResponse<String> updateStatusAdmin(@Validated @RequestBody RequestEditStatusDTO payload){
+        userAccountService.updateStatus(payload);
+        return new CustomResponse<>(200,"Estado actualizado correctamente",false,null);
     }
 }
