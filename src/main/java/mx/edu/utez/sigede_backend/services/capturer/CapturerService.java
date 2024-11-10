@@ -70,7 +70,7 @@ public class CapturerService {
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "", temporaryPassword);
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro existoso", temporaryPassword,"Capturista");
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();
         capturistProfile.setFkProfile(userAccount);

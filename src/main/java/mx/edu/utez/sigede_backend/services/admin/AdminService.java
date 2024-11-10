@@ -67,7 +67,7 @@ public class AdminService {
         userAccount.setFkInstitution(institution);
         userAccountRepository.save(userAccount);
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "",temporaryPassword);
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro exitoso",temporaryPassword,"Administrador");
     }
 
 }
