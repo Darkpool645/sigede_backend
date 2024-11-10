@@ -18,7 +18,6 @@ import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 
 @Service
 public class CapturerService {
@@ -76,6 +75,4 @@ public class CapturerService {
         capturistProfile.setFkProfile(userAccount);
         capturistProfileRepository.save(capturistProfile);
     }
-
-
 }

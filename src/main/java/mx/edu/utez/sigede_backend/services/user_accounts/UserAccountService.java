@@ -2,6 +2,7 @@ package mx.edu.utez.sigede_backend.services.user_accounts;
 import java.util.List;
 
 
+
 import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
@@ -15,6 +16,14 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
+
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
@@ -26,6 +35,7 @@ public class UserAccountService {
     private final InstitutionRepository institutionRepository;
     private final PasswordEncoder passwordEncoder;
 
+
     public UserAccountService(UserAccountRepository userAccountRepository, StatusRepository statusRepository, RolRepository rolRepository, InstitutionRepository institutionRepository, PasswordEncoder passwordEncoder) {
         this.userAccountRepository = userAccountRepository;
         this.statusRepository = statusRepository;
@@ -33,6 +43,10 @@ public class UserAccountService {
         this.institutionRepository = institutionRepository;
         this.passwordEncoder = passwordEncoder;
     }
+
+    @Autowired
+    private ErrorDictionary errorDictionary;
+
 
     public List<UserAccount> getAllUserAccounts() {
         return userAccountRepository.getAllUserAccounts();
@@ -135,6 +149,16 @@ public class UserAccountService {
             userAccount.setFkStatus(status);
         }
         userAccountRepository.save(userAccount);
+    }
+
+    public List<GetCapturistsDTO> getCapturistasByInstitution(Long institutionId) {
+        List<GetCapturistsDTO> capturistas = userAccountRepository.findCapturistasByInstitution(institutionId);
+
+        if (capturistas.isEmpty()) {
+            throw new CustomException("institution.notfound");
+        }
+
+        return capturistas;
     }
 
 }

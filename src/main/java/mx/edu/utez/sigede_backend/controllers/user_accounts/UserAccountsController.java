@@ -2,10 +2,14 @@ package mx.edu.utez.sigede_backend.controllers.user_accounts;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
+
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,8 @@ import mx.edu.utez.sigede_backend.services.user_accounts.UserAccountService;
 public class UserAccountsController {
     @Autowired
     private UserAccountService userAccountService;
+    @Autowired
+    private ErrorDictionary errorDictionary;
 
     @GetMapping("/")
     public ResponseEntity<List<UserAccount>> getAllUserAccounts() {
@@ -62,5 +68,16 @@ public class UserAccountsController {
     public CustomResponse<String> updateData(@Validated @RequestBody RequestEditDataDTO payload){
         userAccountService.updateData(payload);
         return new CustomResponse<>(200,"Información actualizada correctamente",false,null);
+    }
+
+    @GetMapping("/capturists/{institutionId}")
+    public ResponseEntity<?> getCapturistasByInstitution(@PathVariable Long institutionId) {
+        try {
+            List<GetCapturistsDTO> capturistas = userAccountService.getCapturistasByInstitution(institutionId);
+            return new ResponseEntity<>(capturistas, HttpStatus.OK);
+        } catch (CustomException e) {
+            String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
+            return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+        }
     }
 }
