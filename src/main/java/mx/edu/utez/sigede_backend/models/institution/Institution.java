@@ -1,11 +1,7 @@
 package mx.edu.utez.sigede_backend.models.institution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.*;
-
-import java.util.UUID;
-
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +31,9 @@ public class Institution {
     @Column(name = "email_contact", columnDefinition = "VARCHAR(255)", nullable = false)
     private String emailContact;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "institution_status", columnDefinition = "ENUM('HABILITADO', 'INHABILITADO')", nullable = false)
+    private InstitutionStatus institutionStatus;
 
     @Column(name = "logo", nullable = false, columnDefinition = "TEXT")
     @Size(max = 500, message = "El logo no puede tener más de 500 caracteres")

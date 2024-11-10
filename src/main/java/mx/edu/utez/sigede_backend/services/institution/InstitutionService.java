@@ -1,16 +1,15 @@
 package mx.edu.utez.sigede_backend.services.institution;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
+import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class InstitutionService {
@@ -43,4 +42,53 @@ public class InstitutionService {
         institutionRepository.save(newInstitution);
         return newInstitution;
     }
+
+    @Transactional
+    public Institution updateInstitution(InstitutionUpdateDTO payload) {
+        Optional<Institution> optionalInstitution = institutionRepository.findById(payload.getInstitutionId());
+
+        if (optionalInstitution.isEmpty()) {
+            throw new CustomException("institution.not.found.error");
+        }
+
+        Institution institution = optionalInstitution.get();
+
+        if (payload.getName() != null) {
+            institution.setName(payload.getName());
+        }
+        if (payload.getAddress() != null) {
+            institution.setAddress(payload.getAddress());
+        }
+        if (payload.getPhoneContact() != null) {
+            institution.setPhoneContact(payload.getPhoneContact());
+        }
+        if (payload.getInstitutionStatus() != null) {
+            institution.setInstitutionStatus(payload.getInstitutionStatus());
+        }
+        if (payload.getLogo() != null) {
+            institution.setLogo(payload.getLogo());
+        }
+
+        return institutionRepository.save(institution);
+    }
+
+    @Transactional
+    public Institution updateInstitutionStatus(Long institutionId, String institutionStatus) {
+        Optional<Institution> optionalInstitution = institutionRepository.findById(institutionId);
+
+        if (optionalInstitution.isEmpty()) {
+            throw new CustomException("institution.not.found.error");
+        }
+
+        Institution institution = optionalInstitution.get();
+
+        try {
+            institution.setInstitutionStatus(InstitutionStatus.valueOf(institutionStatus));
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("invalid.institution.status");
+        }
+
+        return institutionRepository.save(institution);
+    }
+
 }
