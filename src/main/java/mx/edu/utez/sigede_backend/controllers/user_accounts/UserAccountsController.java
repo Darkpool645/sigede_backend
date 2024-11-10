@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestAllAdminByInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestEditStatusDTO;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ResponseAllAdminByInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ResponseOneAccountDTO;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,9 +47,9 @@ public class UserAccountsController {
     }
 
     @PostMapping("/get-account")
-    public CustomResponse<UserAccount> getUserAccountById(@Validated @RequestBody ResponseOneAccountDTO payload){
-        UserAccount account = userAccountService.getUserAccountById(payload.getUserId());
-        return new CustomResponse<>(200,"Estado actualizado correctamente",false,account);
+    public CustomResponse<ResponseGetAccountDTO> getUserAccountById(@Validated @RequestBody ResponseOneAccountDTO payload){
+        ResponseGetAccountDTO account = userAccountService.getUserAccountById(payload.getUserId());
+        return new CustomResponse<>(200,"Usuario",false,account);
     }
 
     @PostMapping("/update-status")

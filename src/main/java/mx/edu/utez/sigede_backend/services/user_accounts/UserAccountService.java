@@ -3,9 +3,7 @@ import java.util.List;
 
 
 import jakarta.transaction.Transactional;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestAllAdminByInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestEditStatusDTO;
-import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ResponseAllAdminByInstitutionDTO;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
@@ -42,12 +40,13 @@ public class UserAccountService {
     }
 
     @Transactional
-    public UserAccount getUserAccountById (Long id){
+    public ResponseGetAccountDTO getUserAccountById (Long id){
         UserAccount user = userAccountRepository.findByUserAccountId(id);
         if(user == null){
             throw new CustomException("user.not.found");
         }
-        return user;
+        return new ResponseGetAccountDTO(user.getEmail(),user.getName(),user.getFkRol().getName(),user.getFkStatus().getName(),user.getFkInstitution().getInstitutionId());
+
     }
 
     public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
