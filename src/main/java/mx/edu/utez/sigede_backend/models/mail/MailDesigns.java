@@ -213,7 +213,7 @@ public class MailDesigns {
     }
 
 
-    public String sendTemporaryPasswordDesign(String temPasword,String logo){
+    public String sendTemporaryPasswordDesign(String temPasword, String role){
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"es\">\n" +
                 "\n" +
@@ -294,15 +294,11 @@ public class MailDesigns {
                 "        <div class=\"header\">Bienvenido</div>\n" +
                 "        <div class=\"content\">\n" +
                 "            <div class=\"field\">\n" +
-                "                <center>\n" +
-                "                    <img src=\"\n" +
-                                        logo +
-                "                    \">\n" +
-                "                </center>\n" +
+                "               \n" +
                 "\n" +
                 "                <p>Hola, bienvenido a\n" +
                 "                    <strong>SIGEDE</strong>\n" +
-                "                    . Te enviamos este correo para notificar tu registro exitoso como administrador. Ya puedes iniciar\n" +
+                "                    . Te enviamos este correo para notificar tu registro exitoso como "+role+" . Ya puedes iniciar\n" +
                 "                    sesión con tu correo electrónico usando la siguiente contraseña temporal:\n" +
                 "                </p>\n" +
                 "                <div class=\"label-container\">\n" +

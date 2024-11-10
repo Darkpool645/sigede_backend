@@ -70,7 +70,7 @@ public class MailService {
     }
 
     @Async
-    public void sendTemporaryPassword(String to,String subject , String password){
+    public void sendTemporaryPassword(String to,String subject , String password,String role){
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
@@ -82,7 +82,7 @@ public class MailService {
             } else {
                 helper.setTo(to);
                 helper.setSubject(subject);
-                String html = mailDesigns.sendTemporaryPasswordDesign(password,null);
+                String html = mailDesigns.sendTemporaryPasswordDesign(password,role);
                 helper.setText(html, true);
                 mailSender.send(mimeMessage);
             }
