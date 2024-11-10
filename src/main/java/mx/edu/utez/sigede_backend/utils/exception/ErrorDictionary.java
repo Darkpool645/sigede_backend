@@ -12,10 +12,12 @@ public class ErrorDictionary {
     static {
         errorMessages.put("user.email.notnull", "El email es obligatorio.");
         errorMessages.put("user.email.invalid", "El email no es válido.");
+        errorMessages.put("user.name.required", "Nombre requerido.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("user.email.exists", "El email no esta disponible.");
         errorMessages.put("user.not.found", "El usuario ingresado no existe.");
         errorMessages.put("user.password.incorrect", "Contraseña incorrecta.");
+        errorMessages.put("user.id.required", "Usuario requerido.");
         errorMessages.put("verification.code.expired", "El código de verificación ha expirado.");
         errorMessages.put("user.password.same_as_old", "La nueva contraseña no debe ser silimar a las anterior.");
         errorMessages.put("email.send.error", "Error al enviar correo. Revisa tu conexión o si la dirección de correo es correcta.");
@@ -27,8 +29,12 @@ public class ErrorDictionary {
         errorMessages.put("capturer.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("admin.email.error", "Ya existe una cuenta registrada con ese correo.");
         errorMessages.put("rol.notfound", "Rol no encontrado.");
+        errorMessages.put("rol.required", "Rol requerido.");
         errorMessages.put("status.notfound", "Estado no encontrado.");
         errorMessages.put("institution.notfound", "Institución no encontrada.");
+        errorMessages.put("status.required", "Estado requerido.");
+        errorMessages.put("status.same", "Estado sin cambios.");
+
     }
 
     public String getErrorMessage(String errorCode) {
