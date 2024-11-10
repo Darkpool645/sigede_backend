@@ -57,4 +57,10 @@ public class UserAccountsController {
         userAccountService.updateStatus(payload);
         return new CustomResponse<>(200,"Estado actualizado correctamente",false,null);
     }
+
+    @PostMapping("/update-data")
+    public CustomResponse<String> updateData(@Validated @RequestBody RequestEditDataDTO payload){
+        userAccountService.updateData(payload);
+        return new CustomResponse<>(200,"Información actualizada correctamente",false,null);
+    }
 }

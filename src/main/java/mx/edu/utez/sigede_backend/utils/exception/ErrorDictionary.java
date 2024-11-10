@@ -12,6 +12,7 @@ public class ErrorDictionary {
     static {
         errorMessages.put("user.email.notnull", "El email es obligatorio.");
         errorMessages.put("user.email.invalid", "El email no es válido.");
+        errorMessages.put("user.name.required", "Nombre requerido.");
         errorMessages.put("user.password.notnull", "La contraseña es obligatoria.");
         errorMessages.put("user.email.exists", "El email no esta disponible.");
         errorMessages.put("user.not.found", "El usuario ingresado no existe.");

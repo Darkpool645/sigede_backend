@@ -14,6 +14,7 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
@@ -23,12 +24,14 @@ public class UserAccountService {
     private final StatusRepository statusRepository;
     private final RolRepository rolRepository;
     private final InstitutionRepository institutionRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserAccountService(UserAccountRepository userAccountRepository, StatusRepository statusRepository, RolRepository rolRepository, InstitutionRepository institutionRepository) {
+    public UserAccountService(UserAccountRepository userAccountRepository, StatusRepository statusRepository, RolRepository rolRepository, InstitutionRepository institutionRepository, PasswordEncoder passwordEncoder) {
         this.userAccountRepository = userAccountRepository;
         this.statusRepository = statusRepository;
         this.rolRepository = rolRepository;
         this.institutionRepository = institutionRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<UserAccount> getAllUserAccounts() {
@@ -109,6 +112,29 @@ public class UserAccountService {
             default:
                 throw new CustomException("opcion invalida");
         }
+    }
+    @Transactional
+    public void updateData (RequestEditDataDTO payload){
+        UserAccount userAccount = userAccountRepository.findById(payload.getUserId())
+                .orElseThrow(() -> new CustomException("user.not.found"));
+
+        if (payload.getPassword() != null) {
+            userAccount.setEmail(passwordEncoder.encode(payload.getPassword()));
+        }
+        if (payload.getName() != null) {
+            userAccount.setName(payload.getName());
+        }
+        if (payload.getFkRol() != null) {
+            Rol rol = rolRepository.findById(payload.getFkRol())
+                    .orElseThrow(() -> new CustomException("rol.notfound"));
+            userAccount.setFkRol(rol);
+        }
+        if (payload.getFkStatus() != null) {
+            Status status = statusRepository.findById(payload.getFkStatus())
+                    .orElseThrow(() -> new CustomException("status.notfound"));
+            userAccount.setFkStatus(status);
+        }
+        userAccountRepository.save(userAccount);
     }
 
 }
