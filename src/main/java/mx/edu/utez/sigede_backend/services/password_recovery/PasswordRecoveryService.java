@@ -41,12 +41,17 @@ public class PasswordRecoveryService {
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
-        VerificationCode verificationCode = new VerificationCode();
+        VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
+
+        if (verificationCode == null) {
+            verificationCode = new VerificationCode();
+            verificationCode.setFkUserAccount(user);
+        }
+
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
-        verificationCode.setFkUserAccount(user);
         verificationCodeRepository.saveAndFlush(verificationCode);
         mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
@@ -84,6 +89,9 @@ public class PasswordRecoveryService {
     @Transactional
     public Long resendVerificationCode(String email) {
         UserAccount user = userAccountRepository.findByEmail(email);
+        if (user == null) {
+            throw new CustomException(USER_NOT_FOUND);
+        }
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
