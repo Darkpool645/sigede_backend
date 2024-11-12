@@ -1,7 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.user_accounts;
 
 import java.util.List;
-import java.util.Optional;
 
 import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
@@ -10,7 +9,6 @@ import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,13 +18,17 @@ import org.springframework.web.bind.annotation.*;
 
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.services.user_accounts.UserAccountService;
+
 @RestController
 @RequestMapping("/api/users") 
 public class UserAccountsController {
-    @Autowired
-    private UserAccountService userAccountService;
-    @Autowired
-    private ErrorDictionary errorDictionary;
+    private final UserAccountService userAccountService;
+    private final ErrorDictionary errorDictionary;
+
+    public UserAccountsController(UserAccountService userAccountService, ErrorDictionary errorDictionary) {
+        this.userAccountService = userAccountService;
+        this.errorDictionary = errorDictionary;
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<UserAccount>> getAllUserAccounts() {
