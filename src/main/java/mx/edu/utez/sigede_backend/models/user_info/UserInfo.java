@@ -37,27 +37,4 @@ public class UserInfo {
     @Column(name = "is_in_card", columnDefinition = "BOOLEAN", nullable = false)
     private boolean isInCard;
 
-    @Lob
-    @Column(name = "options", columnDefinition = "JSON", nullable = true)
-    private String options;
-
-    // Convertir el JSON de options a un Map en tiempo de ejecucición
-    public Map<String, Object> getOptionsAsMap() {
-        try{
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(this.options, new TypeReference<Map<String, Object>>(){});
-        } catch (Exception e) {
-            throw new RuntimeException("Error al converitr JSON a Map", e);
-        }
-    }
-
-    // Parsear options desde el Map
-    public void setOptionsFromMap(Map<String, Object> optionsMap) {
-        try{
-            ObjectMapper mapper = new ObjectMapper();
-            this.options = mapper.writeValueAsString(optionsMap);
-        } catch (Exception e) {
-            throw new RuntimeException("Error al converitr Map a JSON", e);
-        }
-    }
 }
