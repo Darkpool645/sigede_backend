@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,4 +41,7 @@ public class Institution {
     @Size(max = 500, message = "El logo no puede tener más de 500 caracteres")
     private String logo;
 
+    @Lob
+    @Column(name = "docs", nullable = false)
+    private Blob docs;
 }
