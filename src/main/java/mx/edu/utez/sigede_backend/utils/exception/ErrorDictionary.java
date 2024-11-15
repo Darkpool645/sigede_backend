@@ -37,6 +37,7 @@ public class ErrorDictionary {
         errorMessages.put("credentials.notfound", "No se encontraron credenciales para el capturista proporcionado.");
         errorMessages.put("user.role.invalid", "El usuario no tiene permisos para acceder a esta información.");
         errorMessages.put("credentials.notfound", "No se encontraron credenciales.");
+        errorMessages.put("form.field.notfound", "El campo de formulario no fue encontrado.");
 
     }
 
