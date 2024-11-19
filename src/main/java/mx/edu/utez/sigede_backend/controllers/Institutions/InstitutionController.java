@@ -1,5 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.Institutions;
 
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionStatusUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
@@ -12,7 +13,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.services.institution.InstitutionService;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,4 +94,36 @@ public class InstitutionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @GetMapping("/{institutionId}/docs")
+    public ResponseEntity<?> getDocs(@PathVariable Long institutionId) {
+        try {
+            InstitutionDocDTO institutionDocsDTO = institutionService.getDocs(institutionId);
+            return ResponseEntity.ok(institutionDocsDTO);
+        } catch (CustomException e) {
+            String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
+            return ResponseEntity.badRequest().body(errorMessage);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error desconocido.");
+        }
+    }
+
+
+    @PutMapping("/{institutionId}/patch/docs")
+    public ResponseEntity<?> createOrUpdateDocs(
+            @PathVariable Long institutionId,
+            @RequestPart("docs") MultipartFile docs) {
+        try {
+            Blob blob = new SerialBlob(docs.getBytes());
+            InstitutionDocDTO institutionDocsDTO = institutionService.createOrUpdateDocs(institutionId, blob);
+
+            return ResponseEntity.ok(institutionDocsDTO);
+        } catch (CustomException e) {
+            return ResponseEntity.badRequest().body(errorDictionary.getErrorMessage(e.getErrorCode()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Error desconocido.");
+        }
+    }
+
+
 }

@@ -1,13 +1,17 @@
 package mx.edu.utez.sigede_backend.services.institution;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
+import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +19,9 @@ import java.util.Optional;
 public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
+
+    @Autowired
+    private ErrorDictionary errorDictionary;
 
     public InstitutionService(InstitutionRepository institutionRepository) {
         this.institutionRepository = institutionRepository;
@@ -70,6 +77,45 @@ public class InstitutionService {
         }
 
         return institutionRepository.save(institution);
+    }
+
+    public InstitutionDocDTO getDocs(Long institutionId) {
+        Optional<Institution> institutionOptional = institutionRepository.findById(institutionId);
+        if (institutionOptional.isEmpty()) {
+            throw new CustomException("institution.notfound");
+        }
+
+        Institution institution = institutionOptional.get();
+        if (institution.getDocs() == null) {
+            throw new CustomException("institution.docs.notfound");
+        }
+
+        InstitutionDocDTO institutionDocsDTO = new InstitutionDocDTO();
+        institutionDocsDTO.setInstitutionId(institution.getInstitutionId());
+        institutionDocsDTO.setSuccess(true);
+        institutionDocsDTO.setMessage("Documento encontrado.");
+        return institutionDocsDTO;
+    }
+
+    public InstitutionDocDTO createOrUpdateDocs(Long institutionId, Blob docs) {
+        if (docs == null) {
+            throw new CustomException("field.not.null");
+        }
+
+        Optional<Institution> institutionOptional = institutionRepository.findById(institutionId);
+        if (institutionOptional.isEmpty()) {
+            throw new CustomException("institution.notfound");
+        }
+
+        Institution institution = institutionOptional.get();
+        institution.setDocs(docs);
+        institutionRepository.save(institution);
+
+        InstitutionDocDTO institutionDocsDTO = new InstitutionDocDTO();
+        institutionDocsDTO.setInstitutionId(institution.getInstitutionId());
+        institutionDocsDTO.setSuccess(true);
+        institutionDocsDTO.setMessage("Documento actualizado con éxito.");
+        return institutionDocsDTO;
     }
 
     @Transactional
