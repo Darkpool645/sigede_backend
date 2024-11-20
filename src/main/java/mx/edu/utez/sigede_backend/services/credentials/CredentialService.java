@@ -2,8 +2,12 @@ package mx.edu.utez.sigede_backend.services.credentials;
 
 import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
+import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestUpdateCredentialFieldDTO;
+import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
 import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestUpdateCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.ResponseCredentialDTO;
 import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.models.credential.CredentialRepository;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialField;
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CredentialService {
@@ -90,5 +95,66 @@ public class CredentialService {
 
             credentialFieldRepository.save(credentialField); // Guardamos el CredentialField
         }
+    }
+
+    @Transactional
+    public ResponseCredentialDTO getCredentialWithFields(Long credentialId) {
+        // Obtener la credencial
+        Credential credential = credentialRepository.findById(credentialId)
+                .orElseThrow(() -> new CustomException("Credential not found"));
+
+        // Obtener los CredentialFields relacionados
+        List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
+
+        // Crear la lista de ResponseCredentialFieldDTO a partir de los CredentialFields
+        List<ResponseCredentialFieldDTO> fieldDTOs = credentialFields.stream()
+                .map(ResponseCredentialFieldDTO::new) // Usamos el constructor que convierte CredentialField a DTO
+                .collect(Collectors.toList());
+
+        // Crear y retornar el DTO principal con los datos
+        return new ResponseCredentialDTO(
+                credential.getCredentialId(),
+                credential.getFullname(),
+                credential.getUserPhoto(),
+                credential.getExpirationDate(),
+                credential.getIssueDate(),
+                fieldDTOs
+        );
+    }
+
+    @Transactional
+    public void updateCredential (Long credentialId, RequestUpdateCredentialDTO payload){
+        // Obtener la credencial que se va a actualizar
+        Credential credential = credentialRepository.findById(credentialId)
+                .orElseThrow(() -> new CustomException("Credential not found"));
+
+        // Actualizar los campos de la credencial
+        credential.setFullname(payload.getFullname());
+        credential.setUserPhoto(payload.getUserPhoto());
+        credential.setExpirationDate(payload.getExpirationDate());
+        credential.setIssueDate(payload.getIssueDate());
+
+        // Guardar la credencial actualizada
+        credentialRepository.save(credential);
+
+        // Actualizar los CredentialField usando el tag
+        for (RequestUpdateCredentialFieldDTO fieldDTO : payload.getFields()) {
+            // Encontrar el UserInfo por el tag
+            UserInfo userInfo = userInfoRepository.findByTag(fieldDTO.getTag());
+            if(userInfo == null){
+                throw new CustomException("UserInfo with tag " + fieldDTO.getTag() + " not found");
+            }
+
+            // Encontrar el CredentialField asociado a la credencial y al UserInfo
+            CredentialField field = credentialFieldRepository.findByFkCredentialAndFkUserInfo(credential, userInfo)
+                    .orElseThrow(() -> new CustomException("CredentialField for tag " + fieldDTO.getTag() + " not found"));
+
+            // Actualizar el valor del campo
+            field.setValue(fieldDTO.getValue());
+
+            // Guardar el CredentialField actualizado
+            credentialFieldRepository.save(field);
+        }
+
     }
 }
