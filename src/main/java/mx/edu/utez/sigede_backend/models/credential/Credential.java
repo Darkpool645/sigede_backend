@@ -35,8 +35,8 @@ public class Credential {
     private String fullname;
 
     @Lob
-    @Column(name = "user_photo", nullable = false, columnDefinition = "LONGBLOB")
-    private byte[] userPhoto;
+    @Column(name = "user_photo", nullable = false, length = 255)
+    private String userPhoto;
 
     @ManyToOne
     @JoinColumn(name = "fk_institution", referencedColumnName = "institution_id", nullable = false)

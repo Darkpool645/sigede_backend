@@ -1,16 +1,16 @@
 USE sigede;
 
 -- 1. Inserta una institución en 'institutions'
-INSERT INTO institutions (address, email_contact, logo, name, phone_contact)
+INSERT INTO institutions (address, email_contact, logo, name, phone_contact, docs)
 VALUES
-    ('1234 Elm St', 'contact@institution1.com', 'https://placehold.co/200x200', 'University of Code', '555-1234'),
-    ('5678 Oak St', 'info@institution2.org', 'https://placehold.co/200x200', 'University of Pemo', '555-5678'),
-    ('9101 Pine St', 'support@institution3.edu', 'https://placehold.co/200x200', 'Institution 1', '555-9101'),
-    ('1121 Maple St', 'help@institution4.gov', 'https://placehold.co/200x200', 'Institution 2', '555-1121'),
-    ('3141 Birch St', 'admin@institution5.net', 'https://placehold.co/200x200', 'Institution 3', '555-3141'),
-    ('5161 Cedar St', 'service@institution6.co', 'https://placehold.co/200x200', 'Institution 4', '555-5161'),
-    ('7181 Walnut St', 'contact@institution7.edu', 'https://placehold.co/200x200', 'Institution 5', '555-7181'),
-    ('9201 Elm St', 'admin@institution8.org', 'https://placehold.co/200x200', 'Institution 6', '555-9201');
+    ('1234 Elm St', 'contact@institution1.com', 'https://placehold.co/200x200', 'University of Code', '555-1234', 'dummyblobdata1'),
+    ('5678 Oak St', 'info@institution2.org', 'https://placehold.co/200x200', 'University of Pemo', '555-5678', 'dummyblobdata2'),
+    ('9101 Pine St', 'support@institution3.edu', 'https://placehold.co/200x200', 'Institution 1', '555-9101', 'dummyblobdata3'),
+    ('1121 Maple St', 'help@institution4.gov', 'https://placehold.co/200x200', 'Institution 2', '555-1121', 'dummyblobdata4'),
+    ('3141 Birch St', 'admin@institution5.net', 'https://placehold.co/200x200', 'Institution 3', '555-3141', 'dummyblobdata5'),
+    ('5161 Cedar St', 'service@institution6.co', 'https://placehold.co/200x200', 'Institution 4', '555-5161', 'dummyblobdata6'),
+    ('7181 Walnut St', 'contact@institution7.edu', 'https://placehold.co/200x200', 'Institution 5', '555-7181', 'dummyblobdata7'),
+    ('9201 Elm St', 'admin@institution8.org', 'https://placehold.co/200x200', 'Institution 6', '555-9201', 'dummyblobdata8');
 
 -- 2. Inserta roles en 'roles'
 INSERT INTO roles (name)
@@ -39,16 +39,16 @@ VALUES
     ('david@example', 'David', 'password123', 8, 1, 1);
 
 -- 5. Inserta información en 'users_info'
-INSERT INTO users_info (is_in_card, is_in_qr, options, tag, type)
+INSERT INTO users_info (is_in_card, is_in_qr, tag, type)
 VALUES
-    (true, false, '{"canEdit": true}', 'address', 'String'),
-    (true, true, '{"canEdit": true}', 'email', 'String'),
-    (true, false, '{"canEdit": true}', 'name', 'String'),
-    (true, true, '{"canEdit": true}', 'phone', 'int'),
-    (false,false, '{"canEdit": true}', 'curp', 'String'),
-    (false,true, '{"canEdit": true}', 'rfc', 'String'),
-    (false,false, '{"canEdit": true}', 'birthdate', 'Date'),
-    (true, true, '{"canEdit": true}','role','String');
+    (true, false,  'address', 'String'),
+    (true, true,  'email', 'String'),
+    (true, false,  'name', 'String'),
+    (true, true,  'phone', 'int'),
+    (false,false,  'curp', 'String'),
+    (false,true,  'rfc', 'String'),
+    (false,false,  'birthdate', 'Date'),
+    (true, true, 'role','String');
 
 -- 6. Inserta perfiles en 'capturist_profiles'
 INSERT INTO capturist_profiles (fk_profile)
