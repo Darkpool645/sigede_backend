@@ -42,6 +42,7 @@ public class ErrorDictionary {
         errorMessages.put("tag.notnull", "El campo 'tag' es requerido.");
         errorMessages.put("tag.size", "El campo 'tag' no puede tener más de 50 caracteres.");
         errorMessages.put("type.notnull", "El campo 'type' es requerido.");
+        errorMessages.put("institution.docs.notfound", "No se encontraron documentos para esta institución.")
     }
 
     public String getErrorMessage(String errorCode) {
