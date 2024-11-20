@@ -1,11 +1,7 @@
 package mx.edu.utez.sigede_backend.models.capturist_profile_field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.*;
-
-import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
