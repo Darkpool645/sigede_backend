@@ -1,47 +1,26 @@
 package mx.edu.utez.sigede_backend.controllers.user_info;
 
-import mx.edu.utez.sigede_backend.controllers.institution_capturist_field.DTO.InstitutionCapturistFieldDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoDTO;
-import mx.edu.utez.sigede_backend.models.institution_capturist_field.InstitutionCapturistField;
-import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.RequestNewUserInfoDTO;
 import mx.edu.utez.sigede_backend.services.user_info.UserInfoService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import mx.edu.utez.sigede_backend.utils.CustomResponse;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/user-info")
 public class UserInfoController {
+    private final UserInfoService service;
 
-    @Autowired
-    private UserInfoService userInfoService;
-
-    @GetMapping("/user-info-by-institution/{institutionId}")
-    public List<UserInfo> getUserInfoByInstitution(@PathVariable Long institutionId) {
-        return userInfoService.getUserInfoByInstitution(institutionId);
+    public UserInfoController(UserInfoService service) {
+        this.service = service;
     }
 
-    @PostMapping("/user-info/post")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserInfo createUserInfo(@RequestBody UserInfoDTO userInfoDTO) {
-        return userInfoService.createUserInfo(userInfoDTO);
-    }
-
-    @GetMapping("/capturist-fields/institution/{institutionId}")
-    public List<InstitutionCapturistField> getCapturistFieldsByInstitution(@PathVariable Long institutionId) {
-        return userInfoService.getCapturistFieldsByInstitution(institutionId);
-    }
-
-    @PostMapping("/user-info/post")
-    @ResponseStatus(HttpStatus.CREATED)
-    public InstitutionCapturistField createCapturistField(@RequestBody InstitutionCapturistFieldDTO capturistFieldDTO) {
-        return userInfoService.createCapturistField(capturistFieldDTO);
-    }
-
-    @PutMapping("/user-info/{fieldId}")
-    public void updateCapturistField(@PathVariable Long fieldId, @RequestBody InstitutionCapturistFieldDTO capturistFieldDTO) {
-        userInfoService.updateCapturistField(fieldId, capturistFieldDTO);
+    @PostMapping("/save-data")
+    public CustomResponse<String> postUserInfo(@Validated @RequestBody RequestNewUserInfoDTO payload){
+        service.saveUserInfo(payload);
+        return new CustomResponse<>(201,"Información registrada correctamente",false,null);
     }
 }
