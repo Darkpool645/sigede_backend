@@ -36,13 +36,13 @@ public class ErrorDictionary {
         errorMessages.put("status.same", "Estado sin cambios.");
         errorMessages.put("credentials.notfound", "No se encontraron credenciales para el capturista proporcionado.");
         errorMessages.put("user.role.invalid", "El usuario no tiene permisos para acceder a esta información.");
-        errorMessages.put("credentials.notfound", "No se encontraron credenciales.");
         errorMessages.put("isincard.notnull", "El campo 'is_in_card' es requerido.");
         errorMessages.put("isinqr.notnull", "El campo 'is_in_qr' es requerido.");
         errorMessages.put("tag.notnull", "El campo 'tag' es requerido.");
         errorMessages.put("tag.size", "El campo 'tag' no puede tener más de 50 caracteres.");
         errorMessages.put("type.notnull", "El campo 'type' es requerido.");
-        errorMessages.put("institution.docs.notfound", "No se encontraron documentos para esta institución.")
+        errorMessages.put("institution.docs.notfound", "No se encontraron documentos para esta institución.");
+        errorMessages.put("user.info.not.found", "No se encontraron tags.");
     }
 
     public String getErrorMessage(String errorCode) {

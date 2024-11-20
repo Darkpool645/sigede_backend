@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class GetCredentialsDTO {
     private Long credentialId;
     private String fullname;
-    private byte[] userPhoto;
+    private String userPhoto;
 }
