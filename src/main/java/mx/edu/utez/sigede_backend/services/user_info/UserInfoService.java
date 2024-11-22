@@ -1,5 +1,7 @@
 package mx.edu.utez.sigede_backend.services.user_info;
 
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionResponseDTO;
+import mx.edu.utez.sigede_backend.controllers.institution_capturist_field.DTO.InstitutionCapturistFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -10,7 +12,10 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -59,7 +64,6 @@ public class UserInfoService {
         }
 
         InstitutionCapturistField field = existingField.get();
-
         field.setRequired(isRequired);
 
         UserInfo userInfo = field.getFkUserInfo();
@@ -73,7 +77,48 @@ public class UserInfoService {
     }
 
 
-    public List<InstitutionCapturistField> getFieldsByInstitution(Long institutionId) {
-        return institutionCapturistFieldRepository.findAllByFkInstitution_InstitutionId(institutionId);
+
+    public Map<String, Object> getFieldsByInstitution(Long institutionId) {
+        List<InstitutionCapturistField> fields = institutionCapturistFieldRepository.findAllByFkInstitution_InstitutionId(institutionId);
+
+        if (fields.isEmpty()) {
+            throw new CustomException("institution.notfound");
+        }
+
+        Institution institution = fields.get(0).getFkInstitution();
+        InstitutionResponseDTO institutionDTO = new InstitutionResponseDTO(
+                institution.getInstitutionId(),
+                institution.getName(),
+                institution.getInstitutionStatus()
+        );
+
+        List<InstitutionCapturistFieldDTO> capturistFieldDTOs = fields.stream()
+                .map(field -> new InstitutionCapturistFieldDTO(
+                        field.getInstitutionCapturistFieldId(),
+                        field.isRequired(),
+                        field.getFkInstitution().getInstitutionId(),
+                        field.getFkUserInfo().getUserInfoId()
+
+                ))
+                .toList();
+
+        List<UserInfoDTO> userInfoDTOs = fields.stream()
+                .map(field -> {
+                    UserInfo userInfo = field.getFkUserInfo();
+                    return new UserInfoDTO(
+                            userInfo.getUserInfoId(),
+                            userInfo.getTag(),
+                            userInfo.getType(),
+                            userInfo.isInQr(),
+                            userInfo.isInCard()
+                    );
+                })
+                .toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("institution", institutionDTO);
+        response.put("fields", capturistFieldDTOs);
+        response.put("userInfo", userInfoDTOs);
+        return response;
     }
 }
