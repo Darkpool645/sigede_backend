@@ -9,4 +9,5 @@ public class InstitutionDocDTO {
     private Long institutionId;
     private boolean success;
     private String message;
+    private byte[] document;
 }

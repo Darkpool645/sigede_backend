@@ -87,11 +87,21 @@ public class InstitutionService {
             throw new CustomException("institution.docs.notfound");
         }
 
-        InstitutionDocDTO institutionDocsDTO = new InstitutionDocDTO();
-        institutionDocsDTO.setInstitutionId(institution.getInstitutionId());
-        institutionDocsDTO.setSuccess(true);
-        institutionDocsDTO.setMessage("Documento encontrado.");
-        return institutionDocsDTO;
+        try {
+            Blob documentBlob = institution.getDocs();
+            byte[] documentBytes = documentBlob.getBytes(1, (int) documentBlob.length());
+
+            InstitutionDocDTO institutionDocsDTO = new InstitutionDocDTO();
+            institutionDocsDTO.setInstitutionId(institution.getInstitutionId());
+            institutionDocsDTO.setSuccess(true);
+            institutionDocsDTO.setMessage("Documento encontrado.");
+            institutionDocsDTO.setDocument(documentBytes);
+
+            return institutionDocsDTO;
+
+        } catch (Exception e) {
+            throw new CustomException("institution.docs.error");
+        }
     }
 
     public InstitutionDocDTO createOrUpdateDocs(Long institutionId, Blob docs) {
