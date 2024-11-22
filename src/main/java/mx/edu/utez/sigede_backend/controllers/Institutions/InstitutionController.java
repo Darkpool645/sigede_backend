@@ -1,9 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.Institutions;
 
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionStatusUpdateDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.services.institution.InstitutionService;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.util.List;
@@ -53,44 +49,69 @@ public class InstitutionController {
     }
 
     @PutMapping("/update-institution")
-    public ResponseEntity<CustomResponse<Institution>> updateInstitution(
+    public ResponseEntity<CustomResponse<ResponseInstitutionUpdateDTO>> updateInstitution(
             @Validated @RequestBody InstitutionUpdateDTO payload) {
         try {
             Institution updatedInstitution = institutionService.updateInstitution(payload);
-            CustomResponse<Institution> response = new CustomResponse<>(
-                    HttpStatus.OK.value(), "Institution actualizada correctamente.", false, updatedInstitution);
+            ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = getResponseInstitutionUpdateDTO(updatedInstitution);
+
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.OK.value(), "Institution actualizada correctamente.", false, responseInstitutionUpdateDTO);
             return ResponseEntity.ok(response);
         } catch (CustomException e) {
             String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
 
-            CustomResponse<Institution> response = new CustomResponse<>(
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
                     HttpStatus.BAD_REQUEST.value(), errorMessage, true, null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } catch (Exception e) {
-            CustomResponse<Institution> response = new CustomResponse<>(
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
                     HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrió un error inesperado.", true, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
+    private static ResponseInstitutionUpdateDTO getResponseInstitutionUpdateDTO(Institution updatedInstitution) {
+        ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = new ResponseInstitutionUpdateDTO();
+        responseInstitutionUpdateDTO.setInstitutionStatus(updatedInstitution.getInstitutionStatus());
+        responseInstitutionUpdateDTO.setName(updatedInstitution.getName());
+        responseInstitutionUpdateDTO.setLogo(updatedInstitution.getLogo());
+        responseInstitutionUpdateDTO.setAddress(updatedInstitution.getAddress());
+        responseInstitutionUpdateDTO.setPhoneContact(updatedInstitution.getPhoneContact());
+        responseInstitutionUpdateDTO.setInstitutionId(updatedInstitution.getInstitutionId());
+        return responseInstitutionUpdateDTO;
+    }
+
     @PutMapping("/update-institution-status")
-    public ResponseEntity<CustomResponse<Institution>> updateInstitutionStatus(
+    public ResponseEntity<CustomResponse<ResponseInstitutionUpdateDTO>> updateInstitutionStatus(
             @RequestBody InstitutionStatusUpdateDTO payload) {
         try {
             Institution updatedInstitution = institutionService.updateInstitutionStatus(
                     payload.getInstitutionId(), payload.getInstitutionStatus());
-            CustomResponse<Institution> response = new CustomResponse<>(
-                    HttpStatus.OK.value(), "Status de la institución actualizado correctamente.", false, updatedInstitution);
+            ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = getResponseInstitutionUpdateDTO(updatedInstitution);
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.OK.value(),
+                    "Status de la institución actualizado correctamente.",
+                    false,
+                    responseInstitutionUpdateDTO);
             return ResponseEntity.ok(response);
         } catch (CustomException e) {
             String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.BAD_REQUEST.value(),
+                    errorMessage,
+                    true,
+                    null);
 
-            CustomResponse<Institution> response = new CustomResponse<>(
-                    HttpStatus.BAD_REQUEST.value(), errorMessage, true, null);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
         } catch (Exception e) {
-            CustomResponse<Institution> response = new CustomResponse<>(
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrió un error inesperado.", true, null);
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "Ocurrió un error inesperado.",
+                    true,
+                    null);
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
