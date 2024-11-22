@@ -1,5 +1,4 @@
 package mx.edu.utez.sigede_backend.services.institution;
-import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
@@ -7,7 +6,6 @@ import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDT
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -20,7 +18,6 @@ public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
 
-    @Autowired
     private ErrorDictionary errorDictionary;
 
     public InstitutionService(InstitutionRepository institutionRepository) {
