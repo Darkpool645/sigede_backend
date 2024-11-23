@@ -50,6 +50,7 @@ public class ErrorDictionary {
         errorMessages.put("fullname.size", "No se permiten más de 50 caracteres");
         errorMessages.put("userphoto.not.blank", "userphoto requerido");
         errorMessages.put("credential.fields.not.null", "campos requeridos");
+        errorMessages.put("credential.fields.not.empty", "campos no vacíos");
     }
 
     public String getErrorMessage(String errorCode) {
