@@ -1,11 +1,11 @@
 package mx.edu.utez.sigede_backend.services.institution;
+
 import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -17,8 +17,6 @@ import java.util.Optional;
 public class InstitutionService {
 
     private final InstitutionRepository institutionRepository;
-
-    private ErrorDictionary errorDictionary;
 
     public InstitutionService(InstitutionRepository institutionRepository) {
         this.institutionRepository = institutionRepository;
@@ -43,6 +41,7 @@ public class InstitutionService {
         newInstitution.setEmailContact(payload.getInstitutionEmail());
         newInstitution.setPhoneContact(payload.getInstitutionPhone());
         newInstitution.setLogo(payload.getLogo());
+        newInstitution.setInstitutionStatus(InstitutionStatus.HABILITADO);
         institutionRepository.save(newInstitution);
         return newInstitution;
     }
