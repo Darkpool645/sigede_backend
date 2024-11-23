@@ -44,6 +44,13 @@ public class ErrorDictionary {
         errorMessages.put("type.notnull", "El campo 'type' es requerido.");
         errorMessages.put("institution.docs.notfound", "No se encontraron documentos para esta institución.");
         errorMessages.put("user.info.not.found", "No se encontraron tags.");
+        errorMessages.put("credentialId.not.null", "Id Credencial requerido");
+        errorMessages.put("credential.not.found", "Credencial no encontrada");
+        errorMessages.put("fullname.not.blank", "nombre requerido");
+        errorMessages.put("fullname.size", "No se permiten más de 50 caracteres");
+        errorMessages.put("userphoto.not.blank", "userphoto requerido");
+        errorMessages.put("credential.fields.not.null", "campos requeridos");
+        errorMessages.put("credential.fields.not.empty", "campos no vacíos");
     }
 
     public String getErrorMessage(String errorCode) {

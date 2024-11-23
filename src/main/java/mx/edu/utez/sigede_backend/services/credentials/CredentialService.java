@@ -20,6 +20,7 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.apache.catalina.util.CustomObjectInputStream;
 import org.apache.coyote.Request;
 import org.springframework.stereotype.Service;
 
@@ -99,9 +100,12 @@ public class CredentialService {
 
     @Transactional
     public ResponseCredentialDTO getCredentialWithFields(Long credentialId) {
+        if(credentialId == null){
+            throw new CustomException("credentialId.not.null");
+        }
         // Obtener la credencial
         Credential credential = credentialRepository.findById(credentialId)
-                .orElseThrow(() -> new CustomException("Credential not found"));
+                .orElseThrow(() -> new CustomException("credential.not.found"));
 
         // Obtener los CredentialFields relacionados
         List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
@@ -124,6 +128,9 @@ public class CredentialService {
 
     @Transactional
     public void updateCredential (Long credentialId, RequestUpdateCredentialDTO payload){
+        if(credentialId == null){
+            throw new CustomException("credentialId.not.null");
+        }
         // Obtener la credencial que se va a actualizar
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CustomException("Credential not found"));
