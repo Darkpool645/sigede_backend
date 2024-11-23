@@ -99,9 +99,12 @@ public class CredentialService {
 
     @Transactional
     public ResponseCredentialDTO getCredentialWithFields(Long credentialId) {
+        if(credentialId == null){
+            throw new CustomException("credentialId.not.null");
+        }
         // Obtener la credencial
         Credential credential = credentialRepository.findById(credentialId)
-                .orElseThrow(() -> new CustomException("Credential not found"));
+                .orElseThrow(() -> new CustomException("credential.not.found"));
 
         // Obtener los CredentialFields relacionados
         List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
