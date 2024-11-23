@@ -1,8 +1,6 @@
 package mx.edu.utez.sigede_backend.models.institution;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -44,6 +42,6 @@ public class Institution {
     private String logo;
 
     @Lob
-    @Column(name = "docs", nullable = false)
+    @Column(name = "docs")
     private Blob docs;
 }
