@@ -53,6 +53,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         AuthDetails user = (AuthDetails) authResult.getPrincipal();
         String username= user.getEmail();
+        Long instututionsId= user.getInstitutionsId();
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
 
         Claims claims = Jwts.claims();
@@ -71,6 +72,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String,Object> body = new HashMap<>();
         body.put("token",token);
         body.put("email",username);
+        body.put("institutionId",instututionsId);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(CONTENT_TYPE);

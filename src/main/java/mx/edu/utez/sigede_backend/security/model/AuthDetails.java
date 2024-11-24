@@ -19,12 +19,14 @@ public class AuthDetails implements UserDetails {
     private String password;
     private String status;
     private String role;
+    private Long institutionId;
 
     public AuthDetails(UserAccount userAccount) {
         this.email = userAccount.getEmail();
         this.password = userAccount.getPassword();
         this.status = userAccount.getFkStatus().getName();
         this.role = userAccount.getFkRol().getName();
+        this.institutionId=userAccount.getFkInstitution().getInstitutionId();
     }
 
     @Override
@@ -55,5 +57,9 @@ public class AuthDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getInstitutionsId(){
+        return institutionId;
     }
 }

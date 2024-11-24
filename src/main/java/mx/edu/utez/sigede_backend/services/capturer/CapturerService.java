@@ -88,7 +88,6 @@ public class CapturerService {
         userAccount.setFkInstitution(institution);
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
-
         mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro existoso", temporaryPassword,"Capturista");
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();

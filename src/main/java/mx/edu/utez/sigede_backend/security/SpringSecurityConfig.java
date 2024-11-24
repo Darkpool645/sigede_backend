@@ -67,7 +67,7 @@ public class SpringSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:59008", "http://localhost:58862"));
+        config.setAllowedOrigins(List.of("http://localhost:59008", "http://localhost:58862","http://localhost:3000"));
         config.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
         config.setAllowedHeaders(List.of("Authorization","Content-Type"));
         config.setAllowCredentials(true);
@@ -83,5 +83,11 @@ public class SpringSecurityConfig {
         bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return bean;
 
+    }
+
+
+    public static void main(String[] args) {
+        BCryptPasswordEncoder encoder=new BCryptPasswordEncoder();
+        System.out.println(encoder.encode("123"));
     }
 }
