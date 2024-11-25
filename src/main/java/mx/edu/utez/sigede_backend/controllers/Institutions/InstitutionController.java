@@ -29,8 +29,8 @@ public class InstitutionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Institution>> getAllInstitutions() {
-        List<Institution> institutions = institutionService.getAllInstitutions();
+    public ResponseEntity<List<InstitutionDTO>> getAllInstitutions() {
+        List<InstitutionDTO> institutions = institutionService.getAllInstitutions();
         return new ResponseEntity<>(institutions, HttpStatus.OK);
     }
 

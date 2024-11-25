@@ -44,7 +44,7 @@ public class UserAccountService {
         return userAccountRepository.getAllUserAccounts();
     }
 
-    public List<UserAccount> getAllAdmins() {
+    public List<GetCapturistsDTO> getAllAdmins() {
         return userAccountRepository.getAllAdmins("admin");
     }
 

@@ -21,8 +21,9 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Query("SELECT ua FROM UserAccount ua")
     List<UserAccount> getAllUserAccounts();
 
-    @Query("SELECT usac FROM UserAccount usac WHERE usac.fkRol.name = :roleName")
-    List<UserAccount> getAllAdmins(@Param("roleName") String roleName);
+    @Query("SELECT  new mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO(usac.userAccountId, usac.name, usac.fkStatus.name)" +
+            "FROM UserAccount usac WHERE usac.fkRol.name = :roleName")
+    List<GetCapturistsDTO> getAllAdmins(@Param("roleName") String roleName);
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
