@@ -1,4 +1,5 @@
 package mx.edu.utez.sigede_backend.models.user_info;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

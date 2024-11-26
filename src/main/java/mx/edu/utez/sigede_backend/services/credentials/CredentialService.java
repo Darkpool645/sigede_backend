@@ -19,9 +19,6 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
-import org.apache.catalina.util.CustomObjectInputStream;
-import org.apache.coyote.Request;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,15 +32,15 @@ public class CredentialService {
     private final InstitutionRepository institutionRepository;
     private final CredentialRepository credentialRepository;
     private final UserAccountRepository userAccountRepository;
-    private final ErrorDictionary errorDictionary;
 
-    public CredentialService(CredentialFieldRepository credentialFieldRepository, UserInfoRepository userInfoRepository, InstitutionRepository institutionRepository, CredentialRepository credentialRepository, UserAccountRepository userAccountRepository, ErrorDictionary errorDictionary) {
+    public CredentialService(CredentialFieldRepository credentialFieldRepository, UserInfoRepository userInfoRepository,
+                             InstitutionRepository institutionRepository, CredentialRepository credentialRepository,
+                             UserAccountRepository userAccountRepository) {
         this.credentialFieldRepository = credentialFieldRepository;
         this.userInfoRepository = userInfoRepository;
         this.institutionRepository = institutionRepository;
         this.credentialRepository = credentialRepository;
         this.userAccountRepository = userAccountRepository;
-        this.errorDictionary = errorDictionary;
     }
 
     public List<GetCredentialsDTO> getCredentialsByCapturerId(Long userAccountId) {

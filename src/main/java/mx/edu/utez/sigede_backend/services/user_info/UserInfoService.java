@@ -10,7 +10,6 @@ import mx.edu.utez.sigede_backend.models.institution_capturist_field.Institution
 import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -23,17 +22,14 @@ public class UserInfoService {
     private final InstitutionCapturistFieldRepository institutionCapturistFieldRepository;
     private final UserInfoRepository userInfoRepository;
     private final InstitutionRepository institutionRepository;
-    private final ErrorDictionary errorDictionary;
 
     public UserInfoService(
             InstitutionCapturistFieldRepository institutionCapturistFieldRepository,
             UserInfoRepository userInfoRepository,
-            InstitutionRepository institutionRepository,
-            ErrorDictionary errorDictionary) {
+            InstitutionRepository institutionRepository) {
         this.institutionCapturistFieldRepository = institutionCapturistFieldRepository;
         this.userInfoRepository = userInfoRepository;
         this.institutionRepository = institutionRepository;
-        this.errorDictionary = errorDictionary;
     }
 
     public InstitutionCapturistField createFieldAndAssociate(UserInfoDTO userInfoDTO, Long institutionId, boolean isRequired) {
