@@ -13,7 +13,6 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
