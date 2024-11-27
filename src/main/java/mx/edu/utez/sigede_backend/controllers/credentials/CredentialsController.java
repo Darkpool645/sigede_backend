@@ -1,14 +1,15 @@
 package mx.edu.utez.sigede_backend.controllers.credentials;
 
 
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestUpdateCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.ResponseCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestAllAdminByInstitutionDTO;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ResponseAllAdminByInstitutionDTO;
 import mx.edu.utez.sigede_backend.services.credentials.CredentialService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,6 +34,12 @@ public class CredentialsController {
         List<GetCredentialsDTO> credentials = credentialService.getCredentialsByCapturerId(userAccountId);
         return new ResponseEntity<>(credentials, HttpStatus.OK);
     }
+    @PostMapping("/get-all-by-institution")
+    public CustomResponse<Page<GetCretentialsByInstitutoIdDTO>> getAllByInstitution(@Validated @RequestBody RequestByInstitution payload, Pageable pageable){
+        Page<GetCretentialsByInstitutoIdDTO> data = credentialService.getAllAccountByInstitution(payload,pageable);
+        return new CustomResponse<>(200,"Usuarios",false,data);
+    }
+
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<String> handleCustomException(CustomException ex) {

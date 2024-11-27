@@ -37,8 +37,8 @@ public class UserAccountsController {
     }
 
     @GetMapping("/admins")
-    public ResponseEntity<List<UserAccount>> getAllAdmins() {
-        List<UserAccount> admins = userAccountService.getAllAdmins();
+    public ResponseEntity<List<GetCapturistsDTO>> getAllAdmins() {
+        List<GetCapturistsDTO> admins = userAccountService.getAllAdmins();
         return new ResponseEntity<>(admins, HttpStatus.OK);
 
     }

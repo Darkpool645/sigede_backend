@@ -21,14 +21,29 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Query("SELECT ua FROM UserAccount ua")
     List<UserAccount> getAllUserAccounts();
 
-    @Query("SELECT usac FROM UserAccount usac WHERE usac.fkRol.name = :roleName")
-    List<UserAccount> getAllAdmins(@Param("roleName") String roleName);
+    @Query("SELECT  new mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO(usac.userAccountId, usac.name, usac.fkStatus.name)" +
+            "FROM UserAccount usac WHERE usac.fkRol.name = :roleName")
+    List<GetCapturistsDTO> getAllAdmins(@Param("roleName") String roleName);
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
-    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId, Pageable pageable);
+
+    @Query("""
+       SELECT u FROM UserAccount u WHERE u.fkRol.name = :role
+         AND u.fkInstitution.institutionId = :institutionId
+         AND (:name IS NULL OR :name = '' OR u.name LIKE %:name%)
+       """)
+    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(
+            @Param("role") String role,
+            @Param("institutionId") Long institutionId,
+            @Param("name") String name,
+            Pageable pageable);
+    
     boolean existsByUserAccountId(Long userAccountId);
+
     UserAccount findByUserAccountId(Long userAccountId);
+
     boolean existsByEmail(String email);
+
     UserAccount findByEmail(String email);
 }

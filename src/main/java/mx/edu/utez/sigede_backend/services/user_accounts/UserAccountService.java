@@ -44,7 +44,7 @@ public class UserAccountService {
         return userAccountRepository.getAllUserAccounts();
     }
 
-    public List<UserAccount> getAllAdmins() {
+    public List<GetCapturistsDTO> getAllAdmins() {
         return userAccountRepository.getAllAdmins("admin");
     }
 
@@ -72,12 +72,13 @@ public class UserAccountService {
         if(institution == null){
             throw new CustomException("institution.notfound");
         }
-        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId(role.getName(), institution.getInstitutionId(),pageable);
+        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(role.getName(), institution.getInstitutionId(),payload.getName(),pageable);
         return accounts.map(account -> {
             ResponseAllAdminByInstitutionDTO dto = new ResponseAllAdminByInstitutionDTO();
             dto.setUserId(account.getUserAccountId());
             dto.setEmail(account.getEmail());
             dto.setName(account.getName());
+            dto.setStatus(account.getFkStatus().getName());
             return dto;
         });
     }

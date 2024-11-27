@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.services.institution;
 
 import jakarta.transaction.Transactional;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
@@ -22,7 +23,7 @@ public class InstitutionService {
         this.institutionRepository = institutionRepository;
     }
 
-    public List<Institution> getAllInstitutions() {
+    public List<InstitutionDTO> getAllInstitutions() {
         return institutionRepository.getAllInstitutions();
     }
 
