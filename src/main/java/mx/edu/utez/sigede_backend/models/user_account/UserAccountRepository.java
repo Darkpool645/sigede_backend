@@ -10,7 +10,9 @@ import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
     @Query("SELECT new mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO(u.userAccountId, u.name, u.fkStatus.name) " +

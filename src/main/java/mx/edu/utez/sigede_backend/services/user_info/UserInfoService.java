@@ -10,8 +10,8 @@ import mx.edu.utez.sigede_backend.models.institution_capturist_field.Institution
 import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,19 +23,17 @@ public class UserInfoService {
     private final InstitutionCapturistFieldRepository institutionCapturistFieldRepository;
     private final UserInfoRepository userInfoRepository;
     private final InstitutionRepository institutionRepository;
-    private final ErrorDictionary errorDictionary;
 
     public UserInfoService(
             InstitutionCapturistFieldRepository institutionCapturistFieldRepository,
             UserInfoRepository userInfoRepository,
-            InstitutionRepository institutionRepository,
-            ErrorDictionary errorDictionary) {
+            InstitutionRepository institutionRepository) {
         this.institutionCapturistFieldRepository = institutionCapturistFieldRepository;
         this.userInfoRepository = userInfoRepository;
         this.institutionRepository = institutionRepository;
-        this.errorDictionary = errorDictionary;
     }
 
+    @Transactional
     public InstitutionCapturistField createFieldAndAssociate(UserInfoDTO userInfoDTO, Long institutionId, boolean isRequired) {
         Optional<Institution> institution = institutionRepository.findById(institutionId);
         if (institution.isEmpty()) {
@@ -57,6 +55,7 @@ public class UserInfoService {
         return institutionCapturistFieldRepository.save(capturistField);
     }
 
+    @Transactional
     public InstitutionCapturistField updateCapturistField(Long fieldId, boolean isRequired, UserInfoDTO userInfoDTO) {
         Optional<InstitutionCapturistField> existingField = institutionCapturistFieldRepository.findById(fieldId);
         if (existingField.isEmpty()) {
@@ -77,7 +76,7 @@ public class UserInfoService {
     }
 
 
-
+    @Transactional
     public Map<String, Object> getFieldsByInstitution(Long institutionId) {
         List<InstitutionCapturistField> fields = institutionCapturistFieldRepository.findAllByFkInstitution_InstitutionId(institutionId);
 

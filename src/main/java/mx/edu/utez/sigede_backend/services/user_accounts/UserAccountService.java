@@ -1,7 +1,6 @@
 package mx.edu.utez.sigede_backend.services.user_accounts;
 
 import java.util.List;
-import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.*;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -20,6 +19,7 @@ import mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserAccountService {
@@ -39,11 +39,12 @@ public class UserAccountService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
+    @Transactional
     public List<UserAccount> getAllUserAccounts() {
         return userAccountRepository.getAllUserAccounts();
     }
 
+    @Transactional
     public List<UserAccount> getAllAdmins() {
         return userAccountRepository.getAllAdmins("admin");
     }
@@ -58,6 +59,7 @@ public class UserAccountService {
 
     }
 
+    @Transactional
     public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
         return userAccountRepository.findAdministratorsByInstitution(institutionId);
     }
@@ -143,6 +145,7 @@ public class UserAccountService {
         userAccountRepository.save(userAccount);
     }
 
+    @Transactional
     public List<GetCapturistsDTO> getCapturistasByInstitution(Long institutionId) {
         List<GetCapturistsDTO> capturistas = userAccountRepository.findCapturistasByInstitution(institutionId);
 

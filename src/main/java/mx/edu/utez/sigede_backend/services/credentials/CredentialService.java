@@ -1,6 +1,5 @@
 package mx.edu.utez.sigede_backend.services.credentials;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestUpdateCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
@@ -19,10 +18,8 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
-import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
-import org.apache.catalina.util.CustomObjectInputStream;
-import org.apache.coyote.Request;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,17 +32,18 @@ public class CredentialService {
     private final InstitutionRepository institutionRepository;
     private final CredentialRepository credentialRepository;
     private final UserAccountRepository userAccountRepository;
-    private final ErrorDictionary errorDictionary;
 
-    public CredentialService(CredentialFieldRepository credentialFieldRepository, UserInfoRepository userInfoRepository, InstitutionRepository institutionRepository, CredentialRepository credentialRepository, UserAccountRepository userAccountRepository, ErrorDictionary errorDictionary) {
+    public CredentialService(CredentialFieldRepository credentialFieldRepository, UserInfoRepository userInfoRepository,
+                             InstitutionRepository institutionRepository, CredentialRepository credentialRepository,
+                             UserAccountRepository userAccountRepository) {
         this.credentialFieldRepository = credentialFieldRepository;
         this.userInfoRepository = userInfoRepository;
         this.institutionRepository = institutionRepository;
         this.credentialRepository = credentialRepository;
         this.userAccountRepository = userAccountRepository;
-        this.errorDictionary = errorDictionary;
     }
 
+    @Transactional
     public List<GetCredentialsDTO> getCredentialsByCapturerId(Long userAccountId) {
         UserAccount userAccount = userAccountRepository.findById(userAccountId)
                 .orElseThrow(() -> new CustomException("user.not.found"));

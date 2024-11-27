@@ -1,6 +1,5 @@
 package mx.edu.utez.sigede_backend.services.capturer;
 
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
@@ -19,6 +18,7 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,11 +30,11 @@ public class Credential {
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
 
-    @Column(name = "fullname",nullable = false,length = 255)
+    @Column(name = "fullname",nullable = false)
     private String fullname;
 
     @Lob
-    @Column(name = "user_photo", nullable = false, length = 255)
+    @Column(name = "user_photo", nullable = false)
     private String userPhoto;
 
     @ManyToOne

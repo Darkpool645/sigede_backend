@@ -2,7 +2,6 @@ package mx.edu.utez.sigede_backend.services.password_recovery;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
@@ -41,6 +40,7 @@ public class PasswordRecoveryService {
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
+        String logo = user.getFkInstitution().getLogo();
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
 
         if (verificationCode == null) {
@@ -53,7 +53,7 @@ public class PasswordRecoveryService {
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
         return user.getUserAccountId();
     }
 
@@ -80,9 +80,10 @@ public class PasswordRecoveryService {
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
             throw new CustomException("user.password.same_as_old");
         }
+        String logo = user.getFkInstitution().getLogo();
         user.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(user);
-        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");
+        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada", logo);
         return new PasswordChangeResponseDTO(user.getPassword(), user.getUserAccountId());
     }
 
@@ -92,13 +93,14 @@ public class PasswordRecoveryService {
         if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
         }
+        String logo = user.getFkInstitution().getLogo();
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
         return user.getUserAccountId();
     }
 

@@ -1,6 +1,5 @@
 package mx.edu.utez.sigede_backend.services.admin;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -13,9 +12,9 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
-import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminService {
@@ -36,7 +35,6 @@ public class AdminService {
     }
 
     @Transactional
-
     public void registerAdmin(RequestNewAdminDTO payload){
         if(userAccountRepository.existsByEmail(payload.getEmail())){
             throw new CustomException("admin.email.error");
