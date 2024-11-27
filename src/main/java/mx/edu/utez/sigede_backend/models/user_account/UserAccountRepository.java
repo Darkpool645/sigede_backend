@@ -42,8 +42,17 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     boolean existsByUserAccountId(Long userAccountId);
 
     UserAccount findByUserAccountId(Long userAccountId);
+    @Query("SELECT ua FROM UserAccount ua WHERE ua.userAccountId=:userAccountId AND ua.fkInstitution.institutionId=:institutionId")
+    UserAccount findByUserAccountIdAndFkInstitution(@Param("userAccountId")Long userAccountId,@Param("institutionId")Long institutionId);
 
     boolean existsByEmail(String email);
 
     UserAccount findByEmail(String email);
+
+
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM UserAccount u " +
+            "WHERE u.email = :email AND u.userAccountId <> :userAccountId")
+    boolean existsByEmailAndNotUserAccountId(@Param("email") String email, @Param("userAccountId") Long userAccountId);
 }
