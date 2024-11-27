@@ -1,6 +1,5 @@
 package mx.edu.utez.sigede_backend.services.institution;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
@@ -9,6 +8,8 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +23,12 @@ public class InstitutionService {
         this.institutionRepository = institutionRepository;
     }
 
+    @Transactional
     public List<Institution> getAllInstitutions() {
         return institutionRepository.getAllInstitutions();
     }
 
+    @Transactional
     public Optional<Institution> getById(Long id) {
         return institutionRepository.findById(id);
     }
@@ -75,6 +78,7 @@ public class InstitutionService {
         return institutionRepository.save(institution);
     }
 
+    @Transactional
     public InstitutionDocDTO getDocs(Long institutionId) {
         Optional<Institution> institutionOptional = institutionRepository.findById(institutionId);
         if (institutionOptional.isEmpty()) {
@@ -103,6 +107,7 @@ public class InstitutionService {
         }
     }
 
+    @Transactional
     public InstitutionDocDTO createOrUpdateDocs(Long institutionId, Blob docs) {
         if (docs == null) {
             throw new CustomException("field.not.null");
@@ -142,5 +147,4 @@ public class InstitutionService {
 
         return institutionRepository.save(institution);
     }
-
 }

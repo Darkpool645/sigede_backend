@@ -11,6 +11,7 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class UserInfoService {
         this.institutionRepository = institutionRepository;
     }
 
+    @Transactional
     public InstitutionCapturistField createFieldAndAssociate(UserInfoDTO userInfoDTO, Long institutionId, boolean isRequired) {
         Optional<Institution> institution = institutionRepository.findById(institutionId);
         if (institution.isEmpty()) {
@@ -53,6 +55,7 @@ public class UserInfoService {
         return institutionCapturistFieldRepository.save(capturistField);
     }
 
+    @Transactional
     public InstitutionCapturistField updateCapturistField(Long fieldId, boolean isRequired, UserInfoDTO userInfoDTO) {
         Optional<InstitutionCapturistField> existingField = institutionCapturistFieldRepository.findById(fieldId);
         if (existingField.isEmpty()) {
@@ -73,7 +76,7 @@ public class UserInfoService {
     }
 
 
-
+    @Transactional
     public Map<String, Object> getFieldsByInstitution(Long institutionId) {
         List<InstitutionCapturistField> fields = institutionCapturistFieldRepository.findAllByFkInstitution_InstitutionId(institutionId);
 

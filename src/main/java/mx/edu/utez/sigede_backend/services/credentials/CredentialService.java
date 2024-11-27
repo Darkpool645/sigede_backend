@@ -1,6 +1,5 @@
 package mx.edu.utez.sigede_backend.services.credentials;
 
-import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestUpdateCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
@@ -20,6 +19,7 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +43,7 @@ public class CredentialService {
         this.userAccountRepository = userAccountRepository;
     }
 
+    @Transactional
     public List<GetCredentialsDTO> getCredentialsByCapturerId(Long userAccountId) {
         UserAccount userAccount = userAccountRepository.findById(userAccountId)
                 .orElseThrow(() -> new CustomException("user.not.found"));
