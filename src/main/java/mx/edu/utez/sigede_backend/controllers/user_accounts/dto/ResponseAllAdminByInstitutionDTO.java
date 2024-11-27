@@ -9,6 +9,5 @@ public class ResponseAllAdminByInstitutionDTO {
     private Long userId;
     private String email;
     private String name;
-
-
+    private String status;
 }

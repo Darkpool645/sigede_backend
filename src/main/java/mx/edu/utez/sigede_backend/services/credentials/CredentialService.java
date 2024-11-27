@@ -4,16 +4,16 @@ import jakarta.transaction.Transactional;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestUpdateCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestUpdateCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.ResponseCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.RequestAllAdminByInstitutionDTO;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ResponseAllAdminByInstitutionDTO;
 import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.models.credential.CredentialRepository;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialField;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialFieldRepository;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
+import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
@@ -22,6 +22,8 @@ import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
 import org.apache.catalina.util.CustomObjectInputStream;
 import org.apache.coyote.Request;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -60,6 +62,28 @@ public class CredentialService {
         }
         return credentials;
     }
+
+
+    @Transactional
+    public Page<GetCretentialsByInstitutoIdDTO> getAllAccountByInstitution (RequestByInstitution payload, Pageable pageable){
+        Institution institution=institutionRepository.findByInstitutionId(payload.getInstitutionId());
+        if(institution == null){
+            throw new CustomException("institution.notfound");
+        }
+
+        Page<Credential> cretendials = credentialRepository.findAllByFkInstitutionAndFullname( institution.getInstitutionId(),payload.getFullname(),pageable);
+        return cretendials.map(cretendial -> {
+            GetCretentialsByInstitutoIdDTO dto = new GetCretentialsByInstitutoIdDTO();
+            dto.setCredentialId(cretendial.getCredentialId());
+            dto.setUserPhoto(cretendial.getUserPhoto());
+            dto.setFullname(cretendial.getFullname());
+            dto.setExpirationDate(cretendial.getExpirationDate());
+            return dto;
+        });
+    }
+
+
+
 
     @Transactional
     public void createCredential(RequestCredentialDTO payload) {
