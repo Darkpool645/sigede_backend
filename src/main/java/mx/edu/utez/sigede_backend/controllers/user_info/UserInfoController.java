@@ -2,7 +2,8 @@ package mx.edu.utez.sigede_backend.controllers.user_info;
 
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionResponseDTO;
 import mx.edu.utez.sigede_backend.controllers.institution_capturist_field.DTO.CapturistFieldResponseDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoPostDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoUpdateDTO;
 import mx.edu.utez.sigede_backend.models.institution_capturist_field.InstitutionCapturistField;
 import mx.edu.utez.sigede_backend.services.user_info.UserInfoService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -25,15 +27,34 @@ public class UserInfoController {
         this.errorDictionary = errorDictionary;
     }
 
-    @PostMapping("/create-form")
+    @PostMapping("/create-forms")
     public ResponseEntity<?> createFieldAndAssociate(
-            @RequestBody UserInfoDTO userInfoDTO,
-            @RequestParam Long institutionId,
-            @RequestParam boolean isRequired) {
-        try {
-            InstitutionCapturistField result = userInfoService.createFieldAndAssociate(userInfoDTO, institutionId, isRequired);
+            @RequestBody List<UserInfoPostDTO> userInfoDTOList,
+            @RequestParam Long institutionId) {
 
-            Map<String, Object> response = getStringObjectMap(result);
+        try {
+            List<InstitutionCapturistField> result = userInfoService.createFieldAndAssociate(userInfoDTOList, institutionId);
+
+            List<Map<String, Object>> response = result.stream().map(field -> {
+                InstitutionResponseDTO institutionDTO = new InstitutionResponseDTO(
+                        field.getFkInstitution().getInstitutionId(),
+                        field.getFkInstitution().getName(),
+                        field.getFkInstitution().getInstitutionStatus()
+                );
+
+                CapturistFieldResponseDTO fieldDTO = new CapturistFieldResponseDTO(
+                        field.isRequired(),
+                        field.getFkUserInfo().getTag(),
+                        field.getFkUserInfo().getType(),
+                        field.getFkUserInfo().isInQr(),
+                        field.getFkUserInfo().isInCard()
+                );
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("institution", institutionDTO);
+                map.put("field", fieldDTO);
+                return map;
+            }).toList();
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
@@ -45,62 +66,26 @@ public class UserInfoController {
         }
     }
 
-    private static Map<String, Object> getStringObjectMap(InstitutionCapturistField result) {
-        InstitutionResponseDTO institutionDTO = new InstitutionResponseDTO(
-                result.getFkInstitution().getInstitutionId(),
-                result.getFkInstitution().getName(),
-                result.getFkInstitution().getInstitutionStatus()
-        );
 
-        CapturistFieldResponseDTO fieldDTO = new CapturistFieldResponseDTO(
-                result.isRequired(),
-                result.getFkUserInfo().getTag(),
-                result.getFkUserInfo().getType(),
-                result.getFkUserInfo().isInQr(),
-                result.getFkUserInfo().isInCard()
-        );
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("message", "Campo creado exitosamente");
-        response.put("institution", institutionDTO);
-        response.put("field", fieldDTO);
-        return response;
-    }
-
-    @PutMapping("/update-form/{fieldId}")
-    public ResponseEntity<?> updateCapturistField(
-            @PathVariable Long fieldId,
-            @RequestParam boolean isRequired,
-            @RequestBody UserInfoDTO userInfoDTO) {
+    @PutMapping("/update-forms")
+    public ResponseEntity<?> updateCapturistFields(@RequestBody List<UserInfoUpdateDTO> updates) {
+        for (UserInfoUpdateDTO update : updates) {
+        }
         try {
-            InstitutionCapturistField result = userInfoService.updateCapturistField(fieldId, isRequired, userInfoDTO);
-
-            InstitutionResponseDTO responseDTO = new InstitutionResponseDTO(
-                    result.getFkInstitution().getInstitutionId(),
-                    result.getFkInstitution().getName(),
-                    result.getFkInstitution().getInstitutionStatus()
-            );
-
-            Map<String, Object> updatedFields = new HashMap<>();
-            updatedFields.put("isRequired", isRequired);
-            updatedFields.put("tag", userInfoDTO.getTag());
-            updatedFields.put("type", userInfoDTO.getType());
-            updatedFields.put("inQr", userInfoDTO.isInQr());
-            updatedFields.put("inCard", userInfoDTO.isInCard());
-
+            List<Map<String, Object>> responseList = userInfoService.updateCapturistFields(updates);
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Campos actualizados correctamente");
-            response.put("institution", responseDTO);
-            response.put("updatedFields", updatedFields);
+            response.put("updatedFields", responseList);
 
             return ResponseEntity.ok(response);
         } catch (CustomException e) {
             String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", errorMessage);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
+
 
     @GetMapping("/get-institution-form/{institutionId}")
     public ResponseEntity<?> getFieldsByInstitution(@PathVariable Long institutionId) {
