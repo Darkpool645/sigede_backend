@@ -4,6 +4,7 @@ import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,17 +29,16 @@ public class InstitutionController {
         this.errorDictionary = errorDictionary;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Institution>> getAllInstitutions() {
-        List<Institution> institutions = institutionService.getAllInstitutions();
-        return new ResponseEntity<>(institutions, HttpStatus.OK);
+    @GetMapping("/get-all")
+    public CustomResponse<List<ResponseInstitutionsDTO>> getAllInstitutions(){
+        List<ResponseInstitutionsDTO> data = institutionService.getAllInstitutions();
+        return new CustomResponse<>(200,"Todas las instituciones",false,data);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Institution> getInstitutionById(@PathVariable("id") Long id) {
-        Optional<Institution> institution = institutionService.getById(id);
-        return institution.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public CustomResponse<ResponseInstitutionsDTO> getInstitutionByid(@PathVariable Long id){
+        ResponseInstitutionsDTO institution = institutionService.getById(id);
+        return new CustomResponse<>(200,"institution",false,institution);
     }
 
     @PostMapping("/post-institution")

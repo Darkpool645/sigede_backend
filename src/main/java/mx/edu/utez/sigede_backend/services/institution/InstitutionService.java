@@ -3,6 +3,7 @@ package mx.edu.utez.sigede_backend.services.institution;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionsDTO;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @Service
 public class InstitutionService {
@@ -24,13 +26,20 @@ public class InstitutionService {
     }
 
     @Transactional
-    public List<Institution> getAllInstitutions() {
-        return institutionRepository.getAllInstitutions();
+    public ResponseInstitutionsDTO getById(Long id) {
+        return institutionRepository.findById(id)
+                .map(institution -> new ResponseInstitutionsDTO(
+                        institution.getInstitutionId(),
+                        institution.getName(),
+                        institution.getEmailContact(),
+                        institution.getLogo()
+                ))
+                .orElseThrow(() -> new CustomException("Institution not found with id: " + id));
     }
 
     @Transactional
-    public Optional<Institution> getById(Long id) {
-        return institutionRepository.findById(id);
+    public List<ResponseInstitutionsDTO> getAllInstitutions() {
+        return institutionRepository.findAll().stream().map(entity -> new ResponseInstitutionsDTO(entity.getInstitutionId(),entity.getName(),entity.getEmailContact(),entity.getLogo())).toList();
     }
 
     @Transactional
