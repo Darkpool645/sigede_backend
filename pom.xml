@@ -99,8 +99,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.docx4j</groupId>
-			<artifactId>docx4j-JAXB-Internal</artifactId>
-			<version>8.0.0</version>
+			<artifactId>docx4j-JAXB-ReferenceImpl</artifactId>
+			<version>11.5.0</version>
 		</dependency>
 	</dependencies>
 

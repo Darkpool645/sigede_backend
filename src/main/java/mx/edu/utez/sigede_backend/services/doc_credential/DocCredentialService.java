@@ -1,18 +1,24 @@
 package mx.edu.utez.sigede_backend.services.doc_credential;
 
+import jakarta.xml.bind.JAXBElement;
+import mx.edu.utez.sigede_backend.controllers.doc_credential.dto.ResponseDocCredentialDTO;
+import mx.edu.utez.sigede_backend.models.credential.Credential;
+import mx.edu.utez.sigede_backend.models.credential.CredentialRepository;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialField;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialFieldRepository;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
-import org.docx4j.model.fields.merge.DataFieldName;
-import org.docx4j.model.fields.merge.MailMerger;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.openpackaging.parts.Part;
+import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
+import org.docx4j.wml.Text;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.Blob;
 import java.util.HashMap;
 import java.util.List;
@@ -21,15 +27,18 @@ import java.util.Map;
 @Service
 public class DocCredentialService {
     private final InstitutionRepository institutionRepository;
+    private final CredentialRepository credentialRepository;
     private final CredentialFieldRepository credentialFieldRepository;
 
-    public DocCredentialService(InstitutionRepository institutionRepository, CredentialFieldRepository credentialFieldRepository) {
+    public DocCredentialService(InstitutionRepository institutionRepository, CredentialRepository credentialRepository,
+                                CredentialFieldRepository credentialFieldRepository) {
         this.institutionRepository = institutionRepository;
+        this.credentialRepository = credentialRepository;
         this.credentialFieldRepository = credentialFieldRepository;
     }
 
     @Transactional
-    public void generateCredential(Long institutionId, Long credentialId){
+    public ResponseDocCredentialDTO generateCredential(Long institutionId, Long credentialId){
         if (institutionId == null || credentialId == null) {
             throw new IllegalArgumentException("The field must not be null");
         }
@@ -41,31 +50,91 @@ public class DocCredentialService {
         if (doc == null) {
             throw new IllegalArgumentException("Doc not found");
         }
-        List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
-        if (credentialFields == null) {
+        Credential credential = credentialRepository.findCredentialByCredentialId(credentialId);
+        if (credential == null) {
             throw new IllegalArgumentException("Credential not found");
         }
+        List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
         try {
             InputStream docStream = doc.getBinaryStream();
 
             WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(docStream);
-            MainDocumentPart documentPart = wordMLPackage.getMainDocumentPart();
 
-            Map<DataFieldName, String> replacements = new HashMap<>();
+            Map<String, String> replacements = new HashMap<>();
+            replacements.put("${name}", credential.getFullname());
+            replacements.put("${expirationDate}", credential.getExpirationDate().toString());
             credentialFields.forEach(credentialField -> {
                 if (credentialField.getFkUserInfo().isInCard()) {
+                    System.out.println(credentialField.getFkUserInfo().getTag());
                     String tag = "${" + credentialField.getFkUserInfo().getTag() + "}";
                     String field = credentialField.getValue();
-                    replacements.put(new DataFieldName(tag), field);
+                    replacements.put(tag, field);
                 }
             });
+            replaceTextInDocument(wordMLPackage, replacements);
 
-            MailMerger.performMerge(wordMLPackage, replacements,true);
+            String imageUrl = credential.getUserPhoto();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                byte[] imageBytes = downloadImage(imageUrl);
+                replacePlaceholderImage(wordMLPackage, imageBytes);
+            }
 
-            String outputPath = "output.docx";
-            wordMLPackage.save(new File(outputPath));
+            String outputPath = institution.getName() + "_" + credential.getFullname() + ".docx";
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            wordMLPackage.save(outputStream);
+
+            ResponseDocCredentialDTO dto = new ResponseDocCredentialDTO();
+            dto.setOutputPath(outputPath);
+            dto.setOutputStream(outputStream);
+
+            return dto;
         } catch (Exception e) {
-            throw new RuntimeException("Error processing doc", e);
+            throw new RuntimeException("Error processing doc", e.getCause());
+        }
+    }
+
+    private void replaceTextInDocument(WordprocessingMLPackage wordMLPackage, Map<String, String> replacements) throws Exception {
+        System.out.println(replacements);
+        List<Object> texts = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath("//w:t", true);
+        for (Object obj : texts) {
+            if (obj instanceof JAXBElement) {
+                Object value = ((JAXBElement<?>) obj).getValue();
+                if (value instanceof Text element) {
+                    String text = element.getValue();
+                    for (Map.Entry<String, String> entry : replacements.entrySet()) {
+                        if (text.contains(entry.getKey())) {
+                            element.setValue(text.replace(entry.getKey(), entry.getValue()));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private byte[] downloadImage(String imageUrl) throws IOException {
+        try (InputStream inputStream = new URL(imageUrl).openStream()) {
+            return inputStream.readAllBytes();
+        }
+    }
+
+    private void replacePlaceholderImage(WordprocessingMLPackage wordMLPackage, byte[] newImageBytes) {
+        try {
+            BinaryPartAbstractImage imagePart = null;
+            for (Part part : wordMLPackage.getParts().getParts().values()) {
+                if (part instanceof BinaryPartAbstractImage singlePartImage) {
+                    imagePart = singlePartImage;
+                    break;
+                }
+            }
+
+            if (imagePart == null) {
+                throw new IllegalArgumentException("Image not found");
+            }
+
+            imagePart.setBinaryData(newImageBytes);
+        } catch (Exception e){
+            System.out.println("Error replacing image: " + e.getMessage());
         }
     }
 }

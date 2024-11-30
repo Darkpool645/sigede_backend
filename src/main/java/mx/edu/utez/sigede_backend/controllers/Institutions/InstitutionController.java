@@ -4,7 +4,6 @@ import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.Blob;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/institutions")
