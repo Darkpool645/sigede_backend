@@ -118,7 +118,7 @@ public class UserAccountService {
                 userAccountRepository.saveAndFlush(userId);
                 break;
             default:
-                throw new CustomException("opcion invalida");
+                throw new CustomException("invalid.option");
         }
     }
     @Transactional

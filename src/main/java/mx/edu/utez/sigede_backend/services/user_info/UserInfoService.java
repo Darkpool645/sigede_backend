@@ -37,7 +37,7 @@ public class UserInfoService {
             List<UserInfoPostDTO> userInfoDTOs, Long institutionId) throws CustomException {
 
         Institution institution = institutionRepository.findById(institutionId)
-                .orElseThrow(() -> new CustomException("INSTITUTION_NOT_FOUND"));
+                .orElseThrow(() -> new CustomException("institution.notfound"));
 
         List<InstitutionCapturistField> fields = new ArrayList<>();
 

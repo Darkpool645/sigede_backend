@@ -12,6 +12,10 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,20 @@ public class AdminService {
         this.institutionRepository = institutionRepository;
         this.mailService = mailService;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    @Transactional
+    public Page<UserAccount> getAdminsByNameAndInstitution(String name, Long institutionId, int page, int size) {
+        Institution institution = institutionRepository.findByInstitutionId(institutionId);
+
+        if (institution == null) {
+            throw new CustomException("institution.notfound");
+        }
+
+        Rol rol = rolRepository.findByName("ADMIN");
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+
+        return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(name, institution, rol, pageable);
     }
 
     @Transactional

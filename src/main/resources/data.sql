@@ -1,23 +1,25 @@
 USE sigede;
 
 -- 1. Inserta una institución en 'institutions'
-INSERT INTO institutions (address, email_contact, logo, name, phone_contact, docs)
+INSERT INTO institutions (address, email_contact, institution_status, logo, name, phone_contact)
 VALUES
-    ('1234 Elm St', 'contact@institution1.com', 'https://placehold.co/200x200', 'University of Code', '555-1234', 'dummyblobdata1'),
-    ('5678 Oak St', 'info@institution2.org', 'https://placehold.co/200x200', 'University of Pemo', '555-5678', 'dummyblobdata2'),
-    ('9101 Pine St', 'support@institution3.edu', 'https://placehold.co/200x200', 'Institution 1', '555-9101', 'dummyblobdata3'),
-    ('1121 Maple St', 'help@institution4.gov', 'https://placehold.co/200x200', 'Institution 2', '555-1121', 'dummyblobdata4'),
-    ('3141 Birch St', 'admin@institution5.net', 'https://placehold.co/200x200', 'Institution 3', '555-3141', 'dummyblobdata5'),
-    ('5161 Cedar St', 'service@institution6.co', 'https://placehold.co/200x200', 'Institution 4', '555-5161', 'dummyblobdata6'),
-    ('7181 Walnut St', 'contact@institution7.edu', 'https://placehold.co/200x200', 'Institution 5', '555-7181', 'dummyblobdata7'),
-    ('9201 Elm St', 'admin@institution8.org', 'https://placehold.co/200x200', 'Institution 6', '555-9201', 'dummyblobdata8');
+    ('1234 Elm St', 'contact@institution1.com', 'Habilitado', 'https://placehold.co/200x200', 'University of Code', '555-1234'),
+    ('5678 Oak St', 'info@institution2.org', 'Habilitado', 'University of Pemo', '555-5678', '555-3421'),
+    ('9101 Pine St', 'support@institution3.edu', 'Habilitado', 'https://placehold.co/200x200', 'Institution 1', '555-9101'),
+    ('1121 Maple St', 'help@institution4.gov', 'Habilitado', 'https://placehold.co/200x200', 'Institution 2', '555-1121'),
+    ('3141 Birch St', 'admin@institution5.net', 'Habilitado', 'https://placehold.co/200x200', 'Institution 3', '555-3141'),
+    ('5161 Cedar St', 'service@institution6.co', 'Habilitado', 'https://placehold.co/200x200', 'Institution 4', '555-5161'),
+    ('7181 Walnut St', 'contact@institution7.edu', 'Habilitado', 'https://placehold.co/200x200', 'Institution 5', '555-7181'),
+    ('9201 Elm St', 'admin@institution8.org', 'Habilitado', 'https://placehold.co/200x200', 'Institution 6', '555-9201');
 
 -- 2. Inserta roles en 'roles'
 INSERT INTO roles (name)
 VALUES
-    ('capturista'),
-    ('admin'),
-    ('superadmin');
+    ('CAPTURIST'),
+    ('ADMIN'),
+    ('SUPERADMIN');
+
+select  * from roles;
 
 -- 3. Inserta estados en 'statuses'
 INSERT INTO statuses (name)

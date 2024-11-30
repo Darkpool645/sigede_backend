@@ -12,10 +12,14 @@ import java.awt.Desktop;
 import java.net.URI;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+
+import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
 
 @SpringBootApplication
 @Slf4j
+@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SigedeBackendApplication {
 
 	public static void main(String[] args) {

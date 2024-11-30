@@ -6,6 +6,10 @@ import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDT
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionsDTO;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -14,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Blob;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Service
 public class InstitutionService {
@@ -34,12 +37,18 @@ public class InstitutionService {
                         institution.getEmailContact(),
                         institution.getLogo()
                 ))
-                .orElseThrow(() -> new CustomException("Institution not found with id: " + id));
+                .orElseThrow(() -> new CustomException("institution.notfound"));
     }
 
     @Transactional
     public List<ResponseInstitutionsDTO> getAllInstitutions() {
         return institutionRepository.findAll().stream().map(entity -> new ResponseInstitutionsDTO(entity.getInstitutionId(),entity.getName(),entity.getEmailContact(),entity.getLogo())).toList();
+    }
+
+    @Transactional
+    public Page<Institution> getInstitutionsByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return institutionRepository.findByNameContainingIgnoreCase(name, pageable);
     }
 
     @Transactional

@@ -51,6 +51,8 @@ public class ErrorDictionary {
         errorMessages.put("userphoto.not.blank", "userphoto requerido");
         errorMessages.put("credential.fields.not.null", "campos requeridos");
         errorMessages.put("credential.fields.not.empty", "campos no vacíos");
+        errorMessages.put("invalid.potion", "Opción no valida.");
+        errorMessages.put("image.not.found", "No se encontro ninguna imagen en el documento");
     }
 
     public String getErrorMessage(String errorCode) {

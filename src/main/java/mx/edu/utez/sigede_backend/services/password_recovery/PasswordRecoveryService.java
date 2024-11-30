@@ -40,7 +40,6 @@ public class PasswordRecoveryService {
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
-        String logo = user.getFkInstitution().getLogo();
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
 
         if (verificationCode == null) {
@@ -53,7 +52,7 @@ public class PasswordRecoveryService {
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
     }
 
@@ -80,10 +79,10 @@ public class PasswordRecoveryService {
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
             throw new CustomException("user.password.same_as_old");
         }
-        String logo = user.getFkInstitution().getLogo();
+
         user.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(user);
-        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada", logo);
+        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");
         return new PasswordChangeResponseDTO(user.getPassword(), user.getUserAccountId());
     }
 
@@ -93,14 +92,14 @@ public class PasswordRecoveryService {
         if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        String logo = user.getFkInstitution().getLogo();
+        
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
     }
 

@@ -3,6 +3,9 @@ package mx.edu.utez.sigede_backend.models.credential;
 import java.util.List;
 
 import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
+import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,5 +16,7 @@ public interface CredentialRepository extends JpaRepository<Credential, Long>{
             "FROM Credential c WHERE c.fkUserAccount.userAccountId = :userAccountId")
     List<GetCredentialsDTO> findCredentialsByUserAccountId(Long userAccountId);
 
+    Credential findCredentialByCredentialId(Long credentialId);
 
+    Page<Credential> findByFullnameContainingIgnoreCaseAndAndFkUserAccount(String fullname, UserAccount userAccount, Pageable pageable);
 }
