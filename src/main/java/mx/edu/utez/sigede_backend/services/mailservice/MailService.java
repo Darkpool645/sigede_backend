@@ -26,7 +26,7 @@ public class MailService {
     }
 
     @Async
-    public void sendVerificationCodeEmail(String to, String subject, String verificationCode, String logo) {
+    public void sendVerificationCodeEmail(String to, String subject, String verificationCode) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
@@ -38,7 +38,7 @@ public class MailService {
             } else {
                 helper.setTo(to);
                 helper.setSubject(subject);
-                String html = mailDesigns.sendCodeVerificationDesign(verificationCode, logo);
+                String html = mailDesigns.sendCodeVerificationDesign(verificationCode);
                 helper.setText(html, true);
                 mailSender.send(mimeMessage);
             }
@@ -48,7 +48,7 @@ public class MailService {
     }
 
     @Async
-    public void sendPasswordChangeEmail(String to, String subject, String logo) {
+    public void sendPasswordChangeEmail(String to, String subject) {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
 
@@ -60,7 +60,7 @@ public class MailService {
             } else {
                 helper.setTo(to);
                 helper.setSubject(subject);
-                String html = mailDesigns.sendPasswordChangeDesign(logo);
+                String html = mailDesigns.sendPasswordChangeDesign();
                 helper.setText(html, true);
                 mailSender.send(mimeMessage);
             }

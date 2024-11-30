@@ -1,11 +1,10 @@
 package mx.edu.utez.sigede_backend.controllers.credentials;
 
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestUpdateCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.ResponseCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
+import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.services.credentials.CredentialService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +26,21 @@ public class CredentialsController {
     public ResponseEntity<List<GetCredentialsDTO>> getCredentialsByCapturerId(@PathVariable Long userAccountId) {
         List<GetCredentialsDTO> credentials = credentialService.getCredentialsByCapturerId(userAccountId);
         return new ResponseEntity<>(credentials, HttpStatus.OK);
+    }
+
+    @PostMapping("/get-credentials-by-name-and-capturist")
+    public CustomResponse<Page<ResponseGetCredentialByNameAndCapturistDTO>> getCredentialsByNameAndCapturist(
+            @RequestBody RequestGetCredentialsByNameAndCapturistDTO request) {
+        Page<Credential> pages = credentialService.getCredentialsByNameAndCapturist(request.getName(), request.getCapturistId(),
+                request.getPage(), request.getSize());
+        Page<ResponseGetCredentialByNameAndCapturistDTO> response = pages.map(credential -> {
+           ResponseGetCredentialByNameAndCapturistDTO responseDTO = new ResponseGetCredentialByNameAndCapturistDTO();
+           responseDTO.setCredentialName(credential.getFullname());
+           responseDTO.setPhoto(credential.getUserPhoto());
+           return responseDTO;
+        });
+
+        return new CustomResponse<>(200, "Credenciales filtradas correctamente.", false, response);
     }
 
     @PostMapping("/new-credential")

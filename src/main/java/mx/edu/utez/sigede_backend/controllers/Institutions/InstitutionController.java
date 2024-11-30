@@ -4,6 +4,7 @@ import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.exception.ErrorDictionary;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,11 +40,31 @@ public class InstitutionController {
         return new CustomResponse<>(200,"institution",false,institution);
     }
 
+    @PostMapping("/get-institutions-by-name")
+    public CustomResponse<Page<ResponseInstitutionsDTO>> getInstitutionsByName(@Validated @RequestBody
+                                                                                   RequestGetInstitutionsByNameDTO request) {
+        Page<Institution> pages = institutionService.getInstitutionsByName(request.getName(), request.getPage(), request.getSize());
+        Page<ResponseInstitutionsDTO> response = pages.map(institution -> {
+            ResponseInstitutionsDTO institutionDTO = new ResponseInstitutionsDTO();
+            institutionDTO.setId(institution.getInstitutionId());
+            institutionDTO.setName(institution.getName());
+            institutionDTO.setEmail_contact(institution.getEmailContact());
+            institutionDTO.setLogo(institution.getLogo());
+            return institutionDTO;
+        });
+        return new CustomResponse<>(200, "Instituciones filtradas correctamente.", false, response);
+    }
+
     @PostMapping("/post-institution")
-    public CustomResponse<Institution> postInstitution(@Validated @RequestBody PostInstitutionDTO payload) {
-        Institution institution =institutionService.postInstitution(payload);
+    public CustomResponse<ResponseInstitutionsDTO> postInstitution(@Validated @RequestBody PostInstitutionDTO payload) {
+        Institution institution = institutionService.postInstitution(payload);
+        ResponseInstitutionsDTO institutionDTO = new ResponseInstitutionsDTO();
+        institutionDTO.setId(institution.getInstitutionId());
+        institutionDTO.setName(institution.getName());
+        institutionDTO.setEmail_contact(institution.getEmailContact());
+        institutionDTO.setLogo(institution.getLogo());
         return new CustomResponse<>(HttpStatus.CREATED.value(), "Institution creada correctamente.",
-                false, institution);
+                false, institutionDTO);
     }
 
     @PutMapping("/update-institution")

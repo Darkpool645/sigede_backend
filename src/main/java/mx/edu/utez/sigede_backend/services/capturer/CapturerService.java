@@ -16,6 +16,10 @@ import mx.edu.utez.sigede_backend.models.user_account.UserAccountRepository;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import mx.edu.utez.sigede_backend.utils.helpers.RandomPasswordGenerate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +63,29 @@ public class CapturerService {
     }
 
     @Transactional
+    public Page<UserAccount> getCapturistByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+
+        Rol rol = rolRepository.findByName("CAPTURIST");
+        return userAccountRepository.findByNameContainingIgnoreCaseAndFkRol(name, rol, pageable);
+    }
+
+    @Transactional
+    public Page<UserAccount> getCapturistsByNameAndInstitution(String name, Long id, int page, int size) {
+        Institution institution = institutionRepository.findByInstitutionId(id);
+        Rol rol = rolRepository.findByName("CAPTURIST");
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(
+                name, institution, rol, pageable
+        );
+    }
+
+    @Transactional
     public void registerCapturer(RequestCapturerRegistrationDTO payload) {
         if(userAccountRepository.findByEmail(payload.getEmail())!=null){
             throw new CustomException(USER_FOUND);
         }
-        Rol rol = rolRepository.findByName("capturista");
+        Rol rol = rolRepository.findByName("CAPTURIST");
         if (rol == null) {
             throw new CustomException("rol.notfound");
         }

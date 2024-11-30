@@ -2,6 +2,8 @@ package mx.edu.utez.sigede_backend.models.user_account;
 
 import java.util.List;
 
+import mx.edu.utez.sigede_backend.models.institution.Institution;
+import mx.edu.utez.sigede_backend.models.rol.Rol;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,6 +21,10 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
             "FROM UserAccount u " +
             "WHERE u.fkRol.name = 'capturista' AND u.fkInstitution.institutionId = :institutionId")
     List<GetCapturistsDTO> findCapturistasByInstitution(@Param("institutionId") Long institutionId);
+
+    Page<UserAccount> findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(String name, Institution institution, Rol rol, Pageable page);
+
+    Page<UserAccount> findByNameContainingIgnoreCaseAndFkRol(String name, Rol rol, Pageable page);
 
     @Query("SELECT ua FROM UserAccount ua")
     List<UserAccount> getAllUserAccounts();

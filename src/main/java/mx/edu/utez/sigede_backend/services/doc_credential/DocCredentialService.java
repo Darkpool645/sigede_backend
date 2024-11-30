@@ -8,6 +8,7 @@ import mx.edu.utez.sigede_backend.models.credential_field.CredentialField;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialFieldRepository;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.Part;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
@@ -39,20 +40,17 @@ public class DocCredentialService {
 
     @Transactional
     public ResponseDocCredentialDTO generateCredential(Long institutionId, Long credentialId){
-        if (institutionId == null || credentialId == null) {
-            throw new IllegalArgumentException("The field must not be null");
-        }
         Institution institution = institutionRepository.findByInstitutionId(institutionId);
         if (institution == null) {
-            throw new IllegalArgumentException("Institution not found");
+            throw new CustomException("institution.notfound");
         }
         Blob doc = institution.getDocs();
         if (doc == null) {
-            throw new IllegalArgumentException("Doc not found");
+            throw new CustomException("institution.docs.notfound");
         }
         Credential credential = credentialRepository.findCredentialByCredentialId(credentialId);
         if (credential == null) {
-            throw new IllegalArgumentException("Credential not found");
+            throw new CustomException("credential.not.found");
         }
         List<CredentialField> credentialFields = credentialFieldRepository.findByCredentialId(credentialId);
         try {
@@ -62,10 +60,9 @@ public class DocCredentialService {
 
             Map<String, String> replacements = new HashMap<>();
             replacements.put("${name}", credential.getFullname());
-            replacements.put("${expirationDate}", credential.getExpirationDate().toString());
+            replacements.put("${expirationDate}", credential.getExpirationDate().toLocalDate().toString());
             credentialFields.forEach(credentialField -> {
                 if (credentialField.getFkUserInfo().isInCard()) {
-                    System.out.println(credentialField.getFkUserInfo().getTag());
                     String tag = "${" + credentialField.getFkUserInfo().getTag() + "}";
                     String field = credentialField.getValue();
                     replacements.put(tag, field);
@@ -95,7 +92,6 @@ public class DocCredentialService {
     }
 
     private void replaceTextInDocument(WordprocessingMLPackage wordMLPackage, Map<String, String> replacements) throws Exception {
-        System.out.println(replacements);
         List<Object> texts = wordMLPackage.getMainDocumentPart().getJAXBNodesViaXPath("//w:t", true);
         for (Object obj : texts) {
             if (obj instanceof JAXBElement) {
@@ -129,7 +125,7 @@ public class DocCredentialService {
             }
 
             if (imagePart == null) {
-                throw new IllegalArgumentException("Image not found");
+                throw new CustomException("image.not.found");
             }
 
             imagePart.setBinaryData(newImageBytes);
