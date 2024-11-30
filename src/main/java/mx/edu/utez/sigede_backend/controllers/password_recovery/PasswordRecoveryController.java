@@ -49,13 +49,15 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/validate-verification-code")
-    public CustomResponse<Long> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
+    public CustomResponse<String> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
-            boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserId());
+
+            boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserEmail());
+
             if (result) {
-                passwordRecoveryService.deleteVerificationCode(validateCodeDTO.getUserId());
+                passwordRecoveryService.deleteVerificationCode(validateCodeDTO.getUserEmail());
                 return new CustomResponse<>(
-                        200, "El código es valido.", false, validateCodeDTO.getUserId()
+                        200, "El código es valido.", false, validateCodeDTO.getUserEmail()
                 );
             } else {
                 return new CustomResponse<>(400, "El código ingresado no es valido.", true, null);
@@ -69,11 +71,11 @@ public class PasswordRecoveryController {
     @PutMapping("/change-password")
     public CustomResponse<PasswordChangeResponseDTO> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
         try {
-            PasswordChangeResponseDTO responseDTO = passwordRecoveryService.changePassword(
-                    passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserId());
+             passwordRecoveryService.changePassword(
+                    passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserEmail());
             return new CustomResponse<>(
                     200, "La contraseña ha sido cambiada correctamente", false,
-                    responseDTO
+                    null
             );
         } catch (CustomException e) {
             return new CustomResponse<>(

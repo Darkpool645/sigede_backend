@@ -1,9 +1,6 @@
 package mx.edu.utez.sigede_backend.services.institution;
 
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionsDTO;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.stereotype.Service;
@@ -37,9 +34,8 @@ public class InstitutionService {
                 .orElseThrow(() -> new CustomException("Institution not found with id: " + id));
     }
 
-    @Transactional
-    public List<ResponseInstitutionsDTO> getAllInstitutions() {
-        return institutionRepository.findAll().stream().map(entity -> new ResponseInstitutionsDTO(entity.getInstitutionId(),entity.getName(),entity.getEmailContact(),entity.getLogo())).toList();
+    public List<InstitutionDTO> getAllInstitutions() {
+        return institutionRepository.getAllInstitutions();
     }
 
     @Transactional

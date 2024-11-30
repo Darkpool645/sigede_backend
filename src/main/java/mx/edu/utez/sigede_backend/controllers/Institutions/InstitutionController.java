@@ -30,8 +30,8 @@ public class InstitutionController {
     }
 
     @GetMapping("/get-all")
-    public CustomResponse<List<ResponseInstitutionsDTO>> getAllInstitutions(){
-        List<ResponseInstitutionsDTO> data = institutionService.getAllInstitutions();
+    public CustomResponse<List<InstitutionDTO>> getAllInstitutions(){
+        List<InstitutionDTO> data = institutionService.getAllInstitutions();
         return new CustomResponse<>(200,"Todas las instituciones",false,data);
     }
 

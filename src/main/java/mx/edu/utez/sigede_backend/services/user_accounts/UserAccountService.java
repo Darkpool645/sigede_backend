@@ -45,8 +45,8 @@ public class UserAccountService {
     }
 
     @Transactional
-    public List<UserAccount> getAllAdmins() {
-        return userAccountRepository.getAllAdmins("admin");
+    public List<GetUserBasicInfoDTO> getAllByRolName() {
+        return userAccountRepository.getAllByRolName("admin");
     }
 
     @Transactional
@@ -74,12 +74,13 @@ public class UserAccountService {
         if(institution == null){
             throw new CustomException("institution.notfound");
         }
-        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId(role.getName(), institution.getInstitutionId(),pageable);
+        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(role.getName(), institution.getInstitutionId(),payload.getName(),pageable);
         return accounts.map(account -> {
             ResponseAllAdminByInstitutionDTO dto = new ResponseAllAdminByInstitutionDTO();
             dto.setUserId(account.getUserAccountId());
             dto.setEmail(account.getEmail());
             dto.setName(account.getName());
+            dto.setStatus(account.getFkStatus().getName());
             return dto;
         });
     }

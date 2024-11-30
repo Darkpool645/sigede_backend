@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.controllers.capturers;
 
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.services.capturer.CapturerService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
@@ -17,12 +18,15 @@ public class CapturerController {
         this.service = service;
     }
 
-    @GetMapping("/get-capturist/{userId}")
-    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId) {
+    @GetMapping("/get-capturist/{userId}/{institutionId}")
+    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId,@PathVariable Long institutionId) {
         if (userId == null) {
             throw new CustomException("Invalid user id");
         }
-        ResponseCapturistDTO response = service.getOneCapturer(userId);
+        if(institutionId == null) {
+            throw new CustomException("Invalid institution id");
+        }
+        ResponseCapturistDTO response = service.getOneCapturer(userId,institutionId);
         return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, response);
     }
 
@@ -40,6 +44,17 @@ public class CapturerController {
         boolean result = service.changeCapturistStatus(userId);
         if (result) {
             return new CustomResponse<>(200, "Estatus actualizado correctamente", false, userId);
+        } else {
+            return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
+        }
+    }
+
+    @PutMapping("/update-basic-data")
+    public  CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
+        boolean result = service.updateBasicData(payload);
+
+        if (result) {
+            return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
         } else {
             return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
         }
