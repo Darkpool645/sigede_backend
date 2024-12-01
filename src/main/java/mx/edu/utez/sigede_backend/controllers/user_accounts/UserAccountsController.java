@@ -36,9 +36,9 @@ public class UserAccountsController {
         return new ResponseEntity<>(userAcounts, HttpStatus.OK);
     }
 
-    @GetMapping("/admins")
-    public ResponseEntity<List<GetUserBasicInfoDTO>> getAllAdmins() {
-        List<GetUserBasicInfoDTO> admins = userAccountService.getAllByRolName();
+    @GetMapping("/admins/{institutionId}")
+    public ResponseEntity<List<GetUserBasicInfoDTO>> getAllAdminsByInstitution(@PathVariable Long institutionId) {
+        List<GetUserBasicInfoDTO> admins = userAccountService.getAllByRolNameAndInstitutionId(institutionId);
         return new ResponseEntity<>(admins, HttpStatus.OK);
     }
 

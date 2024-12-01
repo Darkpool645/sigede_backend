@@ -35,8 +35,8 @@ public class InstitutionController {
     }
 
     @GetMapping("/{id}")
-    public CustomResponse<ResponseInstitutionsDTO> getInstitutionByid(@PathVariable Long id){
-        ResponseInstitutionsDTO institution = institutionService.getById(id);
+    public CustomResponse<ResponseInstitutionInfoDTO> getInstitutionByid(@PathVariable Long id){
+        ResponseInstitutionInfoDTO institution = institutionService.getById(id);
         return new CustomResponse<>(200,"institution",false,institution);
     }
 

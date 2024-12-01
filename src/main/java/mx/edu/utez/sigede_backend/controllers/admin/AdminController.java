@@ -27,6 +27,7 @@ public class AdminController {
                                                                                         RequestGetByNameAndInstitutionDTO request) {
         Page<UserAccount> pages = service.getAdminsByNameAndInstitution(request.getName(), request.getInstitutionId(),
                 request.getPage(), request.getSize());
+
         Page<ResponseGetByNameDTO> response = pages.map(userAccount -> {
             ResponseGetByNameDTO dto = new ResponseGetByNameDTO();
             dto.setId(userAccount.getUserAccountId());

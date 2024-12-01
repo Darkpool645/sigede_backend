@@ -45,8 +45,8 @@ public class UserAccountService {
     }
 
     @Transactional
-    public List<GetUserBasicInfoDTO> getAllByRolName() {
-        return userAccountRepository.getAllByRolName("admin");
+    public List<GetUserBasicInfoDTO> getAllByRolNameAndInstitutionId(Long institutionId) {
+        return userAccountRepository.getAllByRolNameAndFkInstitution("admin",institutionId);
     }
 
     @Transactional

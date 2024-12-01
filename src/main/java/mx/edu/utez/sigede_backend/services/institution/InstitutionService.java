@@ -26,15 +26,8 @@ public class InstitutionService {
     }
 
     @Transactional
-    public ResponseInstitutionsDTO getById(Long id) {
-        return institutionRepository.findById(id)
-                .map(institution -> new ResponseInstitutionsDTO(
-                        institution.getInstitutionId(),
-                        institution.getName(),
-                        institution.getEmailContact(),
-                        institution.getLogo()
-                ))
-                .orElseThrow(() -> new CustomException("institution.notfound"));
+    public ResponseInstitutionInfoDTO getById(Long id) {
+        return institutionRepository.findInstitutionByInstitutionId(id);
     }
 
     public List<InstitutionDTO> getAllInstitutions() {
