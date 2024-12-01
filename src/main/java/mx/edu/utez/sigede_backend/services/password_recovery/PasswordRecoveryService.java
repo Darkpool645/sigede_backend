@@ -42,7 +42,6 @@ public class PasswordRecoveryService {
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
-        String logo = user.getFkInstitution().getLogo();
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
 
         if (verificationCode == null) {
@@ -55,7 +54,7 @@ public class PasswordRecoveryService {
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
     }
 
@@ -86,7 +85,8 @@ public class PasswordRecoveryService {
         }
         String logo = changePasswordDataConsult.getLogo();
         userAccountRepository.updatePasswordByEmail(email,passwordEncoder.encode(newPassword));
-        mailService.sendPasswordChangeEmail(email, "Contraseña actualizada", logo);
+        mailService.sendPasswordChangeEmail(email, "Contraseña actualizada");
+
     }
 
     @Transactional
@@ -95,14 +95,14 @@ public class PasswordRecoveryService {
         if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        String logo = user.getFkInstitution().getLogo();
+        
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);
         verificationCode.setCreatedAt(LocalDateTime.now());
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
-        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code, logo);
+        mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
         return user.getUserAccountId();
     }
 

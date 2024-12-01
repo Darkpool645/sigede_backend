@@ -17,6 +17,9 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +43,17 @@ public class CredentialService {
         this.institutionRepository = institutionRepository;
         this.credentialRepository = credentialRepository;
         this.userAccountRepository = userAccountRepository;
+    }
+
+    @Transactional
+    public Page<Credential> getCredentialsByNameAndCapturist(String name, Long capturistId, int page, int size) {
+        UserAccount userAccount = userAccountRepository.findByUserAccountId(capturistId);
+        if (userAccount == null) {
+            throw new CustomException("user.not.found");
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by("fullname").ascending());
+
+        return credentialRepository.findByFullnameContainingIgnoreCaseAndAndFkUserAccount(name, userAccount, pageable);
     }
 
     @Transactional
@@ -83,7 +97,7 @@ public class CredentialService {
             // Se asume que los tags ya están definidos en la tabla 'UserInfo' y se encuentran asociados
             UserInfo userInfo = userInfoRepository.findByTag(fieldDTO.getTag());
             if (userInfo == null){
-                throw new CustomException("user.info.not.found: " + fieldDTO.getTag());
+                throw new CustomException("user.info.not.found");
             }
 
             CredentialField credentialField = new CredentialField();
@@ -130,7 +144,7 @@ public class CredentialService {
         }
         // Obtener la credencial que se va a actualizar
         Credential credential = credentialRepository.findById(credentialId)
-                .orElseThrow(() -> new CustomException("Credential not found"));
+                .orElseThrow(() -> new CustomException("credential.not.found"));
 
         // Actualizar los campos de la credencial
         credential.setFullname(payload.getFullname());
@@ -146,12 +160,12 @@ public class CredentialService {
             // Encontrar el UserInfo por el tag
             UserInfo userInfo = userInfoRepository.findByTag(fieldDTO.getTag());
             if(userInfo == null){
-                throw new CustomException("UserInfo with tag " + fieldDTO.getTag() + " not found");
+                throw new CustomException("user.info.not.found");
             }
 
             // Encontrar el CredentialField asociado a la credencial y al UserInfo
             CredentialField field = credentialFieldRepository.findByFkCredentialAndFkUserInfo(credential, userInfo)
-                    .orElseThrow(() -> new CustomException("CredentialField for tag " + fieldDTO.getTag() + " not found"));
+                    .orElseThrow(() -> new CustomException("user.info.not.found"));
 
             // Actualizar el valor del campo
             field.setValue(fieldDTO.getValue());

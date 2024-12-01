@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MailDesigns {
-    public String sendCodeVerificationDesign(String codeVerification,String logo){
+    public String sendCodeVerificationDesign(String codeVerification){
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"es\">\n" +
                 "\n" +
@@ -85,12 +85,6 @@ public class MailDesigns {
                 "        <div class=\"header\">Recuperación de contraseña</div>\n" +
                 "        <div class=\"content\">\n" +
                 "            <div class=\"field\">\n" +
-                "                <center>\n" +
-                "                    <img src=\"" +
-                                        logo +
-                "                    \">\n" +
-                "                </center>"+
-                "\n" +
                 "                <p>Te enviamos esta notificación para garantizar la privacidad y seguridad de tu cuenta de\n" +
                 "                    <strong>SIGEDE</strong>. Si\n" +
                 "                    has solicitado la recuperación de contraseña, este es tu código de verificación:\n" +
@@ -110,7 +104,7 @@ public class MailDesigns {
                 "</html>\n";
     }
 
-    public String sendPasswordChangeDesign(String logo){
+    public String sendPasswordChangeDesign(){
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"es\">\n" +
                 "\n" +
@@ -191,12 +185,6 @@ public class MailDesigns {
                 "        <div class=\"header\">Cambio de contraseña</div>\n" +
                 "        <div class=\"content\">\n" +
                 "            <div class=\"field\">\n" +
-                "                <center>\n" +
-                "                    <img src=\"" +
-                                        logo +
-                "                    \">\n" +
-                "                </center>"+
-                "\n" +
                 "                <p>Te enviamos esta notificación para garantizar la privacidad y seguridad de tu cuenta de\n" +
                 "                    <strong>SIGEDE</strong>. Tu contraseña se ha actulizado correctamente\n" +
                 "                </p>\n" +
