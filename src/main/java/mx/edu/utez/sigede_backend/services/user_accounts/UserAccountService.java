@@ -55,8 +55,8 @@ public class UserAccountService {
         if(user == null){
             throw new CustomException("user.not.found");
         }
-        return new ResponseGetAccountDTO(user.getEmail(),user.getName(),user.getFkRol().getName(),user.getFkStatus().getName(),user.getFkInstitution().getInstitutionId());
 
+        return new ResponseGetAccountDTO(user.getEmail(),user.getName(), user.getFkRol().getName(),user.getFkStatus().getName(),user.getFkInstitution().getInstitutionId());
     }
 
     @Transactional
@@ -127,7 +127,7 @@ public class UserAccountService {
                 .orElseThrow(() -> new CustomException("user.not.found"));
 
         if (payload.getPassword() != null) {
-            userAccount.setEmail(passwordEncoder.encode(payload.getPassword()));
+            userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
         }
         if (payload.getName() != null) {
             userAccount.setName(payload.getName());
