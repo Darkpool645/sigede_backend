@@ -77,7 +77,6 @@ public class CapturerController {
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
         boolean result = service.updateBasicData(payload);
-
         if (result) {
             return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
         } else {

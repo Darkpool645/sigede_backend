@@ -23,6 +23,6 @@ public interface InstitutionRepository extends JpaRepository<Institution, Long>{
 
     boolean existsByName(String name);
 
-    @Query("SELECT new mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionInfoDTO(ins.institutionId,ins.name,ins.address,ins.emailContact,ins.phoneContact,ins.logo)  FROM Institution ins where  ins.institutionId=:institutionId")
+    @Query("SELECT new mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionInfoDTO(ins.institutionId,ins.name,ins.address,ins.emailContact,ins.phoneContact,ins.logo,ins.institutionStatus)  FROM Institution ins where  ins.institutionId=:institutionId")
     ResponseInstitutionInfoDTO findInstitutionByInstitutionId(@Param("institutionId") Long institutionId);
 }

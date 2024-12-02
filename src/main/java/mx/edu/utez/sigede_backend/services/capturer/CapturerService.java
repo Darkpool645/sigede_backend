@@ -49,13 +49,14 @@ public class CapturerService {
         this.mailService = mailService;
     }
 
-    @jakarta.transaction.Transactional
+    @Transactional
     public ResponseCapturistDTO getOneCapturer(Long userId, Long institutionId) {
         Institution institution = this.institutionRepository.findByInstitutionId(institutionId);
         if (institution == null) {
             throw new CustomException("user.not.found");
         }
-        UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitution(userId, institutionId);
+        UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"capturista");
+        System.out.println(user);
         if (user == null) {
             throw new CustomException("user.not.found");
         }
