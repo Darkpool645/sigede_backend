@@ -7,10 +7,8 @@ import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.ValidateCode
 import mx.edu.utez.sigede_backend.services.password_recovery.PasswordRecoveryService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Locale;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/recovery-password")
@@ -23,7 +21,7 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/send-verification-code")
-    public CustomResponse<Long> sendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Long> sendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
         try {
             Long userId = passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
@@ -36,7 +34,7 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/resend-verification-code")
-    public CustomResponse<Long> resendVerificationCode(@RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Long> resendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
         try {
             Long userId = passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
@@ -49,7 +47,7 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/validate-verification-code")
-    public CustomResponse<Long> validateVerificationCode(@RequestBody ValidateCodeDTO validateCodeDTO) {
+    public CustomResponse<Long> validateVerificationCode(@Validated @RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
             boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserId());
             if (result) {
@@ -67,7 +65,7 @@ public class PasswordRecoveryController {
     }
 
     @PutMapping("/change-password")
-    public CustomResponse<PasswordChangeResponseDTO> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+    public CustomResponse<PasswordChangeResponseDTO> changePassword(@Validated @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
         try {
             PasswordChangeResponseDTO responseDTO = passwordRecoveryService.changePassword(
                     passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserId());
