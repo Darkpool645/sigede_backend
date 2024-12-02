@@ -92,7 +92,7 @@ public class PasswordRecoveryService {
         if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        
+
         VerificationCode verificationCode = verificationCodeRepository.findByFkUserAccount(user);
         String code = generateVerificationCode();
         verificationCode.setVerificationCode(code);

@@ -53,6 +53,8 @@ public class ErrorDictionary {
         errorMessages.put("credential.fields.not.empty", "campos no vacíos");
         errorMessages.put("invalid.potion", "Opción no valida.");
         errorMessages.put("image.not.found", "No se encontro ninguna imagen en el documento");
+        errorMessages.put("invalid.new.password", "La nueva contraseña debe de contener al menos 8 caracteres, una mayuscual, un " +
+                "numero y un caracter especial.");
     }
 
     public String getErrorMessage(String errorCode) {

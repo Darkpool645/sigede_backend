@@ -1,11 +1,18 @@
 package mx.edu.utez.sigede_backend.controllers.password_recovery.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
-import java.util.UUID;
+import static mx.edu.utez.sigede_backend.utils.validations.RegexPatterns.PASSWORD_REGEX;
+
 
 @Data
 public class PasswordChangeRequestDTO {
+    @NotBlank(message = "field.not.null")
     private String newPassword;
+    @NotNull(message = "field.not.null")
+    @Pattern(regexp = PASSWORD_REGEX, message = "invalid.new.password")
     private Long userId;
 }
