@@ -1,7 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.password_recovery;
 
 import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeRequestDTO;
-import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
 import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.UserEmailDTO;
 import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.ValidateCodeDTO;
 import mx.edu.utez.sigede_backend.services.password_recovery.PasswordRecoveryService;
@@ -21,11 +20,11 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/send-verification-code")
-    public CustomResponse<Long> sendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Object> sendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
         try {
-            Long userId = passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
+            passwordRecoveryService.sendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
-                    200, "Código de verificación enviado correctamente.", false, userId
+                    200, "Código de verificación enviado correctamente.", false, null
             );
         } catch (CustomException e) {
             return new CustomResponse<>(
@@ -34,11 +33,11 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/resend-verification-code")
-    public CustomResponse<Long> resendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
+    public CustomResponse<Object> resendVerificationCode(@Validated @RequestBody UserEmailDTO userEmailDTO) {
         try {
-            Long userId = passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
+            passwordRecoveryService.resendVerificationCode(userEmailDTO.getUserEmail());
             return new CustomResponse<>(
-                    200, "Código de verificación enviado correctamente.", false, userId);
+                    200, "Código de verificación enviado correctamente.", false, null);
         } catch (CustomException e) {
             return new CustomResponse<>(
                     400, "Ocurrio un error al enviar el código de verificación.", true, null
@@ -47,13 +46,13 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/validate-verification-code")
-    public CustomResponse<Long> validateVerificationCode(@Validated @RequestBody ValidateCodeDTO validateCodeDTO) {
+    public CustomResponse<Object> validateVerificationCode(@Validated @RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
-            boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserId());
+            boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getEmail());
             if (result) {
-                passwordRecoveryService.deleteVerificationCode(validateCodeDTO.getUserId());
+                passwordRecoveryService.deleteVerificationCode(validateCodeDTO.getEmail());
                 return new CustomResponse<>(
-                        200, "El código es valido.", false, validateCodeDTO.getUserId()
+                        200, "El código es valido.", false, null
                 );
             } else {
                 return new CustomResponse<>(400, "El código ingresado no es valido.", true, null);
@@ -65,18 +64,11 @@ public class PasswordRecoveryController {
     }
 
     @PutMapping("/change-password")
-    public CustomResponse<PasswordChangeResponseDTO> changePassword(@Validated @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        try {
-            PasswordChangeResponseDTO responseDTO = passwordRecoveryService.changePassword(
-                    passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserId());
-            return new CustomResponse<>(
+    public CustomResponse<Object> changePassword(@Validated @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        passwordRecoveryService.changePassword(passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getEmail());
+        return new CustomResponse<>(
                     200, "La contraseña ha sido cambiada correctamente", false,
-                    responseDTO
-            );
-        } catch (CustomException e) {
-            return new CustomResponse<>(
-                    400, e.getMessage(), true, null
-            );
-        }
+                    null
+        );
     }
 }

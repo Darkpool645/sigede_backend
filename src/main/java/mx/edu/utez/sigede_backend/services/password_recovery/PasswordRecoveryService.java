@@ -3,7 +3,6 @@ package mx.edu.utez.sigede_backend.services.password_recovery;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
-import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,7 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public Long sendVerificationCode(String email) {
+    public void sendVerificationCode(String email) {
         if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
@@ -53,15 +52,14 @@ public class PasswordRecoveryService {
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
         mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
-        return user.getUserAccountId();
     }
 
     @Transactional
-    public boolean validateVerificationCode(String code, Long userId) {
-        if (!userAccountRepository.existsByUserAccountId(userId)) {
+    public boolean validateVerificationCode(String code, String email) {
+        if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        UserAccount user = userAccountRepository.findByUserAccountId(userId);
+        UserAccount user = userAccountRepository.findByEmail(email);
         VerificationCode databaseCode = verificationCodeRepository.findByFkUserAccount(user);
         if (LocalDateTime.now().isAfter(databaseCode.getExpiration())) {
             throw new CustomException("verification.code.expired");
@@ -70,12 +68,12 @@ public class PasswordRecoveryService {
     }
 
     @Transactional
-    public PasswordChangeResponseDTO changePassword(String newPassword, Long userId) {
+    public void changePassword(String newPassword, String email) {
 
-        if (!userAccountRepository.existsByUserAccountId(userId)) {
+        if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        UserAccount user = userAccountRepository.findByUserAccountId(userId);
+        UserAccount user = userAccountRepository.findByEmail(email);
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
             throw new CustomException("user.password.same_as_old");
         }
@@ -83,11 +81,10 @@ public class PasswordRecoveryService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(user);
         mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");
-        return new PasswordChangeResponseDTO(user.getPassword(), user.getUserAccountId());
     }
 
     @Transactional
-    public Long resendVerificationCode(String email) {
+    public void resendVerificationCode(String email) {
         UserAccount user = userAccountRepository.findByEmail(email);
         if (user == null) {
             throw new CustomException(USER_NOT_FOUND);
@@ -100,12 +97,11 @@ public class PasswordRecoveryService {
         verificationCode.setExpiration(LocalDateTime.now().plusHours(1));
         verificationCodeRepository.saveAndFlush(verificationCode);
         mailService.sendVerificationCodeEmail(email, VERIFICATION_CODE, code);
-        return user.getUserAccountId();
     }
 
     @Transactional
-    public void deleteVerificationCode(Long userId) {
-        UserAccount user = userAccountRepository.findByUserAccountId(userId);
+    public void deleteVerificationCode(String email) {
+        UserAccount user = userAccountRepository.findByEmail(email);
         verificationCodeRepository.deleteByFkUserAccount(user);
     }
 
