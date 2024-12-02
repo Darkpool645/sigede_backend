@@ -10,6 +10,7 @@ import java.util.Properties;
 
 @Configuration
 public class MailConfiguration {
+
     @Value("${spring.mail.host}")
     private String host;
 
@@ -27,6 +28,13 @@ public class MailConfiguration {
 
     @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private boolean starttlsEnable;
+
+    @Value("${spring.mail.properties.mail.smtp.starttls.required}")
+    private boolean starttlsRequired;
+
+    @Value("${spring.mail.properties.mail.smtp.ssl.enable}")
+    private boolean sslEnable;
+
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -39,6 +47,10 @@ public class MailConfiguration {
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", smtpAuth);
         props.put("mail.smtp.starttls.enable", starttlsEnable);
+        props.put("mail.smtp.starttls.required", starttlsRequired);
+        props.put("mail.smtp.ssl.enable", sslEnable);
+        props.put("mail.smtp.ssl.trust", "*");
+        props.put("mail.smtp.quitwait", "false");
 
         return mailSender;
     }

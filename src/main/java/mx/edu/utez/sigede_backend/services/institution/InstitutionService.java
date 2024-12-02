@@ -1,9 +1,6 @@
 package mx.edu.utez.sigede_backend.services.institution;
 
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionsDTO;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -29,20 +26,12 @@ public class InstitutionService {
     }
 
     @Transactional
-    public ResponseInstitutionsDTO getById(Long id) {
-        return institutionRepository.findById(id)
-                .map(institution -> new ResponseInstitutionsDTO(
-                        institution.getInstitutionId(),
-                        institution.getName(),
-                        institution.getEmailContact(),
-                        institution.getLogo()
-                ))
-                .orElseThrow(() -> new CustomException("institution.notfound"));
+    public ResponseInstitutionInfoDTO getById(Long id) {
+        return institutionRepository.findInstitutionByInstitutionId(id);
     }
 
-    @Transactional
-    public List<ResponseInstitutionsDTO> getAllInstitutions() {
-        return institutionRepository.findAll().stream().map(entity -> new ResponseInstitutionsDTO(entity.getInstitutionId(),entity.getName(),entity.getEmailContact(),entity.getLogo())).toList();
+    public List<InstitutionDTO> getAllInstitutions() {
+        return institutionRepository.getAllInstitutions();
     }
 
     @Transactional
@@ -91,6 +80,38 @@ public class InstitutionService {
         }
         if (payload.getLogo() != null) {
             institution.setLogo(payload.getLogo());
+        }
+
+        return institutionRepository.save(institution);
+    }
+
+    @Transactional
+    public Institution updateInstitutionWithEmail(UpdateDTO payload) {
+        Optional<Institution> optionalInstitution = institutionRepository.findById(payload.getInstitutionId());
+
+        if (optionalInstitution.isEmpty()) {
+            throw new CustomException("institution.not.found.error");
+        }
+
+        Institution institution = optionalInstitution.get();
+
+        if (payload.getInstitutionName() != null) {
+            institution.setName(payload.getInstitutionName());
+        }
+        if (payload.getInstitutionAddress() != null) {
+            institution.setAddress(payload.getInstitutionAddress());
+        }
+        if (payload.getInstitutionPhone() != null) {
+            institution.setPhoneContact(payload.getInstitutionPhone());
+        }
+        if (payload.getInstitutionStatus() != null) {
+            institution.setInstitutionStatus(payload.getInstitutionStatus());
+        }
+        if (payload.getLogo() != null) {
+            institution.setLogo(payload.getLogo());
+        }
+        if (payload.getInstitutionEmail() != null) {
+            institution.setEmailContact(payload.getInstitutionEmail());
         }
 
         return institutionRepository.save(institution);

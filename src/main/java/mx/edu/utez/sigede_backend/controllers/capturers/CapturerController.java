@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.controllers.capturers;
 
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameAndInstitutionDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
@@ -23,12 +24,15 @@ public class CapturerController {
         this.capturerService = capturerService;
     }
 
-    @GetMapping("/get-capturist/{userId}")
-    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId) {
+    @GetMapping("/get-capturist/{userId}/{institutionId}")
+    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId, @PathVariable Long institutionId) {
         if (userId == null) {
             throw new CustomException("Invalid user id");
         }
-        ResponseCapturistDTO response = service.getOneCapturer(userId);
+        if (institutionId == null) {
+            throw new CustomException("Invalid institution id");
+        }
+        ResponseCapturistDTO response = service.getOneCapturer(userId, institutionId);
         return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, response);
     }
 
@@ -54,7 +58,7 @@ public class CapturerController {
     @PostMapping("/register")
     public CustomResponse<Object> registerCapturer(@Validated @RequestBody RequestCapturerRegistrationDTO payload) {
         service.registerCapturer(payload);
-        return new CustomResponse<>(201,"Cuenta registrada correctamente", false,null);
+        return new CustomResponse<>(201, "Cuenta registrada correctamente", false, null);
     }
 
     @PatchMapping("/change-status")
@@ -68,6 +72,17 @@ public class CapturerController {
         } else {
             return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
         }
+    }
+
+    @PutMapping("/update-basic-data")
+    public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
+        boolean result = service.updateBasicData(payload);
+        if (result) {
+            return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
+        } else {
+            return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
+        }
+
     }
 
     private Page<ResponseCapturistDTO> castToResponseDTO(Page<UserAccount> pages) {

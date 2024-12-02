@@ -54,6 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthDetails user = (AuthDetails) authResult.getPrincipal();
         String username= user.getEmail();
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
+        Long instututionsId= user.getInstitutionsId();
 
         Claims claims = Jwts.claims();
         claims.put("authorities",new ObjectMapper().writeValueAsString(roles));
@@ -71,6 +72,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String,Object> body = new HashMap<>();
         body.put("token",token);
         body.put("email",username);
+        body.put("institutionId",instututionsId);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(CONTENT_TYPE);

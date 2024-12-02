@@ -36,11 +36,10 @@ public class UserAccountsController {
         return new ResponseEntity<>(userAcounts, HttpStatus.OK);
     }
 
-    @GetMapping("/admins")
-    public ResponseEntity<List<UserAccount>> getAllAdmins() {
-        List<UserAccount> admins = userAccountService.getAllAdmins();
+    @GetMapping("/admins/{institutionId}")
+    public ResponseEntity<List<GetUserBasicInfoDTO>> getAllAdminsByInstitution(@PathVariable Long institutionId) {
+        List<GetUserBasicInfoDTO> admins = userAccountService.getAllByRolNameAndInstitutionId(institutionId);
         return new ResponseEntity<>(admins, HttpStatus.OK);
-
     }
 
     @GetMapping("/administrators/{institutionId}")

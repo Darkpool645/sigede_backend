@@ -1,10 +1,15 @@
 package mx.edu.utez.sigede_backend.controllers.credentials;
 
+
 import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
-import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.services.credentials.CredentialService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
+import mx.edu.utez.sigede_backend.models.credential.Credential;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +33,14 @@ public class CredentialsController {
         return new ResponseEntity<>(credentials, HttpStatus.OK);
     }
 
+    @PostMapping("/get-all-by-institution")
+    public CustomResponse<Page<GetCretentialsByInstitutoIdDTO>> getAllByInstitution(@Validated @RequestBody RequestByInstitution payload, Pageable pageable){
+        Page<GetCretentialsByInstitutoIdDTO> data = credentialService.getAllAccountByInstitution(payload,pageable);
+        return new CustomResponse<>(200,"Usuarios",false,data);
+    }
+
+
+    
     @PostMapping("/get-credentials-by-name-and-capturist")
     public CustomResponse<Page<ResponseGetCredentialByNameAndCapturistDTO>> getCredentialsByNameAndCapturist(
             @RequestBody RequestGetCredentialsByNameAndCapturistDTO request) {

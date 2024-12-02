@@ -12,5 +12,4 @@ public class RequestEditDataDTO {
     private String password;
     private Long fkRol;
     private Long fkStatus;
-
 }
