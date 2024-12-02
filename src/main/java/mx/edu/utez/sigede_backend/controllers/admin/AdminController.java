@@ -3,15 +3,15 @@ package mx.edu.utez.sigede_backend.controllers.admin;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestGetByNameAndInstitutionDTO;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.ResponseGetByNameDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.services.admin.AdminService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
+import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -43,5 +43,26 @@ public class AdminController {
     public CustomResponse<String> registerAdmin(@Validated @RequestBody RequestNewAdminDTO payload){
         service.registerAdmin(payload);
         return new CustomResponse<>(201,"Admin Registrado correctamente",false,null);
+    }
+    @GetMapping("/get-admin/{userId}/{institutionId}")
+    public CustomResponse<ResponseCapturistDTO> getAdmin(@PathVariable Long userId, @PathVariable Long institutionId) {
+        if (userId == null) {
+            throw new CustomException("Invalid user id");
+        }
+        if (institutionId == null) {
+            throw new CustomException("Invalid institution id");
+        }
+        ResponseCapturistDTO response = service.getOneAdmin(userId, institutionId);
+        return new CustomResponse<>(200, "Administrador encontrado correctamente.", false, response);
+    }
+    @PutMapping("/update-basic-data")
+    public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
+        boolean result = service.updateBasicData(payload);
+        if (result) {
+            return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
+        } else {
+            return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
+        }
+
     }
 }

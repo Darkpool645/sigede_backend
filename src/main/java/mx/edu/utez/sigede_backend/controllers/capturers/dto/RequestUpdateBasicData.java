@@ -10,5 +10,4 @@ public class RequestUpdateBasicData {
     private String name;
     private String email;
     private String status;
-
 }

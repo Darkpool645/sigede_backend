@@ -1,6 +1,8 @@
 package mx.edu.utez.sigede_backend.services.admin;
 
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
@@ -87,5 +89,46 @@ public class AdminService {
         mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro exitoso",temporaryPassword,"Administrador");
     }
 
+    @Transactional
+    public ResponseCapturistDTO getOneAdmin(Long userId, Long institutionId) {
+        Institution institution = this.institutionRepository.findByInstitutionId(institutionId);
+        if (institution == null) {
+            throw new CustomException("user.not.found");
+        }
+        UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"admin");
+        if (user == null) {
+            throw new CustomException("user.not.found");
+        }
+        ResponseCapturistDTO response = new ResponseCapturistDTO();
+        response.setUserAccountId(user.getUserAccountId());
+        response.setEmail(user.getEmail());
+        response.setName(user.getName());
+        response.setStatus(user.getFkStatus().getName());
+        return response;
+    }
 
+    @jakarta.transaction.Transactional
+    public boolean updateBasicData(RequestUpdateBasicData payload) {
+        try {
+            UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());
+            if (user == null) {
+                throw new CustomException("user.not.found");
+            }
+            Status status = statusRepository.findByName(payload.getStatus());
+            if (status == null) {
+                throw new CustomException("status.not.found");
+            }
+            if (this.userAccountRepository.existsByEmailAndNotUserAccountId(payload.getEmail(), payload.getUserAccountId())) {
+                throw new CustomException("email.already.exists");
+            }
+            user.setName(payload.getName());
+            user.setEmail(payload.getEmail());
+            user.setFkStatus(status);
+            userAccountRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error al cambiar el estado del usuario:"+ e);
+            return false;
+        }
+    }
 }

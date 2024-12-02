@@ -51,8 +51,8 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
             @Param("name") String name,
             Pageable pageable);
 
-    @Query("SELECT ua FROM UserAccount ua WHERE ua.userAccountId=:userAccountId AND ua.fkInstitution.institutionId=:institutionId")
-    UserAccount findByUserAccountIdAndFkInstitution(@Param("userAccountId")Long userAccountId,@Param("institutionId")Long institutionId);
+    @Query("SELECT ua FROM UserAccount ua WHERE ua.userAccountId=:userAccountId AND ua.fkInstitution.institutionId=:institutionId AND ua.fkRol.name=:rol")
+    UserAccount findByUserAccountIdAndFkInstitutionAndRolName(@Param("userAccountId")Long userAccountId,@Param("institutionId")Long institutionId,@Param("rol")String rol);
 
 
     boolean existsByUserAccountId(Long userAccountId);
