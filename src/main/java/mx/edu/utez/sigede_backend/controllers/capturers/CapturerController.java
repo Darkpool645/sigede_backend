@@ -23,12 +23,15 @@ public class CapturerController {
         this.capturerService = capturerService;
     }
 
-    @GetMapping("/get-capturist/{userId}")
-    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId) {
+    @GetMapping("/get-capturist/{userId}/{institutionId}")
+    public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId, @PathVariable Long institutionId) {
         if (userId == null) {
-            throw new CustomException("Invalid user id");
+            throw new CustomException("user.id.required");
         }
-        ResponseCapturistDTO response = service.getOneCapturer(userId);
+        if (institutionId == null) {
+            throw new CustomException("institution.id.notnull");
+        }
+        ResponseCapturistDTO response = service.getOneCapturer(userId, institutionId);
         return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, response);
     }
 
@@ -60,7 +63,7 @@ public class CapturerController {
     @PatchMapping("/change-status")
     public CustomResponse<Long> changeCapturistStatus(Long userId) {
         if (userId == null) {
-            throw new CustomException("Invalid user id");
+            throw new CustomException("user.id.required");
         }
         boolean result = service.changeCapturistStatus(userId);
         if (result) {
