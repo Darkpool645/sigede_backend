@@ -47,6 +47,15 @@ public class CredentialService {
         this.userAccountRepository = userAccountRepository;
     }
 
+    public Page<Credential> getAllCredentialsByInstitution(Long institutionId, Pageable pageable) {
+        Institution institution = institutionRepository.findByInstitutionId(institutionId);
+        if (institution == null) {
+            throw new CustomException("institution.notfound");
+        }
+
+        return credentialRepository.findAllByFkInstitution_InstitutionId(institutionId, pageable);
+    }
+
     @Transactional
     public Page<Credential> getCredentialsByNameAndCapturist(String name, Long capturistId, int page, int size) {
         UserAccount userAccount = userAccountRepository.findByUserAccountId(capturistId);

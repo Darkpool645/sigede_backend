@@ -16,6 +16,8 @@ public interface CredentialRepository extends JpaRepository<Credential, Long>{
             "FROM Credential c WHERE c.fkUserAccount.userAccountId = :userAccountId")
     List<GetCredentialsDTO> findCredentialsByUserAccountId(Long userAccountId);
 
+    Page<Credential> findAllByFkInstitution_InstitutionId(Long institutionId, Pageable pageable);
+
     Credential findCredentialByCredentialId(Long credentialId);
 
     Page<Credential> findByFullnameContainingIgnoreCaseAndAndFkUserAccount(String fullname, UserAccount userAccount, Pageable pageable);
