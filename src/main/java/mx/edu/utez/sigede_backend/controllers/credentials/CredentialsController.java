@@ -26,7 +26,6 @@ public class CredentialsController {
     public CredentialsController(CredentialService credentialService) {
         this.credentialService = credentialService;
     }
-
     @GetMapping("/capturist/{userAccountId}")
     public ResponseEntity<List<GetCredentialsDTO>> getCredentialsByCapturerId(@PathVariable Long userAccountId) {
         List<GetCredentialsDTO> credentials = credentialService.getCredentialsByCapturerId(userAccountId);
@@ -39,8 +38,6 @@ public class CredentialsController {
         return new CustomResponse<>(200,"Usuarios",false,data);
     }
 
-
-    
     @PostMapping("/get-credentials-by-name-and-capturist")
     public CustomResponse<Page<ResponseGetCredentialByNameAndCapturistDTO>> getCredentialsByNameAndCapturist(
             @RequestBody RequestGetCredentialsByNameAndCapturistDTO request) {

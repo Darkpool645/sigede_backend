@@ -56,7 +56,6 @@ public class CapturerService {
             throw new CustomException("user.not.found");
         }
         UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"capturista");
-        System.out.println(user);
         if (user == null) {
             throw new CustomException("user.not.found");
         }

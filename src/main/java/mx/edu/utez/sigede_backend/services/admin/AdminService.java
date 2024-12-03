@@ -64,7 +64,6 @@ public class AdminService {
         if(rol == null){
             throw new CustomException("rol.notfound");
         }
-
         Status status = statusRepository.findByName("activo");
         if(status == null){
             throw new CustomException("status.notfound");
