@@ -1,9 +1,6 @@
 package mx.edu.utez.sigede_backend.services.institution;
 
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionDocDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionUpdateDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.PostInstitutionDTO;
-import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.ResponseInstitutionsDTO;
+import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.*;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionStatus;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
@@ -29,20 +26,24 @@ public class InstitutionService {
     }
 
     @Transactional
-    public ResponseInstitutionsDTO getById(Long id) {
+    public ResponseInstitutionInfoDTO getById(Long id) {
         return institutionRepository.findById(id)
-                .map(institution -> new ResponseInstitutionsDTO(
+                .map(institution -> new ResponseInstitutionInfoDTO(
                         institution.getInstitutionId(),
                         institution.getName(),
+                        institution.getAddress(),
                         institution.getEmailContact(),
-                        institution.getLogo()
+                        institution.getPhoneContact(),
+                        institution.getLogo(),
+                        institution.getInstitutionStatus()
                 ))
                 .orElseThrow(() -> new CustomException("institution.notfound"));
     }
 
     @Transactional
-    public List<ResponseInstitutionsDTO> getAllInstitutions() {
-        return institutionRepository.findAll().stream().map(entity -> new ResponseInstitutionsDTO(entity.getInstitutionId(),entity.getName(),entity.getEmailContact(),entity.getLogo())).toList();
+    public List<ResponseBasicInstitutionDTO> getAllInstitutions() {
+        return institutionRepository.findAll().stream().map(entity -> new ResponseBasicInstitutionDTO(
+                entity.getInstitutionId(),entity.getName(), entity.getLogo())).toList();
     }
 
     @Transactional

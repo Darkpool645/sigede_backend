@@ -35,7 +35,9 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
     Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId, Pageable pageable);
-    boolean existsByUserAccountId(Long userAccountId);
+
+    UserAccount findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(Long userId ,String role, Long institutionId);
+
     UserAccount findByUserAccountId(Long userAccountId);
     boolean existsByEmail(String email);
     UserAccount findByEmail(String email);

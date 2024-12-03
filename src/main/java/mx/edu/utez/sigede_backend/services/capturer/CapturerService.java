@@ -49,8 +49,9 @@ public class CapturerService {
     }
 
     @Transactional
-    public ResponseCapturistDTO getOneCapturer(Long userId) {
-        UserAccount user = userAccountRepository.findByUserAccountId(userId);
+    public ResponseCapturistDTO getOneCapturer(Long userId, Long institutionId) {
+        UserAccount user = userAccountRepository.findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(
+                userId, "CAPTURIST", institutionId);
         if (user == null) {
             throw new CustomException("user.not.found");
         }

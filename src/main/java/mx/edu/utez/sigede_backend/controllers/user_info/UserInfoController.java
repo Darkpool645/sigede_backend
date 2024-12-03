@@ -69,8 +69,6 @@ public class UserInfoController {
 
     @PutMapping("/update-forms")
     public ResponseEntity<?> updateCapturistFields(@RequestBody List<UserInfoUpdateDTO> updates) {
-        for (UserInfoUpdateDTO update : updates) {
-        }
         try {
             List<Map<String, Object>> responseList = userInfoService.updateCapturistFields(updates);
             Map<String, Object> response = new HashMap<>();
