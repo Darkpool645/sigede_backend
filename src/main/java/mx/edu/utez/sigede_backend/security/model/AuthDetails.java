@@ -26,7 +26,7 @@ public class AuthDetails implements UserDetails {
         this.password = userAccount.getPassword();
         this.status = userAccount.getFkStatus().getName();
         this.role = userAccount.getFkRol().getName();
-        this.institutionId=userAccount.getFkInstitution().getInstitutionId();
+        this.institutionId = (userAccount.getFkInstitution() != null) ? userAccount.getFkInstitution().getInstitutionId() : null;
     }
 
     @Override
