@@ -81,4 +81,10 @@ public class UserAccountsController {
             return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/register-superadmin")
+    public CustomResponse<String> registerSuperadmin(@Validated @RequestBody RequestRegisterSuperAdminDTO payload) {
+        userAccountService.registerSuperAdmin(payload);
+        return new CustomResponse<>(201, "Superadmin registrado correctamente", false, null);
+    }
 }
