@@ -47,5 +47,5 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
             "WHERE u.email = :email AND u.userAccountId <> :userAccountId")
     boolean existsByEmailAndNotUserAccountId(@Param("email") String email, @Param("userAccountId") Long userAccountId);
 
-    List<UserAccount>  findAllByFKRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId);
+    List<UserAccount>  findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId);
 }
