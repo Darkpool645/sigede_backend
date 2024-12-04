@@ -42,7 +42,7 @@ public class Credential {
     private Institution fkInstitution;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false, unique = true)
+    @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false, unique = false)
     private UserAccount fkUserAccount;
 
 }

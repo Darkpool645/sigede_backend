@@ -57,6 +57,9 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
     boolean existsByUserAccountId(Long userAccountId);
 
+    @Query("SELECT ua.userAccountId FROM UserAccount ua WHERE ua.email = :email")
+    Long findUserAccountIdByEmail(@Param("email") String email);
+
 
     UserAccount findByUserAccountId(Long userAccountId);
 

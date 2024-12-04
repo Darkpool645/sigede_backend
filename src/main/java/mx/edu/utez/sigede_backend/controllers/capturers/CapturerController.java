@@ -36,6 +36,20 @@ public class CapturerController {
         return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, response);
     }
 
+    @GetMapping("/get-capturistId/{email}")
+    public CustomResponse<Long> getCapturist(@PathVariable String email) {
+        if (email == null) {
+            throw new CustomException("Invalid user email");
+        }
+
+        Long id=service.getCapturistIdByEmail(email);
+        if (id == null) {
+            return new CustomResponse<>(400, "Capturista no encontrado .", true, null);
+        }
+
+        return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, id);
+    }
+
     @PostMapping("/get-capturists-by-name")
     public CustomResponse<Page<ResponseCapturistDTO>> getCapturistsByName(@Validated @RequestBody RequestGetCapturistsByNameDTO request) {
         Page<UserAccount> pages = capturerService.getCapturistByName(request.getName(), request.getPage(), request.getSize());
@@ -73,6 +87,10 @@ public class CapturerController {
             return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
         }
     }
+
+
+
+
 
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {

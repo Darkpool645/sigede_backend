@@ -66,6 +66,12 @@ public class CapturerService {
         response.setStatus(user.getFkStatus().getName());
         return response;
     }
+@Transactional
+public Long getCapturistIdByEmail(String email) {
+        return userAccountRepository.findUserAccountIdByEmail(email);
+}
+
+
 
     @Transactional
     public Page<UserAccount> getCapturistByName(String name, int page, int size) {
