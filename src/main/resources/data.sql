@@ -15,11 +15,9 @@ VALUES
 -- 2. Inserta roles en 'roles'
 INSERT INTO roles (name)
 VALUES
-    ('CAPTURIST'),
+    ('CAPTURISTA'),
     ('ADMIN'),
     ('SUPERADMIN');
-
-select  * from roles;
 
 -- 3. Inserta estados en 'statuses'
 INSERT INTO statuses (name)
