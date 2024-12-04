@@ -157,4 +157,17 @@ public class UserAccountService {
         return capturistas;
     }
 
+    @Transactional
+    public void registerSuperAdmin(RequestRegisterSuperAdminDTO payload) {
+        UserAccount userAccount = new UserAccount();
+        userAccount.setName(payload.getName());
+        userAccount.setEmail(payload.getEmail());
+        userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
+        Rol rol = rolRepository.findByName("SUPERADMIN");
+        userAccount.setFkRol(rol);
+        Status status = statusRepository.findByName("activo");
+        userAccount.setFkStatus(status);
+        userAccountRepository.save(userAccount);
+    }
+
 }
