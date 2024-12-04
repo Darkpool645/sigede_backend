@@ -45,8 +45,9 @@ public class UserAccountService {
     }
 
     @Transactional
-    public List<UserAccount> getAllAdmins() {
-        return userAccountRepository.getAllAdmins("admin");
+    public List<GetUserBasicInfoDTO> getAllAdmins(Long institutionId) {
+        List<UserAccount> admins = userAccountRepository.findAllByFKRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
+        return List.of((GetUserBasicInfoDTO) admins);
     }
 
     @Transactional
@@ -74,12 +75,14 @@ public class UserAccountService {
         if(institution == null){
             throw new CustomException("institution.notfound");
         }
-        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId(role.getName(), institution.getInstitutionId(),pageable);
+        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(role.getName(), institution.getInstitutionId(),
+                payload.getName(), pageable);
         return accounts.map(account -> {
             ResponseAllAdminByInstitutionDTO dto = new ResponseAllAdminByInstitutionDTO();
             dto.setUserId(account.getUserAccountId());
             dto.setEmail(account.getEmail());
             dto.setName(account.getName());
+            dto.setStatus(account.getFkStatus().getName());
             return dto;
         });
     }
@@ -156,4 +159,16 @@ public class UserAccountService {
         return capturistas;
     }
 
+    @Transactional
+    public void registerSuperAdmin(RequestRegisterSuperAdminDTO payload) {
+        UserAccount userAccount = new UserAccount();
+        userAccount.setName(payload.getName());
+        userAccount.setEmail(payload.getEmail());
+        userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
+        Rol rol = rolRepository.findByName("SUPERADMIN");
+        userAccount.setFkRol(rol);
+        Status status = statusRepository.findByName("activo");
+        userAccount.setFkStatus(status);
+        userAccountRepository.save(userAccount);
+    }
 }
