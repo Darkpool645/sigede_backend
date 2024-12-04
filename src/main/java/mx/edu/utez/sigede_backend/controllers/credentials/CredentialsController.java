@@ -32,7 +32,8 @@ public class CredentialsController {
     @PostMapping("/get-all-by-institution")
     public CustomResponse<Page<GetCredentialsDTO>> getAllByInstitution(@Validated @RequestBody RequestByInstitutionDTO request,
                                                                        Pageable pageable) {
-        Page<Credential> credentials = credentialService.getAllCredentialsByInstitution(request.getInstitutionId(), pageable);
+        Page<Credential> credentials = credentialService.getAllCredentialsByInstitution(request.getInstitutionId(),
+                request.getFullName(), pageable);
 
         Page<GetCredentialsDTO> response = credentials.map(credential -> {
             GetCredentialsDTO dto = new GetCredentialsDTO();
