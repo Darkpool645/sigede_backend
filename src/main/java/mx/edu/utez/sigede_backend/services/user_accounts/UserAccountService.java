@@ -46,7 +46,7 @@ public class UserAccountService {
 
     @Transactional
     public List<GetUserBasicInfoDTO> getAllAdmins(Long institutionId) {
-        List<UserAccount> admins = userAccountRepository.findAllByFKRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
+        List<UserAccount> admins = userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
         return List.of((GetUserBasicInfoDTO) admins);
     }
 

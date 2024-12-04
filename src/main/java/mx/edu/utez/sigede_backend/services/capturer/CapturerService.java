@@ -53,15 +53,22 @@ public class CapturerService {
     public ResponseCapturistDTO getOneCapturer(Long userId, Long institutionId) {
         UserAccount user = userAccountRepository.findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(
                 userId, "CAPTURISTA", institutionId);
-        if (user == null) {
-            throw new CustomException("user.not.found");
-        }
+
         ResponseCapturistDTO response = new ResponseCapturistDTO();
         response.setUserAccountId(user.getUserAccountId());
         response.setEmail(user.getEmail());
         response.setName(user.getName());
         response.setStatus(user.getFkStatus().getName());
         return response;
+    }
+
+    @Transactional
+    public Long getCapturistIdByEmail(String email) {
+        UserAccount user = userAccountRepository.findUserAccountByEmail(email);
+        if (user == null) {
+            throw new CustomException("user.not.found");
+        }
+        return user.getUserAccountId();
     }
 
     @Transactional
