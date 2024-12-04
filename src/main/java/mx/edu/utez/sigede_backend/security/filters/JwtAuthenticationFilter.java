@@ -73,7 +73,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Map<String,Object> body = new HashMap<>();
         body.put("token",token);
         body.put("email",username);
-        body.put("institutionId",institutionId);
+        if (institutionId != null) {
+            body.put("institutionId", institutionId);
+        }
         body.put("userId",userId);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(HttpStatus.OK.value());
