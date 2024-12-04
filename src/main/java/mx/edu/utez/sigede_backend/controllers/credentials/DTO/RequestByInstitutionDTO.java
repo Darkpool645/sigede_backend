@@ -7,4 +7,5 @@ import lombok.Data;
 public class RequestByInstitutionDTO {
     @NotNull(message = "institution.id.notnull")
     private Long institutionId;
+    private String fullName;
 }

@@ -29,9 +29,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Query("SELECT ua FROM UserAccount ua")
     List<UserAccount> getAllUserAccounts();
 
-    @Query("SELECT usac FROM UserAccount usac WHERE usac.fkRol.name = :roleName")
-    List<UserAccount> getAllAdmins(@Param("roleName") String roleName);
-
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
     Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(String role, Long institutionId, String name, Pageable pageable);
@@ -48,4 +45,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     boolean existsByEmailAndNotUserAccountId(@Param("email") String email, @Param("userAccountId") Long userAccountId);
 
     List<UserAccount>  findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId);
+
+    UserAccount findUserAccountByEmail(String email);
 }

@@ -47,13 +47,14 @@ public class CredentialService {
         this.userAccountRepository = userAccountRepository;
     }
 
-    public Page<Credential> getAllCredentialsByInstitution(Long institutionId, Pageable pageable) {
+    public Page<Credential> getAllCredentialsByInstitution(Long institutionId, String name, Pageable pageable) {
         Institution institution = institutionRepository.findByInstitutionId(institutionId);
         if (institution == null) {
             throw new CustomException("institution.notfound");
         }
 
-        return credentialRepository.findAllByFkInstitution_InstitutionId(institutionId, pageable);
+        return credentialRepository.findAllByFkInstitution_InstitutionIdAndFullnameContainingIgnoreCase(institutionId,
+                name, pageable);
     }
 
     @Transactional
@@ -63,6 +64,7 @@ public class CredentialService {
             throw new CustomException("user.not.found");
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by("fullname").ascending());
+
 
         return credentialRepository.findByFullnameContainingIgnoreCaseAndAndFkUserAccount(name, userAccount, pageable);
     }
