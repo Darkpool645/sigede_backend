@@ -1,5 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.capturers;
 
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameAndInstitutionDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameDTO;
@@ -71,6 +72,17 @@ public class CapturerController {
         } else {
             return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
         }
+    }
+
+    @PutMapping("/update-basic-data")
+    public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
+        boolean result = service.updateBasicData(payload);
+        if (result) {
+            return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
+        } else {
+            return new CustomResponse<>(500, "Ocurrio un error inesperado.", false, null);
+        }
+
     }
 
     private Page<ResponseCapturistDTO> castToResponseDTO(Page<UserAccount> pages) {

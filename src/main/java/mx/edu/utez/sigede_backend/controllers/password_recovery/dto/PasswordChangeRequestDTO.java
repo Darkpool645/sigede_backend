@@ -15,5 +15,5 @@ public class PasswordChangeRequestDTO {
     private String newPassword;
     @NotBlank(message = "field.not.null")
     @Pattern(regexp = EMAIL_REGEX, message = "user.email.invalid")
-    private String email;
+    private String userEmail;
 }

@@ -12,5 +12,5 @@ public class ValidateCodeDTO {
     private String code;
     @NotBlank(message = "field.not.null")
     @Pattern(regexp = EMAIL_REGEX, message = "user.email.invalid")
-    private String email;
+    private String userEmail;
 }

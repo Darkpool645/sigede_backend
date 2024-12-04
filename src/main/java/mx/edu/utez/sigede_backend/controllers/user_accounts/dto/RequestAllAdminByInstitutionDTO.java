@@ -11,4 +11,5 @@ public class RequestAllAdminByInstitutionDTO {
     private String role;
     @NotNull(message = "institution.id.notnull")
     private Long institutionId;
+    String name;
 }

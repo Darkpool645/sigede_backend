@@ -98,6 +98,38 @@ public class InstitutionService {
     }
 
     @Transactional
+    public Institution updateInstitutionWithEmail(RequestUpdateInstitutionDTO payload) {
+        Optional<Institution> optionalInstitution = institutionRepository.findById(payload.getInstitutionId());
+
+        if (optionalInstitution.isEmpty()) {
+            throw new CustomException("institution.not.found.error");
+        }
+
+        Institution institution = optionalInstitution.get();
+
+        if (payload.getInstitutionName() != null) {
+            institution.setName(payload.getInstitutionName());
+        }
+        if (payload.getInstitutionAddress() != null) {
+            institution.setAddress(payload.getInstitutionAddress());
+        }
+        if (payload.getInstitutionPhone() != null) {
+            institution.setPhoneContact(payload.getInstitutionPhone());
+        }
+        if (payload.getInstitutionStatus() != null) {
+            institution.setInstitutionStatus(payload.getInstitutionStatus());
+        }
+        if (payload.getLogo() != null) {
+            institution.setLogo(payload.getLogo());
+        }
+        if (payload.getInstitutionEmail() != null) {
+            institution.setEmailContact(payload.getInstitutionEmail());
+        }
+
+        return institutionRepository.save(institution);
+    }
+
+    @Transactional
     public InstitutionDocDTO getDocs(Long institutionId) {
         Optional<Institution> institutionOptional = institutionRepository.findById(institutionId);
         if (institutionOptional.isEmpty()) {

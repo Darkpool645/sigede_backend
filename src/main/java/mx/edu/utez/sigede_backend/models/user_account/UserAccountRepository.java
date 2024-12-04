@@ -34,11 +34,18 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
     @Query("SELECT ua FROM UserAccount ua WHERE ua.fkInstitution.institutionId = :institutionId AND ua.fkRol.name = 'Admin'")
     List<UserAccount> findAdministratorsByInstitution(@Param("institutionId") Long institutionId);
-    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId, Pageable pageable);
+    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(String role, Long institutionId, String name, Pageable pageable);
 
     UserAccount findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(Long userId ,String role, Long institutionId);
 
     UserAccount findByUserAccountId(Long userAccountId);
     boolean existsByEmail(String email);
     UserAccount findByEmail(String email);
+
+    @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END " +
+            "FROM UserAccount u " +
+            "WHERE u.email = :email AND u.userAccountId <> :userAccountId")
+    boolean existsByEmailAndNotUserAccountId(@Param("email") String email, @Param("userAccountId") Long userAccountId);
+
+    List<UserAccount>  findAllByFKRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId);
 }

@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.services.capturer;
 
 import lombok.extern.slf4j.Slf4j;
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
@@ -51,7 +52,7 @@ public class CapturerService {
     @Transactional
     public ResponseCapturistDTO getOneCapturer(Long userId, Long institutionId) {
         UserAccount user = userAccountRepository.findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(
-                userId, "CAPTURIST", institutionId);
+                userId, "CAPTURISTA", institutionId);
         if (user == null) {
             throw new CustomException("user.not.found");
         }
@@ -67,14 +68,14 @@ public class CapturerService {
     public Page<UserAccount> getCapturistByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByName("CAPTURISTA");
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkRol(name, rol, pageable);
     }
 
     @Transactional
     public Page<UserAccount> getCapturistsByNameAndInstitution(String name, Long id, int page, int size) {
         Institution institution = institutionRepository.findByInstitutionId(id);
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByName("CAPTURISTA");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(
                 name, institution, rol, pageable
@@ -86,7 +87,7 @@ public class CapturerService {
         if(userAccountRepository.findByEmail(payload.getEmail())!=null){
             throw new CustomException(USER_FOUND);
         }
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByName("CAPTURISTA");
         if (rol == null) {
             throw new CustomException("rol.notfound");
         }
@@ -136,6 +137,31 @@ public class CapturerService {
             userAccountRepository.save(user);
             return true;
         } catch (Exception e){
+            log.error("Error al cambiar el estado del usuario", e);
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean updateBasicData(RequestUpdateBasicData payload) {
+        try {
+            UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());
+            if (user == null) {
+                throw new CustomException("user.not.found");
+            }
+            Status status = statusRepository.findByName(payload.getStatus());
+            if (status == null) {
+                throw new CustomException("status.not.found");
+            }
+            if (this.userAccountRepository.existsByEmailAndNotUserAccountId(payload.getEmail(), payload.getUserAccountId())) {
+                throw new CustomException("email.already.exists");
+            }
+            user.setName(payload.getName());
+            user.setEmail(payload.getEmail());
+            user.setFkStatus(status);
+            userAccountRepository.save(user);
+            return true;
+        } catch (Exception e) {
             log.error("Error al cambiar el estado del usuario", e);
             return false;
         }
