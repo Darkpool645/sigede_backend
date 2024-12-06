@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class ResponseGetByNameDTO {
-    private Long id;
+    private Long userId;
     private String name;
+    private String email;
     private String status;
 }
