@@ -29,8 +29,9 @@ public class AdminController {
                 request.getPage(), request.getSize());
         Page<ResponseGetByNameDTO> response = pages.map(userAccount -> {
             ResponseGetByNameDTO dto = new ResponseGetByNameDTO();
-            dto.setId(userAccount.getUserAccountId());
+            dto.setUserId(userAccount.getUserAccountId());
             dto.setName(userAccount.getName());
+            dto.setEmail(userAccount.getEmail());
             dto.setStatus(userAccount.getFkStatus().getName());
             return dto;
         });
