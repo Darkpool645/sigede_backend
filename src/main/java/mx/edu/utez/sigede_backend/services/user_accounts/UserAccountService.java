@@ -62,11 +62,12 @@ public class UserAccountService {
 
     @Transactional
     public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
-        return userAccountRepository.findAdministratorsByInstitution(institutionId);
+        return userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
     }
+
     @Transactional
     public Page<ResponseAllAdminByInstitutionDTO> getAllAccountByInstitutionByRole (RequestAllAdminByInstitutionDTO payload, Pageable pageable){
-        Rol role = rolRepository.findByName(payload.getRole());
+        Rol role = rolRepository.findByNameIgnoreCase(payload.getRole());
         if(role == null){
             throw new CustomException("rol.notfound");
         }
@@ -75,8 +76,8 @@ public class UserAccountService {
         if(institution == null){
             throw new CustomException("institution.notfound");
         }
-        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(role.getName(), institution.getInstitutionId(),
-                payload.getName(), pageable);
+        Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId(role.getName(),
+                institution.getInstitutionId(), pageable);
         return accounts.map(account -> {
             ResponseAllAdminByInstitutionDTO dto = new ResponseAllAdminByInstitutionDTO();
             dto.setUserId(account.getUserAccountId());
@@ -165,7 +166,7 @@ public class UserAccountService {
         userAccount.setName(payload.getName());
         userAccount.setEmail(payload.getEmail());
         userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
-        Rol rol = rolRepository.findByName("SUPERADMIN");
+        Rol rol = rolRepository.findByNameIgnoreCase("SUPERADMIN");
         userAccount.setFkRol(rol);
         Status status = statusRepository.findByName("activo");
         userAccount.setFkStatus(status);

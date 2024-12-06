@@ -43,7 +43,7 @@ public class InstitutionService {
     @Transactional
     public List<ResponseBasicInstitutionDTO> getAllInstitutions() {
         return institutionRepository.findAll().stream().map(entity -> new ResponseBasicInstitutionDTO(
-                entity.getInstitutionId(),entity.getName(), entity.getLogo())).toList();
+                entity.getInstitutionId(),entity.getName(), entity.getLogo(), entity.getEmailContact())).toList();
     }
 
     @Transactional
