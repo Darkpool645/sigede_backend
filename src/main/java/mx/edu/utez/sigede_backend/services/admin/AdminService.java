@@ -48,7 +48,7 @@ public class AdminService {
             throw new CustomException("institution.notfound");
         }
 
-        Rol rol = rolRepository.findByName("ADMIN");
+        Rol rol = rolRepository.findByNameIgnoreCase("ADMIN");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(name, institution, rol, pageable);
@@ -60,7 +60,7 @@ public class AdminService {
             throw new CustomException("admin.email.error");
         }
 
-        Rol rol = rolRepository.findByName("admin");
+        Rol rol = rolRepository.findByNameIgnoreCase("admin");
         if(rol == null){
             throw new CustomException("rol.notfound");
         }

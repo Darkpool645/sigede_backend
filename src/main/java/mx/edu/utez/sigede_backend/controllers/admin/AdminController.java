@@ -55,6 +55,7 @@ public class AdminController {
         ResponseCapturistDTO response = service.getOneAdmin(userId, institutionId);
         return new CustomResponse<>(200, "Administrador encontrado correctamente.", false, response);
     }
+
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
         boolean result = service.updateBasicData(payload);

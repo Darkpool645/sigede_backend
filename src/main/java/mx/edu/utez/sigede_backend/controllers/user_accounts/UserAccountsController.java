@@ -32,8 +32,8 @@ public class UserAccountsController {
 
     @GetMapping("/")
     public ResponseEntity<List<UserAccount>> getAllUserAccounts() {
-        List<UserAccount> userAcounts = userAccountService.getAllUserAccounts();
-        return new ResponseEntity<>(userAcounts, HttpStatus.OK);
+        List<UserAccount> userAccounts = userAccountService.getAllUserAccounts();
+        return new ResponseEntity<>(userAccounts, HttpStatus.OK);
     }
 
     @GetMapping("/admins/{institutionId}")
