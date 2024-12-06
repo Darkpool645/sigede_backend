@@ -49,6 +49,7 @@ public class InstitutionController {
             institutionDTO.setInstitutionId(institution.getInstitutionId());
             institutionDTO.setName(institution.getName());
             institutionDTO.setLogo(institution.getLogo());
+            institutionDTO.setEmail_contact(institution.getEmailContact());
             return institutionDTO;
         });
         return new CustomResponse<>(200, "Instituciones filtradas correctamente.", false, response);
