@@ -129,21 +129,15 @@ public class UserAccountService {
     public void updateData (RequestEditDataDTO payload){
         UserAccount userAccount = userAccountRepository.findById(payload.getUserId())
                 .orElseThrow(() -> new CustomException("user.not.found"));
-
-        if (payload.getPassword() != null) {
-            userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
-        }
+        
         if (payload.getName() != null) {
             userAccount.setName(payload.getName());
         }
-        if (payload.getFkRol() != null) {
-            Rol rol = rolRepository.findById(payload.getFkRol())
-                    .orElseThrow(() -> new CustomException("rol.notfound"));
-            userAccount.setFkRol(rol);
-        }
-        if (payload.getFkStatus() != null) {
-            Status status = statusRepository.findById(payload.getFkStatus())
-                    .orElseThrow(() -> new CustomException("status.notfound"));
+        if (payload.getStatus() != null) {
+            Status status = statusRepository.findByName(payload.getStatus());
+            if(status == null){
+                throw new CustomException("status.notfound");
+            }
             userAccount.setFkStatus(status);
         }
         userAccountRepository.save(userAccount);

@@ -9,7 +9,5 @@ public class RequestEditDataDTO {
     @NotNull(message = "user.id.required")
     private Long userId;
     private String name;
-    private String password;
-    private Long fkRol;
-    private Long fkStatus;
+    private String status;
 }
