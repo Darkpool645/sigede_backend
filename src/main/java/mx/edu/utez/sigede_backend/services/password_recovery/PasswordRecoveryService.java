@@ -3,6 +3,9 @@ package mx.edu.utez.sigede_backend.services.password_recovery;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
+import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
+import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ChangePasswordDataConsult;
+
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,7 @@ public class PasswordRecoveryService {
     @Transactional
     public void sendVerificationCode(String email) {
         if (!userAccountRepository.existsByEmail(email)) {
+
             throw new CustomException(USER_NOT_FOUND);
         }
         UserAccount user = userAccountRepository.findByEmail(email);
@@ -59,11 +63,13 @@ public class PasswordRecoveryService {
         if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        UserAccount user = userAccountRepository.findByEmail(email);
-        VerificationCode databaseCode = verificationCodeRepository.findByFkUserAccount(user);
+
+        VerificationCode databaseCode = verificationCodeRepository.FindByUserEmailAndVerificationCode(email,code);
+
         if (LocalDateTime.now().isAfter(databaseCode.getExpiration())) {
             throw new CustomException("verification.code.expired");
         }
+
         return databaseCode.getVerificationCode().equals(code);
     }
 
@@ -73,14 +79,19 @@ public class PasswordRecoveryService {
         if (!userAccountRepository.existsByEmail(email)) {
             throw new CustomException(USER_NOT_FOUND);
         }
-        UserAccount user = userAccountRepository.findByEmail(email);
-        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+        ChangePasswordDataConsult changePasswordDataConsult = userAccountRepository.getOldPasswordByEmail(email);
+        if (passwordEncoder.matches(newPassword, changePasswordDataConsult.getOldPassword())) {
+
             throw new CustomException("user.password.same_as_old");
         }
-
-        user.setPassword(passwordEncoder.encode(newPassword));
+        String logo = changePasswordDataConsult.getLogo();
+        userAccountRepository.updatePasswordByEmail(email,passwordEncoder.encode(newPassword));
+        mailService.sendPasswordChangeEmail(email, "Contraseña actualizada");
         userAccountRepository.save(user);
-        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");
+
+        /*user.setPassword(passwordEncoder.encode(newPassword));
+        userAccountRepository.save(user);
+        mailService.sendPasswordChangeEmail(user.getEmail(), "Contraseña actualizada");*/
     }
 
     @Transactional
@@ -101,8 +112,7 @@ public class PasswordRecoveryService {
 
     @Transactional
     public void deleteVerificationCode(String email) {
-        UserAccount user = userAccountRepository.findByEmail(email);
-        verificationCodeRepository.deleteByFkUserAccount(user);
+        verificationCodeRepository.deleteVerificationCodeByUserEmail(email);
     }
 
     private static String generateVerificationCode() {

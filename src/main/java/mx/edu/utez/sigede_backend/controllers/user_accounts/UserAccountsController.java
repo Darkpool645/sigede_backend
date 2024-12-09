@@ -37,10 +37,10 @@ public class UserAccountsController {
     }
 
     @GetMapping("/admins/{institutionId}")
-    public ResponseEntity<List<GetUserBasicInfoDTO>> getAllAdmins(@PathVariable Long institutionId) {
-        List<GetUserBasicInfoDTO> admins = userAccountService.getAllAdmins(institutionId);
-        return new ResponseEntity<>(admins, HttpStatus.OK);
+    public ResponseEntity<List<GetUserBasicInfoDTO>> getAllAdminsByInstitution(@PathVariable Long institutionId) {
+        List<GetUserBasicInfoDTO> admins = userAccountService.getAllByRolNameAndInstitutionId(institutionId);
 
+        return new ResponseEntity<>(admins, HttpStatus.OK);
     }
 
     @GetMapping("/administrators/{institutionId}")
@@ -87,5 +87,11 @@ public class UserAccountsController {
             String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
             return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/register-superadmin")
+    public CustomResponse<String> registerSuperadmin(@Validated @RequestBody RequestRegisterSuperAdminDTO payload) {
+        userAccountService.registerSuperAdmin(payload);
+        return new CustomResponse<>(201, "Superadmin registrado correctamente", false, null);
     }
 }

@@ -3,10 +3,7 @@ package mx.edu.utez.sigede_backend.services.credentials;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestUpdateCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.GetCredentialsDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.RequestUpdateCredentialDTO;
-import mx.edu.utez.sigede_backend.controllers.credentials.DTO.ResponseCredentialDTO;
+import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
 import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.models.credential.CredentialRepository;
 import mx.edu.utez.sigede_backend.models.credential_field.CredentialField;
@@ -19,6 +16,7 @@ import mx.edu.utez.sigede_backend.models.user_info.UserInfo;
 import mx.edu.utez.sigede_backend.models.user_info.UserInfoRepository;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -187,5 +185,20 @@ public class CredentialService {
             credentialFieldRepository.save(field);
         }
 
+    }
+
+
+
+    @Transactional
+    public Page<GetCretentialsByInstitutoIdDTO> getAllAccountByInstitution (RequestByInstitution payload, Pageable pageable){
+        Institution institution=institutionRepository.findByInstitutionId(payload.getInstitutionId());
+        if(institution == null){
+            throw new CustomException("institution.notfound");
+        }
+        return credentialRepository.findAllByFkInstitutionAndFullname(
+                institution.getInstitutionId(),
+                payload.getFullname(),
+                pageable
+        );
     }
 }

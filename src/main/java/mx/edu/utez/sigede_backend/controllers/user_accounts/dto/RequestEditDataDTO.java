@@ -7,7 +7,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestEditDataDTO {
     @NotNull(message = "user.id.required")
-    private Long userId;
+    private Long userId;//userAccountId
     private String name;
-    private String status;
+  private String status;
+    private String email;
+
+    /*private String password;
+    private Long fkRol;
+    private Long fkStatus;*/
+
 }

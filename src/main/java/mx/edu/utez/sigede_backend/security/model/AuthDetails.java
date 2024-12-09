@@ -20,6 +20,7 @@ public class AuthDetails implements UserDetails {
     private String status;
     private String role;
     private Long institutionId;
+
     private Long userId;
 
     public AuthDetails(UserAccount userAccount) {
@@ -28,6 +29,7 @@ public class AuthDetails implements UserDetails {
         this.status = userAccount.getFkStatus().getName();
         this.role = userAccount.getFkRol().getName();
         this.institutionId = (userAccount.getFkInstitution() != null) ? userAccount.getFkInstitution().getInstitutionId() : null;
+
         this.userId = userAccount.getUserAccountId();
     }
 
@@ -59,5 +61,9 @@ public class AuthDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public Long getInstitutionsId(){
+        return institutionId;
     }
 }

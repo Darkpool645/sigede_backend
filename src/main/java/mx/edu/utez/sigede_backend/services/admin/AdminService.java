@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.services.admin;
 
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
@@ -64,7 +65,6 @@ public class AdminService {
         if(rol == null){
             throw new CustomException("rol.notfound");
         }
-
         Status status = statusRepository.findByName("activo");
         if(status == null){
             throw new CustomException("status.notfound");
@@ -95,7 +95,8 @@ public class AdminService {
         if (institution == null) {
             throw new CustomException("user.not.found");
         }
-        UserAccount user = userAccountRepository.findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(userId,"admin", institutionId);
+        UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"admin");
+
         if (user == null) {
             throw new CustomException("user.not.found");
         }
@@ -106,6 +107,7 @@ public class AdminService {
         response.setStatus(user.getFkStatus().getName());
         return response;
     }
+
 
     @Transactional
     public boolean updateBasicData(RequestUpdateBasicData payload) {

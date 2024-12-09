@@ -54,6 +54,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthDetails user = (AuthDetails) authResult.getPrincipal();
         String username= user.getEmail();
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
+
         Long institutionId = user.getInstitutionId();
         Long userId = user.getUserId();
 
@@ -75,6 +76,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("email",username);
         if (institutionId != null) {
             body.put("institutionId", institutionId);
+
         }
         body.put("userId",userId);
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));

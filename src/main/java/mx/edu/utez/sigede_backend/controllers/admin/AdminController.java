@@ -4,6 +4,7 @@ import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestGetByNameAndInsti
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.ResponseGetByNameDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.user_account.UserAccount;
 import mx.edu.utez.sigede_backend.services.admin.AdminService;
@@ -27,6 +28,7 @@ public class AdminController {
                                                                                         RequestGetByNameAndInstitutionDTO request) {
         Page<UserAccount> pages = service.getAdminsByNameAndInstitution(request.getName(), request.getInstitutionId(),
                 request.getPage(), request.getSize());
+
         Page<ResponseGetByNameDTO> response = pages.map(userAccount -> {
             ResponseGetByNameDTO dto = new ResponseGetByNameDTO();
             dto.setUserId(userAccount.getUserAccountId());
@@ -44,14 +46,14 @@ public class AdminController {
         service.registerAdmin(payload);
         return new CustomResponse<>(201,"Admin Registrado correctamente",false,null);
     }
-
     @GetMapping("/get-admin/{userId}/{institutionId}")
     public CustomResponse<ResponseCapturistDTO> getAdmin(@PathVariable Long userId, @PathVariable Long institutionId) {
         if (userId == null) {
-            throw new CustomException("user.id.required");
+            throw new CustomException("Invalid user id");
         }
         if (institutionId == null) {
-            throw new CustomException("institution.id.notnull");
+            throw new CustomException("Invalid institution id");
+
         }
         ResponseCapturistDTO response = service.getOneAdmin(userId, institutionId);
         return new CustomResponse<>(200, "Administrador encontrado correctamente.", false, response);

@@ -2,6 +2,7 @@ package mx.edu.utez.sigede_backend.controllers.capturers;
 
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameAndInstitutionDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
@@ -27,7 +28,9 @@ public class CapturerController {
         if (userId == null) {
             throw new CustomException("user.id.required");
         }
+      
         if (institutionId == null) {
+
             throw new CustomException("institution.id.notnull");
         }
         ResponseCapturistDTO response = capturerService.getOneCapturer(userId, institutionId);
@@ -37,9 +40,9 @@ public class CapturerController {
     @GetMapping("/get-capturistId/{email}")
     public CustomResponse<Long> getCapturist(@PathVariable String email) {
         if (email == null) {
+
             throw new CustomException("user.email.invalid");
         }
-
         Long id = capturerService.getCapturistIdByEmail(email);
         if (id == null) {
             return new CustomResponse<>(400, "Capturista no encontrado .", true, null);
@@ -69,6 +72,7 @@ public class CapturerController {
 
     @PostMapping("/register")
     public CustomResponse<Object> registerCapturer(@Validated @RequestBody RequestCapturerRegistrationDTO payload) {
+
         capturerService.registerCapturer(payload);
         return new CustomResponse<>(201,"Cuenta registrada correctamente", false,null);
     }
@@ -86,9 +90,10 @@ public class CapturerController {
         }
     }
 
+
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
-        boolean result = capturerService.updateBasicData(payload);
+        boolean result = capturerService.updateBasicData(payload); 
         if (result) {
             return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
         } else {

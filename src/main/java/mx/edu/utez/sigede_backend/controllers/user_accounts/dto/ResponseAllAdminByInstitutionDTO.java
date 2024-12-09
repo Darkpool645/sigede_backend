@@ -10,4 +10,5 @@ public class ResponseAllAdminByInstitutionDTO {
     private String email;
     private String name;
     private String status;
+
 }

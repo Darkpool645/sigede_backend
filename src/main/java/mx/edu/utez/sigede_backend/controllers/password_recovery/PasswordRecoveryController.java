@@ -46,6 +46,7 @@ public class PasswordRecoveryController {
     }
 
     @PostMapping("/validate-verification-code")
+
     public CustomResponse<Object> validateVerificationCode(@Validated @RequestBody ValidateCodeDTO validateCodeDTO) {
         try {
             boolean result = passwordRecoveryService.validateVerificationCode(validateCodeDTO.getCode(), validateCodeDTO.getUserEmail());
@@ -64,11 +65,19 @@ public class PasswordRecoveryController {
     }
 
     @PutMapping("/change-password")
-    public CustomResponse<Object> changePassword(@Validated @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        passwordRecoveryService.changePassword(passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserEmail());
-        return new CustomResponse<>(
+    public CustomResponse<PasswordChangeResponseDTO> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        try {
+             passwordRecoveryService.changePassword(
+                    passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserEmail());
+            return new CustomResponse<>(
                     200, "La contraseña ha sido cambiada correctamente", false,
                     null
-        );
+            );
+        } catch (CustomException e) {
+            return new CustomResponse<>(
+                    400, e.getMessage(), true, null
+            );
+        }
+
     }
 }

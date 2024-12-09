@@ -3,6 +3,7 @@ package mx.edu.utez.sigede_backend.services.capturer;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
+import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfileRepository;
@@ -51,8 +52,14 @@ public class CapturerService {
 
     @Transactional
     public ResponseCapturistDTO getOneCapturer(Long userId, Long institutionId) {
-        UserAccount user = userAccountRepository.findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(
-                userId, "CAPTURISTA", institutionId);
+        Institution institution = this.institutionRepository.findByInstitutionId(institutionId);
+        if (institution == null) {
+            throw new CustomException("user.not.found");
+        }
+        UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"capturista");
+        if (user == null) {
+            throw new CustomException("user.not.found");
+        }
 
         ResponseCapturistDTO response = new ResponseCapturistDTO();
         response.setUserAccountId(user.getUserAccountId());
@@ -61,6 +68,13 @@ public class CapturerService {
         response.setStatus(user.getFkStatus().getName());
         return response;
     }
+  
+@Transactional
+public Long getCapturistIdByEmail(String email) {
+        return userAccountRepository.findUserAccountIdByEmail(email);
+}
+
+
 
     @Transactional
     public Long getCapturistIdByEmail(String email) {
@@ -91,7 +105,7 @@ public class CapturerService {
 
     @Transactional
     public void registerCapturer(RequestCapturerRegistrationDTO payload) {
-        if(userAccountRepository.findByEmail(payload.getEmail())!=null){
+        if (userAccountRepository.findByEmail(payload.getEmail()) != null) {
             throw new CustomException(USER_FOUND);
         }
         Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
@@ -120,7 +134,7 @@ public class CapturerService {
         userAccountRepository.save(userAccount);
         //Mandar codigo al correo
 
-        mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro existoso", temporaryPassword,"Capturista");
+        mailService.sendTemporaryPassword(userAccount.getEmail(), "Registro existoso", temporaryPassword, "Capturista");
         // Crear un perfil de capturista
         CapturistProfile capturistProfile = new CapturistProfile();
         capturistProfile.setFkProfile(userAccount);
@@ -143,7 +157,33 @@ public class CapturerService {
             user.setFkStatus(status);
             userAccountRepository.save(user);
             return true;
-        } catch (Exception e){
+        } catch (Exception e) {
+            log.error("Error al cambiar el estado del usuario", e);
+            return false;
+        }
+    }
+
+
+    @jakarta.transaction.Transactional
+    public boolean updateBasicData(RequestUpdateBasicData payload) {
+        try {
+            UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());
+            if (user == null) {
+                throw new CustomException("user.not.found");
+            }
+            Status status = statusRepository.findByName(payload.getStatus());
+            if (status == null) {
+                throw new CustomException("status.not.found");
+            }
+            if (this.userAccountRepository.existsByEmailAndNotUserAccountId(payload.getEmail(), payload.getUserAccountId())) {
+                throw new CustomException("email.already.exists");
+            }
+            user.setName(payload.getName());
+            user.setEmail(payload.getEmail());
+            user.setFkStatus(status);
+            userAccountRepository.save(user);
+            return true;
+        } catch (Exception e) {
             log.error("Error al cambiar el estado del usuario", e);
             return false;
         }

@@ -11,7 +11,6 @@ import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.rol.Rol;
 import mx.edu.utez.sigede_backend.models.status.Status;
 
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
