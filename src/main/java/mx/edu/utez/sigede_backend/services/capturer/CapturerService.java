@@ -75,14 +75,14 @@ public class CapturerService {
     public Page<UserAccount> getCapturistByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
-        Rol rol = rolRepository.findByName("CAPTURISTA");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkRol(name, rol, pageable);
     }
 
     @Transactional
     public Page<UserAccount> getCapturistsByNameAndInstitution(String name, Long id, int page, int size) {
         Institution institution = institutionRepository.findByInstitutionId(id);
-        Rol rol = rolRepository.findByName("CAPTURISTA");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(
                 name, institution, rol, pageable
@@ -94,7 +94,7 @@ public class CapturerService {
         if(userAccountRepository.findByEmail(payload.getEmail())!=null){
             throw new CustomException(USER_FOUND);
         }
-        Rol rol = rolRepository.findByName("CAPTURISTA");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         if (rol == null) {
             throw new CustomException("rol.notfound");
         }

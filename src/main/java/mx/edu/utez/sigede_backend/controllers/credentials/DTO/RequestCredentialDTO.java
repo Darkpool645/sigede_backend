@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mx.edu.utez.sigede_backend.controllers.credential_field.dto.RequestCredentialFieldDTO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,6 +24,8 @@ public class RequestCredentialDTO {
     private String fullname;
     @NotBlank(message = "userphoto.not.blank")
     private String userPhoto;
+    @NotNull(message = "field.not.nul")
+    private LocalDateTime expirationDate;
     @NotNull(message = "credential.fields.not.null")
     @Size(min = 1, message = "credential.fields.not.empty")
     private List<RequestCredentialFieldDTO> fields;

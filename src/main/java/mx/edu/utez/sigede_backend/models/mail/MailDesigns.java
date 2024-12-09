@@ -287,7 +287,7 @@ public class MailDesigns {
                 "                <p>Hola, bienvenido a\n" +
                 "                    <strong>SIGEDE</strong>\n" +
                 "                    . Te enviamos este correo para notificar tu registro exitoso como "+role+" . Ya puedes iniciar\n" +
-                "                    sesión con tu correo electrónico usando la siguiente contraseña temporal:\n" +
+                "                    sesión con tu correo electrónico usando la siguiente contraseña:\n" +
                 "                </p>\n" +
                 "                <div class=\"label-container\">\n" +
                 "                    <label>"+temPasword+"</label>\n" +

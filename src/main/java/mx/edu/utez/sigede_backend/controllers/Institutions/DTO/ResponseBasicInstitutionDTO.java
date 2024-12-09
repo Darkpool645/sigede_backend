@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class ResponseBasicInstitutionDTO {
     private Long institutionId;
     private String name;
+    private String email_contact;
     private String logo;
 }

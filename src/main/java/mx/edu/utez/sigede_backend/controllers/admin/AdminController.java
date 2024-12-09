@@ -29,8 +29,9 @@ public class AdminController {
                 request.getPage(), request.getSize());
         Page<ResponseGetByNameDTO> response = pages.map(userAccount -> {
             ResponseGetByNameDTO dto = new ResponseGetByNameDTO();
-            dto.setId(userAccount.getUserAccountId());
+            dto.setUserId(userAccount.getUserAccountId());
             dto.setName(userAccount.getName());
+            dto.setEmail(userAccount.getEmail());
             dto.setStatus(userAccount.getFkStatus().getName());
             return dto;
         });
@@ -55,6 +56,7 @@ public class AdminController {
         ResponseCapturistDTO response = service.getOneAdmin(userId, institutionId);
         return new CustomResponse<>(200, "Administrador encontrado correctamente.", false, response);
     }
+
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
         boolean result = service.updateBasicData(payload);

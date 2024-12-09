@@ -102,7 +102,7 @@ public class CredentialService {
         credential.setIssueDate(LocalDateTime.now());
         credential.setFkInstitution(institution);
         credential.setFkUserAccount(userAccount);
-        credential.setExpirationDate(LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        credential.setExpirationDate(payload.getExpirationDate());
 
         credential = credentialRepository.save(credential);
 

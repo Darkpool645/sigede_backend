@@ -11,7 +11,6 @@ import static mx.edu.utez.sigede_backend.utils.validations.RegexPatterns.PASSWOR
 @Data
 public class PasswordChangeRequestDTO {
     @NotBlank(message = "field.not.null")
-    @Pattern(regexp = PASSWORD_REGEX, message = "invalid.new.password")
     private String newPassword;
     @NotBlank(message = "field.not.null")
     @Pattern(regexp = EMAIL_REGEX, message = "user.email.invalid")
