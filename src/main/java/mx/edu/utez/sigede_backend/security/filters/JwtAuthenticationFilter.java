@@ -54,7 +54,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         AuthDetails user = (AuthDetails) authResult.getPrincipal();
         String username= user.getEmail();
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
-        Long institutionId = user.getInstitutionsId();
+
+        Long institutionId = user.getInstitutionId();
+        Long userId = user.getUserId();
 
         Claims claims = Jwts.claims();
         claims.put("authorities",new ObjectMapper().writeValueAsString(roles));
@@ -74,7 +76,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("email",username);
         if (institutionId != null) {
             body.put("institutionId", institutionId);
-        }        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+
+        }
+        body.put("userId",userId);
+        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(CONTENT_TYPE);
 
@@ -91,7 +96,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setContentType(CONTENT_TYPE);
 
     }
-
-
-
 }

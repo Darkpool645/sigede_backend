@@ -31,6 +31,7 @@ public class InstitutionController {
     @GetMapping("/get-all")
     public CustomResponse<List<InstitutionDTO>> getAllInstitutions(){
         List<InstitutionDTO> data = institutionService.getAllInstitutions();
+
         return new CustomResponse<>(200,"Todas las instituciones",false,data);
     }
 
@@ -41,15 +42,15 @@ public class InstitutionController {
     }
 
     @PostMapping("/get-institutions-by-name")
-    public CustomResponse<Page<ResponseInstitutionsDTO>> getInstitutionsByName(@Validated @RequestBody
+    public CustomResponse<Page<ResponseBasicInstitutionDTO>> getInstitutionsByName(@Validated @RequestBody
                                                                                    RequestGetInstitutionsByNameDTO request) {
         Page<Institution> pages = institutionService.getInstitutionsByName(request.getName(), request.getPage(), request.getSize());
-        Page<ResponseInstitutionsDTO> response = pages.map(institution -> {
-            ResponseInstitutionsDTO institutionDTO = new ResponseInstitutionsDTO();
-            institutionDTO.setId(institution.getInstitutionId());
+        Page<ResponseBasicInstitutionDTO> response = pages.map(institution -> {
+            ResponseBasicInstitutionDTO institutionDTO = new ResponseBasicInstitutionDTO();
+            institutionDTO.setInstitutionId(institution.getInstitutionId());
             institutionDTO.setName(institution.getName());
-            institutionDTO.setEmail_contact(institution.getEmailContact());
             institutionDTO.setLogo(institution.getLogo());
+            institutionDTO.setEmail_contact(institution.getEmailContact());
             return institutionDTO;
         });
         return new CustomResponse<>(200, "Instituciones filtradas correctamente.", false, response);
@@ -92,6 +93,29 @@ public class InstitutionController {
     @PutMapping("/update")
     public ResponseEntity<CustomResponse<ResponseInstitutionUpdateDTO>> updateInstitutionWitEmailContact(
             @Validated @RequestBody UpdateDTO payload) {
+        try {
+            Institution updatedInstitution = institutionService.updateInstitutionWithEmail(payload);
+            ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = getResponseInstitutionUpdateDTO(updatedInstitution);
+
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.OK.value(), "Institution actualizada correctamente.", false, responseInstitutionUpdateDTO);
+            return ResponseEntity.ok(response);
+        } catch (CustomException e) {
+            String errorMessage = errorDictionary.getErrorMessage(e.getErrorCode());
+
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.BAD_REQUEST.value(), errorMessage, true, null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e) {
+            CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrió un error inesperado.", true, null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<CustomResponse<ResponseInstitutionUpdateDTO>> updateInstitutionWitEmailContact(
+            @Validated @RequestBody RequestUpdateInstitutionDTO payload) {
         try {
             Institution updatedInstitution = institutionService.updateInstitutionWithEmail(payload);
             ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = getResponseInstitutionUpdateDTO(updatedInstitution);

@@ -21,12 +21,16 @@ public class AuthDetails implements UserDetails {
     private String role;
     private Long institutionId;
 
+    private Long userId;
+
     public AuthDetails(UserAccount userAccount) {
         this.email = userAccount.getEmail();
         this.password = userAccount.getPassword();
         this.status = userAccount.getFkStatus().getName();
         this.role = userAccount.getFkRol().getName();
         this.institutionId = (userAccount.getFkInstitution() != null) ? userAccount.getFkInstitution().getInstitutionId() : null;
+
+        this.userId = userAccount.getUserAccountId();
     }
 
     @Override

@@ -1,15 +1,13 @@
-package mx.edu.utez.sigede_backend.controllers.user_accounts.dto;
-
-import lombok.AllArgsConstructor;
+package mx.edu.utez.sigede_backend.controllers.admin.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class GetUserBasicInfoDTO {
+public class RequestUpdateBasicData {
     private Long userAccountId;
     private String name;
+    private String email;
     private String status;
 }

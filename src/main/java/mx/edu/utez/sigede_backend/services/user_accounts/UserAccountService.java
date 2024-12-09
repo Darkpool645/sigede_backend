@@ -47,6 +47,7 @@ public class UserAccountService {
     @Transactional
     public List<GetUserBasicInfoDTO> getAllByRolNameAndInstitutionId(Long institutionId) {
         return userAccountRepository.getAllByRolNameAndFkInstitution("admin",institutionId);
+
     }
 
     @Transactional
@@ -55,17 +56,18 @@ public class UserAccountService {
         if(user == null){
             throw new CustomException("user.not.found");
         }
-        return new ResponseGetAccountDTO(user.getEmail(),user.getName(),user.getFkRol().getName(),user.getFkStatus().getName(),user.getFkInstitution().getInstitutionId());
 
+        return new ResponseGetAccountDTO(user.getEmail(),user.getName(), user.getFkRol().getName(),user.getFkStatus().getName(),user.getFkInstitution().getInstitutionId());
     }
 
     @Transactional
     public List<UserAccount> getAdministratorsByInstitution(Long institutionId) {
-        return userAccountRepository.findAdministratorsByInstitution(institutionId);
+        return userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
     }
+
     @Transactional
     public Page<ResponseAllAdminByInstitutionDTO> getAllAccountByInstitutionByRole (RequestAllAdminByInstitutionDTO payload, Pageable pageable){
-        Rol role = rolRepository.findByName(payload.getRole());
+        Rol role = rolRepository.findByNameIgnoreCase(payload.getRole());
         if(role == null){
             throw new CustomException("rol.notfound");
         }
@@ -75,6 +77,10 @@ public class UserAccountService {
             throw new CustomException("institution.notfound");
         }
         Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionIdAndName(role.getName(), institution.getInstitutionId(),payload.getName(),pageable);
+  
+        /*Page<UserAccount> accounts =  userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId(role.getName(),
+                institution.getInstitutionId(), pageable);*/
+      
         return accounts.map(account -> {
             ResponseAllAdminByInstitutionDTO dto = new ResponseAllAdminByInstitutionDTO();
             dto.setUserId(account.getUserAccountId());
@@ -126,21 +132,15 @@ public class UserAccountService {
     public void updateData (RequestEditDataDTO payload){
         UserAccount userAccount = userAccountRepository.findById(payload.getUserId())
                 .orElseThrow(() -> new CustomException("user.not.found"));
-
-        if (payload.getPassword() != null) {
-            userAccount.setEmail(passwordEncoder.encode(payload.getPassword()));
-        }
+        
         if (payload.getName() != null) {
             userAccount.setName(payload.getName());
         }
-        if (payload.getFkRol() != null) {
-            Rol rol = rolRepository.findById(payload.getFkRol())
-                    .orElseThrow(() -> new CustomException("rol.notfound"));
-            userAccount.setFkRol(rol);
-        }
-        if (payload.getFkStatus() != null) {
-            Status status = statusRepository.findById(payload.getFkStatus())
-                    .orElseThrow(() -> new CustomException("status.notfound"));
+        if (payload.getStatus() != null) {
+            Status status = statusRepository.findByName(payload.getStatus());
+            if(status == null){
+                throw new CustomException("status.notfound");
+            }
             userAccount.setFkStatus(status);
         }
         userAccountRepository.save(userAccount);
@@ -164,6 +164,7 @@ public class UserAccountService {
         userAccount.setEmail(payload.getEmail());
         userAccount.setPassword(passwordEncoder.encode(payload.getPassword()));
         Rol rol = rolRepository.findByName("SUPERADMIN");
+        //Rol rol = rolRepository.findByNameIgnoreCase("SUPERADMIN");
         userAccount.setFkRol(rol);
         Status status = statusRepository.findByName("activo");
         userAccount.setFkStatus(status);

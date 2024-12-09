@@ -1,6 +1,7 @@
 package mx.edu.utez.sigede_backend.services.capturer;
 
 import lombok.extern.slf4j.Slf4j;
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
@@ -59,6 +60,7 @@ public class CapturerService {
         if (user == null) {
             throw new CustomException("user.not.found");
         }
+
         ResponseCapturistDTO response = new ResponseCapturistDTO();
         response.setUserAccountId(user.getUserAccountId());
         response.setEmail(user.getEmail());
@@ -66,6 +68,7 @@ public class CapturerService {
         response.setStatus(user.getFkStatus().getName());
         return response;
     }
+  
 @Transactional
 public Long getCapturistIdByEmail(String email) {
         return userAccountRepository.findUserAccountIdByEmail(email);
@@ -74,17 +77,26 @@ public Long getCapturistIdByEmail(String email) {
 
 
     @Transactional
+    public Long getCapturistIdByEmail(String email) {
+        UserAccount user = userAccountRepository.findUserAccountByEmail(email);
+        if (user == null) {
+            throw new CustomException("user.not.found");
+        }
+        return user.getUserAccountId();
+    }
+
+    @Transactional
     public Page<UserAccount> getCapturistByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkRol(name, rol, pageable);
     }
 
     @Transactional
     public Page<UserAccount> getCapturistsByNameAndInstitution(String name, Long id, int page, int size) {
         Institution institution = institutionRepository.findByInstitutionId(id);
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(
                 name, institution, rol, pageable
@@ -96,7 +108,7 @@ public Long getCapturistIdByEmail(String email) {
         if (userAccountRepository.findByEmail(payload.getEmail()) != null) {
             throw new CustomException(USER_FOUND);
         }
-        Rol rol = rolRepository.findByName("CAPTURIST");
+        Rol rol = rolRepository.findByNameIgnoreCase("CAPTURISTA");
         if (rol == null) {
             throw new CustomException("rol.notfound");
         }
@@ -153,6 +165,31 @@ public Long getCapturistIdByEmail(String email) {
 
 
     @jakarta.transaction.Transactional
+    public boolean updateBasicData(RequestUpdateBasicData payload) {
+        try {
+            UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());
+            if (user == null) {
+                throw new CustomException("user.not.found");
+            }
+            Status status = statusRepository.findByName(payload.getStatus());
+            if (status == null) {
+                throw new CustomException("status.not.found");
+            }
+            if (this.userAccountRepository.existsByEmailAndNotUserAccountId(payload.getEmail(), payload.getUserAccountId())) {
+                throw new CustomException("email.already.exists");
+            }
+            user.setName(payload.getName());
+            user.setEmail(payload.getEmail());
+            user.setFkStatus(status);
+            userAccountRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            log.error("Error al cambiar el estado del usuario", e);
+            return false;
+        }
+    }
+
+    @Transactional
     public boolean updateBasicData(RequestUpdateBasicData payload) {
         try {
             UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());

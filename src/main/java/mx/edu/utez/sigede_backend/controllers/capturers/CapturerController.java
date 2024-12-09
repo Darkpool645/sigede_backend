@@ -1,5 +1,6 @@
 package mx.edu.utez.sigede_backend.controllers.capturers;
 
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestGetCapturistsByNameAndInstitutionDTO;
@@ -16,33 +17,33 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/capturists")
 public class CapturerController {
-    private final CapturerService service;
     private final CapturerService capturerService;
 
-    public CapturerController(CapturerService service, CapturerService capturerService) {
-        this.service = service;
+    public CapturerController(CapturerService capturerService) {
         this.capturerService = capturerService;
     }
 
     @GetMapping("/get-capturist/{userId}/{institutionId}")
     public CustomResponse<ResponseCapturistDTO> getCapturist(@PathVariable Long userId, @PathVariable Long institutionId) {
         if (userId == null) {
-            throw new CustomException("Invalid user id");
+            throw new CustomException("user.id.required");
         }
+      
         if (institutionId == null) {
-            throw new CustomException("Invalid institution id");
+
+            throw new CustomException("institution.id.notnull");
         }
-        ResponseCapturistDTO response = service.getOneCapturer(userId, institutionId);
+        ResponseCapturistDTO response = capturerService.getOneCapturer(userId, institutionId);
         return new CustomResponse<>(200, "Capturista encontrado correctamente.", false, response);
     }
 
     @GetMapping("/get-capturistId/{email}")
     public CustomResponse<Long> getCapturist(@PathVariable String email) {
         if (email == null) {
-            throw new CustomException("Invalid user email");
-        }
 
-        Long id=service.getCapturistIdByEmail(email);
+            throw new CustomException("user.email.invalid");
+        }
+        Long id = capturerService.getCapturistIdByEmail(email);
         if (id == null) {
             return new CustomResponse<>(400, "Capturista no encontrado .", true, null);
         }
@@ -71,16 +72,17 @@ public class CapturerController {
 
     @PostMapping("/register")
     public CustomResponse<Object> registerCapturer(@Validated @RequestBody RequestCapturerRegistrationDTO payload) {
-        service.registerCapturer(payload);
-        return new CustomResponse<>(201, "Cuenta registrada correctamente", false, null);
+
+        capturerService.registerCapturer(payload);
+        return new CustomResponse<>(201,"Cuenta registrada correctamente", false,null);
     }
 
     @PatchMapping("/change-status")
     public CustomResponse<Long> changeCapturistStatus(Long userId) {
         if (userId == null) {
-            throw new CustomException("Invalid user id");
+            throw new CustomException("user.id.required");
         }
-        boolean result = service.changeCapturistStatus(userId);
+        boolean result = capturerService.changeCapturistStatus(userId);
         if (result) {
             return new CustomResponse<>(200, "Estatus actualizado correctamente", false, userId);
         } else {
@@ -89,12 +91,9 @@ public class CapturerController {
     }
 
 
-
-
-
     @PutMapping("/update-basic-data")
     public CustomResponse<Long> updateBasicData(@Validated @RequestBody RequestUpdateBasicData payload) {
-        boolean result = service.updateBasicData(payload);
+        boolean result = capturerService.updateBasicData(payload); 
         if (result) {
             return new CustomResponse<>(200, "Informacion actualizada correctamente", false, payload.getUserAccountId());
         } else {

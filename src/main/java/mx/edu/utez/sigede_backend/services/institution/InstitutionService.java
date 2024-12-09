@@ -32,6 +32,26 @@ public class InstitutionService {
 
     public List<InstitutionDTO> getAllInstitutions() {
         return institutionRepository.getAllInstitutions();
+  /*    
+        return institutionRepository.findById(id)
+                .map(institution -> new ResponseInstitutionInfoDTO(
+                        institution.getInstitutionId(),
+                        institution.getName(),
+                        institution.getAddress(),
+                        institution.getEmailContact(),
+                        institution.getPhoneContact(),
+                        institution.getLogo(),
+                        institution.getInstitutionStatus()
+                ))
+                .orElseThrow(() -> new CustomException("institution.notfound"));
+      */
+    }
+
+  
+    @Transactional
+    public List<ResponseBasicInstitutionDTO> getAllInstitutions() {
+        return institutionRepository.findAll().stream().map(entity -> new ResponseBasicInstitutionDTO(
+                entity.getInstitutionId(), entity.getName(), entity.getEmailContact(), entity.getLogo())).toList();
     }
 
     @Transactional
@@ -87,6 +107,7 @@ public class InstitutionService {
 
     @Transactional
     public Institution updateInstitutionWithEmail(UpdateDTO payload) {
+    //public Institution updateInstitutionWithEmail(RequestUpdateInstitutionDTO payload) {
         Optional<Institution> optionalInstitution = institutionRepository.findById(payload.getInstitutionId());
 
         if (optionalInstitution.isEmpty()) {

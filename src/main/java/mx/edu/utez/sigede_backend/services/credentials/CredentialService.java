@@ -45,6 +45,16 @@ public class CredentialService {
         this.userAccountRepository = userAccountRepository;
     }
 
+    public Page<Credential> getAllCredentialsByInstitution(Long institutionId, String name, Pageable pageable) {
+        Institution institution = institutionRepository.findByInstitutionId(institutionId);
+        if (institution == null) {
+            throw new CustomException("institution.notfound");
+        }
+
+        return credentialRepository.findAllByFkInstitution_InstitutionIdAndFullnameContainingIgnoreCase(institutionId,
+                name, pageable);
+    }
+
     @Transactional
     public Page<Credential> getCredentialsByNameAndCapturist(String name, Long capturistId, int page, int size) {
         UserAccount userAccount = userAccountRepository.findByUserAccountId(capturistId);
@@ -52,6 +62,7 @@ public class CredentialService {
             throw new CustomException("user.not.found");
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by("fullname").ascending());
+
 
         return credentialRepository.findByFullnameContainingIgnoreCaseAndAndFkUserAccount(name, userAccount, pageable);
     }
@@ -89,7 +100,7 @@ public class CredentialService {
         credential.setIssueDate(LocalDateTime.now());
         credential.setFkInstitution(institution);
         credential.setFkUserAccount(userAccount);
-        credential.setExpirationDate(LocalDateTime.of(2025, 12, 31, 23, 59, 59));
+        credential.setExpirationDate(payload.getExpirationDate());
 
         credential = credentialRepository.save(credential);
 

@@ -2,6 +2,7 @@ package mx.edu.utez.sigede_backend.services.admin;
 
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestNewAdminDTO;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
+import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
@@ -48,7 +49,7 @@ public class AdminService {
             throw new CustomException("institution.notfound");
         }
 
-        Rol rol = rolRepository.findByName("ADMIN");
+        Rol rol = rolRepository.findByNameIgnoreCase("ADMIN");
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
 
         return userAccountRepository.findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(name, institution, rol, pageable);
@@ -60,7 +61,7 @@ public class AdminService {
             throw new CustomException("admin.email.error");
         }
 
-        Rol rol = rolRepository.findByName("admin");
+        Rol rol = rolRepository.findByNameIgnoreCase("admin");
         if(rol == null){
             throw new CustomException("rol.notfound");
         }
@@ -95,6 +96,7 @@ public class AdminService {
             throw new CustomException("user.not.found");
         }
         UserAccount user = userAccountRepository.findByUserAccountIdAndFkInstitutionAndRolName(userId, institutionId,"admin");
+
         if (user == null) {
             throw new CustomException("user.not.found");
         }
@@ -106,7 +108,8 @@ public class AdminService {
         return response;
     }
 
-    @jakarta.transaction.Transactional
+
+    @Transactional
     public boolean updateBasicData(RequestUpdateBasicData payload) {
         try {
             UserAccount user = userAccountRepository.findByUserAccountId(payload.getUserAccountId());

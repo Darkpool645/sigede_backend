@@ -60,6 +60,9 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Query("SELECT ua.userAccountId FROM UserAccount ua WHERE ua.email = :email")
     Long findUserAccountIdByEmail(@Param("email") String email);
 
+    Page<UserAccount> findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId, Pageable pageable);
+
+    UserAccount findByUserAccountIdAndFkRol_NameAndFkInstitution_InstitutionId(Long userId ,String role, Long institutionId);
 
     UserAccount findByUserAccountId(Long userAccountId);
 
@@ -79,4 +82,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
     @Transactional
     @Query("UPDATE UserAccount ua SET ua.password = :password WHERE ua.email = :email")
     void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
+    List<UserAccount>  findAllByFkRol_NameAndFkInstitution_InstitutionId(String role, Long institutionId);
+
+    UserAccount findUserAccountByEmail(String email);
 }

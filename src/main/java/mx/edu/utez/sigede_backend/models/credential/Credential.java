@@ -41,8 +41,8 @@ public class Credential {
     @JoinColumn(name = "fk_institution", referencedColumnName = "institution_id", nullable = false)
     private Institution fkInstitution;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false, unique = false)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_user_account", referencedColumnName = "user_account_id", nullable = false)
     private UserAccount fkUserAccount;
 
 }
