@@ -48,11 +48,7 @@ public class UserAccountsController {
         return userAccountService.getAdministratorsByInstitution(institutionId);
     }
 
-    @PostMapping("/register-superadmin")
-    public CustomResponse<String> registerSuperadmin(@Validated @RequestBody RequestRegisterSuperAdminDTO payload) {
-        userAccountService.registerSuperAdmin(payload);
-        return new CustomResponse<>(201, "Superadmin registrado correctamente", false, null);
-    }
+
 
     @PostMapping("/get-all-by-institution-rolename")
     public CustomResponse<Page<ResponseAllAdminByInstitutionDTO>> getAllByInstitutionByRole(@Validated @RequestBody RequestAllAdminByInstitutionDTO payload, Pageable pageable){

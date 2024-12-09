@@ -48,11 +48,11 @@ public class InstitutionService {
     }
 
   
-    @Transactional
+    /*@Transactional
     public List<ResponseBasicInstitutionDTO> getAllInstitutions() {
         return institutionRepository.findAll().stream().map(entity -> new ResponseBasicInstitutionDTO(
                 entity.getInstitutionId(), entity.getName(), entity.getEmailContact(), entity.getLogo())).toList();
-    }
+    }*/
 
     @Transactional
     public Page<Institution> getInstitutionsByName(String name, int page, int size) {

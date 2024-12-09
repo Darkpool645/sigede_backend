@@ -65,7 +65,7 @@ public class PasswordRecoveryController {
     }
 
     @PutMapping("/change-password")
-    public CustomResponse<PasswordChangeResponseDTO> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+    public CustomResponse<?> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
         try {
              passwordRecoveryService.changePassword(
                     passwordChangeRequestDTO.getNewPassword(), passwordChangeRequestDTO.getUserEmail());

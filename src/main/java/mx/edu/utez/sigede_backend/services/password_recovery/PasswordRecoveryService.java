@@ -3,7 +3,6 @@ package mx.edu.utez.sigede_backend.services.password_recovery;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
-import mx.edu.utez.sigede_backend.controllers.password_recovery.dto.PasswordChangeResponseDTO;
 import mx.edu.utez.sigede_backend.controllers.user_accounts.dto.ChangePasswordDataConsult;
 
 import mx.edu.utez.sigede_backend.services.mailservice.MailService;
@@ -81,13 +80,11 @@ public class PasswordRecoveryService {
         }
         ChangePasswordDataConsult changePasswordDataConsult = userAccountRepository.getOldPasswordByEmail(email);
         if (passwordEncoder.matches(newPassword, changePasswordDataConsult.getOldPassword())) {
-
             throw new CustomException("user.password.same_as_old");
         }
         String logo = changePasswordDataConsult.getLogo();
         userAccountRepository.updatePasswordByEmail(email,passwordEncoder.encode(newPassword));
         mailService.sendPasswordChangeEmail(email, "Contraseña actualizada");
-        userAccountRepository.save(user);
 
         /*user.setPassword(passwordEncoder.encode(newPassword));
         userAccountRepository.save(user);

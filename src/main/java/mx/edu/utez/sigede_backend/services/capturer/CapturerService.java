@@ -3,7 +3,6 @@ package mx.edu.utez.sigede_backend.services.capturer;
 import lombok.extern.slf4j.Slf4j;
 import mx.edu.utez.sigede_backend.controllers.admin.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestCapturerRegistrationDTO;
-import mx.edu.utez.sigede_backend.controllers.capturers.dto.RequestUpdateBasicData;
 import mx.edu.utez.sigede_backend.controllers.capturers.dto.ResponseCapturistDTO;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfile;
 import mx.edu.utez.sigede_backend.models.capturist_profile.CapturistProfileRepository;
@@ -68,12 +67,12 @@ public class CapturerService {
         response.setStatus(user.getFkStatus().getName());
         return response;
     }
-  
-@Transactional
-public Long getCapturistIdByEmail(String email) {
-        return userAccountRepository.findUserAccountIdByEmail(email);
-}
-
+  /*
+    @Transactional
+    public Long getCapturistIdByEmail(String email) {
+            return userAccountRepository.findUserAccountIdByEmail(email);
+    }
+*/
 
 
     @Transactional
@@ -163,7 +162,7 @@ public Long getCapturistIdByEmail(String email) {
         }
     }
 
-
+/*
     @jakarta.transaction.Transactional
     public boolean updateBasicData(RequestUpdateBasicData payload) {
         try {
@@ -188,7 +187,7 @@ public Long getCapturistIdByEmail(String email) {
             return false;
         }
     }
-
+*/
     @Transactional
     public boolean updateBasicData(RequestUpdateBasicData payload) {
         try {

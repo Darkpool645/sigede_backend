@@ -112,12 +112,14 @@ public class InstitutionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
+/*
     @PutMapping("/update")
     public ResponseEntity<CustomResponse<ResponseInstitutionUpdateDTO>> updateInstitutionWitEmailContact(
             @Validated @RequestBody RequestUpdateInstitutionDTO payload) {
         try {
-            Institution updatedInstitution = institutionService.updateInstitutionWithEmail(payload);
+            Institution updatedInstitution = institutionService.updateInstitutionWithEmail(new UpdateDTO(payload.getInstitutionId(),
+                    payload.getInstitutionName(),payload.getInstitutionAddress(),payload.getInstitutionEmail(),
+                    payload.getInstitutionPhone(),payload.getInstitutionStatus(),payload.getLogo()));
             ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = getResponseInstitutionUpdateDTO(updatedInstitution);
 
             CustomResponse<ResponseInstitutionUpdateDTO> response = new CustomResponse<>(
@@ -134,7 +136,7 @@ public class InstitutionController {
                     HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ocurrió un error inesperado.", true, null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-    }
+    }*/
 
     private static ResponseInstitutionUpdateDTO getResponseInstitutionUpdateDTO(Institution updatedInstitution) {
         ResponseInstitutionUpdateDTO responseInstitutionUpdateDTO = new ResponseInstitutionUpdateDTO();

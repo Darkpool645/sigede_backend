@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+//1
 public class RequestUpdateBasicData {
     private Long userAccountId;
     private String name;
