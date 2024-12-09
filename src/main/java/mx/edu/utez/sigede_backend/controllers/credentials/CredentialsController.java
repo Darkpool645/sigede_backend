@@ -1,16 +1,17 @@
 package mx.edu.utez.sigede_backend.controllers.credentials;
 
+import mx.edu.utez.sigede_backend.controllers.credential_field.dto.ResponseCredentialFieldDTO;
 import mx.edu.utez.sigede_backend.controllers.credentials.DTO.*;
 import mx.edu.utez.sigede_backend.models.credential.Credential;
 import mx.edu.utez.sigede_backend.services.credentials.CredentialService;
 import mx.edu.utez.sigede_backend.utils.CustomResponse;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -30,10 +31,9 @@ public class CredentialsController {
     }
 
     @PostMapping("/get-all-by-institution")
-    public CustomResponse<Page<GetCredentialsDTO>> getAllByInstitution(@Validated @RequestBody RequestByInstitutionDTO request,
-                                                                       Pageable pageable) {
+    public CustomResponse<Page<GetCredentialsDTO>> getAllByInstitution(@Validated @RequestBody RequestByInstitutionDTO request) {
         Page<Credential> credentials = credentialService.getAllCredentialsByInstitution(request.getInstitutionId(),
-                request.getFullName(), pageable);
+                request.getFullName(), request.getPage(), request.getSize());
 
         Page<GetCredentialsDTO> response = credentials.map(credential -> {
             GetCredentialsDTO dto = new GetCredentialsDTO();
@@ -81,5 +81,20 @@ public class CredentialsController {
                                                                   @RequestBody RequestUpdateCredentialDTO updateDTO) {
         credentialService.updateCredential(credentialId, updateDTO);
         return new CustomResponse<>(201,"Informacion actualizada",false,null);
+    }
+
+    @GetMapping("/get-qr-data/{credentialId}")
+    public CustomResponse<ResponseCredentialQrDataDTO> getCredentialDataForQR(@PathVariable Long credentialId){
+        ResponseCredentialDTO credential = credentialService.getCredentialWithFields(credentialId);
+
+        ResponseCredentialQrDataDTO responseDTO = new ResponseCredentialQrDataDTO();
+        responseDTO.setId(credential.getId());
+        responseDTO.setFullname(credential.getFullname());
+        responseDTO.setUserPhoto(credential.getUserPhoto());
+        responseDTO.setExpirationDate(credential.getExpirationDate().toLocalDate().toString());
+        responseDTO.setIssueDate(credential.getIssueDate().toLocalDate().toString());
+        responseDTO.setFields(credential.getFields().stream().filter(ResponseCredentialFieldDTO::is_in_qr).collect(Collectors.toList()));
+
+        return new CustomResponse<>(200, "Información obtenida correctamente",false, responseDTO);
     }
 }

@@ -47,7 +47,8 @@ public class UserAccountService {
     @Transactional
     public List<GetUserBasicInfoDTO> getAllAdmins(Long institutionId) {
         List<UserAccount> admins = userAccountRepository.findAllByFkRol_NameAndFkInstitution_InstitutionId("ADMIN", institutionId);
-        return List.of((GetUserBasicInfoDTO) admins);
+        return admins.stream().map(userAccount -> new GetUserBasicInfoDTO(userAccount.getUserAccountId(), userAccount.getName(),
+                userAccount.getFkStatus().getName())).toList();
     }
 
     @Transactional
@@ -145,13 +146,13 @@ public class UserAccountService {
 
     @Transactional
     public List<GetCapturistsDTO> getCapturistasByInstitution(Long institutionId) {
-        List<GetCapturistsDTO> capturistas = userAccountRepository.findCapturistasByInstitution(institutionId);
-
-        if (capturistas.isEmpty()) {
+        if (institutionId == null) {
             throw new CustomException("institution.notfound");
         }
+        List<UserAccount> capturistas = userAccountRepository.findByFkInstitution_InstitutionIdAndFkRol_NameIgnoreCase(institutionId, "CAPTURISTA");
 
-        return capturistas;
+        return capturistas.stream().map(userAccount -> new GetCapturistsDTO(userAccount.getUserAccountId(), userAccount.getName(),
+                userAccount.getFkStatus().getName())).toList();
     }
 
     @Transactional

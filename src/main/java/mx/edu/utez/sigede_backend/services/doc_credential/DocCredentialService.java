@@ -19,6 +19,7 @@ import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.wml.Drawing;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,8 @@ public class DocCredentialService {
     private final InstitutionRepository institutionRepository;
     private final CredentialRepository credentialRepository;
     private final CredentialFieldRepository credentialFieldRepository;
+    @Value("${app.base.url}")
+    private String baseUrl;
 
     public DocCredentialService(InstitutionRepository institutionRepository, CredentialRepository credentialRepository,
                                 CredentialFieldRepository credentialFieldRepository) {
@@ -81,7 +84,7 @@ public class DocCredentialService {
             VariablePrepare.prepare(wordMLPackage);
             documentPart.variableReplace(replacements);
 
-            byte[] qrImageBytes = generateQR("https://www.youtube.com/");
+            byte[] qrImageBytes = generateQR(String.valueOf(credentialId));
 
             String imageUrl = credential.getUserPhoto();
             if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -156,8 +159,9 @@ public class DocCredentialService {
         }
     }
 
-    private byte[] generateQR(String content) {
+    private byte[] generateQR(String credentialId) {
         try {
+            String content = baseUrl + "?id=" + credentialId;
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(content, BarcodeFormat.QR_CODE, 1000, 1000);
 

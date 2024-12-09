@@ -1,4 +1,4 @@
-package mx.edu.utez.sigede_backend.controllers.user_info.DTO;
+package mx.edu.utez.sigede_backend.controllers.user_info.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

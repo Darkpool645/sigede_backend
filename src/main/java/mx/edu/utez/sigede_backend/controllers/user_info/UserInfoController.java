@@ -2,8 +2,8 @@ package mx.edu.utez.sigede_backend.controllers.user_info;
 
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionResponseDTO;
 import mx.edu.utez.sigede_backend.controllers.institution_capturist_field.DTO.CapturistFieldResponseDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoPostDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoUpdateDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.UserInfoPostDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.UserInfoUpdateDTO;
 import mx.edu.utez.sigede_backend.models.institution_capturist_field.InstitutionCapturistField;
 import mx.edu.utez.sigede_backend.services.user_info.UserInfoService;
 import mx.edu.utez.sigede_backend.utils.exception.CustomException;
@@ -31,7 +31,6 @@ public class UserInfoController {
     public ResponseEntity<?> createFieldAndAssociate(
             @RequestBody List<UserInfoPostDTO> userInfoDTOList,
             @RequestParam Long institutionId) {
-
         try {
             List<InstitutionCapturistField> result = userInfoService.createFieldAndAssociate(userInfoDTOList, institutionId);
 

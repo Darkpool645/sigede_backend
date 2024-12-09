@@ -8,4 +8,6 @@ public class RequestByInstitutionDTO {
     @NotNull(message = "institution.id.notnull")
     private Long institutionId;
     private String fullName;
+    private int page;
+    private int size;
 }

@@ -2,9 +2,9 @@ package mx.edu.utez.sigede_backend.services.user_info;
 
 import mx.edu.utez.sigede_backend.controllers.Institutions.DTO.InstitutionResponseDTO;
 import mx.edu.utez.sigede_backend.controllers.institution_capturist_field.DTO.InstitutionCapturistFieldDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoPostDTO;
-import mx.edu.utez.sigede_backend.controllers.user_info.DTO.UserInfoUpdateDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.UserInfoDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.UserInfoPostDTO;
+import mx.edu.utez.sigede_backend.controllers.user_info.dto.UserInfoUpdateDTO;
 import mx.edu.utez.sigede_backend.models.institution.Institution;
 import mx.edu.utez.sigede_backend.models.institution.InstitutionRepository;
 import mx.edu.utez.sigede_backend.models.institution_capturist_field.InstitutionCapturistField;

@@ -22,6 +22,8 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
             "WHERE u.fkRol.name = 'capturista' AND u.fkInstitution.institutionId = :institutionId")
     List<GetCapturistsDTO> findCapturistasByInstitution(@Param("institutionId") Long institutionId);
 
+    List<UserAccount> findByFkInstitution_InstitutionIdAndFkRol_NameIgnoreCase(Long institutionId,String name);
+
     Page<UserAccount> findByNameContainingIgnoreCaseAndFkInstitutionAndFkRol(String name, Institution institution, Rol rol, Pageable page);
 
     Page<UserAccount> findByNameContainingIgnoreCaseAndFkRol(String name, Rol rol, Pageable page);
