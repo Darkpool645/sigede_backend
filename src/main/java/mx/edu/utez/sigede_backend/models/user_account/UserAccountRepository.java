@@ -21,7 +21,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long>{
 
-    @Query("SELECT new mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO(u.userAccountId, u.name, u.fkStatus.name) " +
+    @Query("SELECT new mx.edu.utez.sigede_backend.controllers.capturers.dto.GetCapturistsDTO(u.userAccountId, u.name, u.fkStatus.name, u.email) " +
             "FROM UserAccount u " +
             "WHERE u.fkRol.name = 'capturista' AND u.fkInstitution.institutionId = :institutionId")
     List<GetCapturistsDTO> findCapturistasByInstitution(@Param("institutionId") Long institutionId);

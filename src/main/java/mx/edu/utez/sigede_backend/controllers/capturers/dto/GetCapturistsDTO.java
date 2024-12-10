@@ -11,4 +11,5 @@ public class GetCapturistsDTO {
     private Long userAccountId;
     private String name;
     private String status;
+    private String email;
 }
